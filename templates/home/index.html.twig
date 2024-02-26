@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PortFolioCreator - Welcome !
+{% endblock %}
+
+{% block body %}
+
+	<div class="p-5">
+		<h1 class="text-center">Welcome to PortFolio
+			<span class="text-success">Creator</span>
+		</h1>
+		<h2 class="mb-4 text-center">
+			<small class="text-secondary-emphasis">Sign up to begin or login to continue</small>
+		</h2>
+		<p class="lead text-center">
+			<small class="text-secondary-emphasis">Hi 👋 ! I am Antoine Jolivet, the developer of this little application. You can find my own portfolio by following this
+				<strong>
+					<a href="#">link</a>.
+				</strong>
+			</small>
+		</p>
+	</div>
+
+	<div class="form-group bg-light pt-2 pb-2 d-flex align-items-center mx-auto col-12 col-md-6 rounded">
+		<div class="col-1">
+			<i class="fa-solid fa-magnifying-glass"></i>
+		</div>
+		<div class="col-11 ">
+			<input type="search" class="form-control search-field" placeholder="Search an user here..." autocomplete="off" data-model="query" autofocus>
+		</div>
+	</div>
+
+	<div class="flex row mt-5">
+		<div class="col-lg-6 col-md-12 col-12 mt-2  mx-auto">
+			<div class="card mb-4">
+				<h5 class="card-header text-primary">Featured</h5>
+				<div class="card-body">
+					<div class="d-flex flex-sm-row">
+						<div class="col-sm-4">
+							<div class="bg-light rounded-circle mx-auto" style="width:70px;height:70px">
+								<img src="" class="img-thumbnail" alt="">
+							</div>
+						</div>
+						<div class="col-sm-8 mb-2 mb-sm-0">
+							<h5 class="card-title text-primary">Special title treatment</h5>
+							<p class="card-text text-primary">With supporting text below as a natural lead-in to additional content.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6 col-md-12 col-12 mt-2 border-success">
+			<div class="card mb-4">
+				<h5 class="card-header text-primary">Featured</h5>
+				<div class="card-body">
+					<div class="d-flex flex-sm-row">
+						<div class="col-sm-4">
+							<div class="bg-light rounded-circle mx-auto" style="width:70px;height:70px">
+								<img src="" class="img-thumbnail" alt="">
+							</div>
+						</div>
+						<div class="col-sm-8 mb-2 mb-sm-0">
+							<h5 class="card-title text-primary">Special title treatment</h5>
+							<p class="card-text text-primary">With supporting text below as a natural lead-in to additional content.</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+</div>{% endblock %}
