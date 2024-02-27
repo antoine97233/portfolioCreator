@@ -30,6 +30,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Length(min: 2, max: 100)]
     private ?string $fullname = null;
 
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    private ?string $slug = null;
+
     #[ORM\Column(type: Types::STRING, unique: true, length: 255)]
     #[Assert\NotBlank]
     #[Assert\Length(min: 2, max: 50)]
@@ -47,11 +50,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $title = null;
 
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Length(min: 2, max: 100)]
+    private ?string $subtitle = null;
+
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $shortDescription = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $longDescription = null;
+
+    #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    private ?bool $isOpenToWork = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
@@ -103,6 +113,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setFullname(string $fullname): static
     {
         $this->fullname = $fullname;
+
+        return $this;
+    }
+
+    public function getSlug(): ?string
+    {
+        return $this->slug;
+    }
+
+    public function setSlug(string $slug): static
+    {
+        $this->slug = $slug;
 
         return $this;
     }
@@ -164,6 +186,19 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
+
+    public function getSubtitle(): ?string
+    {
+        return $this->subtitle;
+    }
+
+    public function setSubtitle(?string $subtitle): static
+    {
+        $this->subtitle = $subtitle;
+
+        return $this;
+    }
+
     public function getShortDescription(): ?string
     {
         return $this->shortDescription;
@@ -184,6 +219,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLongDescription(?string $longDescription): static
     {
         $this->longDescription = $longDescription;
+
+        return $this;
+    }
+
+    public function isIsOpenToWork(): ?bool
+    {
+        return $this->isOpenToWork;
+    }
+
+    public function setIsOpenToWork(?bool $isOpenToWork): static
+    {
+        $this->isOpenToWork = $isOpenToWork;
 
         return $this;
     }

@@ -30,44 +30,58 @@
 		</div>
 	</div>
 
-	<div class="flex row mt-5">
-		<div class="col-lg-6 col-md-12 col-12 mt-2  mx-auto">
-			<div class="card mb-4">
-				<h5 class="card-header text-primary">Featured</h5>
-				<div class="card-body">
-					<div class="d-flex flex-sm-row">
-						<div class="col-sm-4">
-							<div class="bg-light rounded-circle mx-auto" style="width:70px;height:70px">
-								<img src="" class="img-thumbnail" alt="">
-							</div>
-						</div>
-						<div class="col-sm-8 mb-2 mb-sm-0">
-							<h5 class="card-title text-primary">Special title treatment</h5>
-							<p class="card-text text-primary">With supporting text below as a natural lead-in to additional content.</p>
-						</div>
-					</div>
-				</div>
-			</div>
+	<form method="get" action="{{ path('home') }}" class="d-flex justify-content-center">
+		<div class="form-check form-switch mb-3 text-center">
+			<input class="form-check-input border-light" type="checkbox" id="filterAvailability" name="filterAvailability">
+			<label class="form-check-label text-secondary" for="filterAvailability">Show only available users</label>
 		</div>
+	</form>
 
-		<div class="col-lg-6 col-md-12 col-12 mt-2 border-success">
-			<div class="card mb-4">
-				<h5 class="card-header text-primary">Featured</h5>
-				<div class="card-body">
-					<div class="d-flex flex-sm-row">
-						<div class="col-sm-4">
-							<div class="bg-light rounded-circle mx-auto" style="width:70px;height:70px">
-								<img src="" class="img-thumbnail" alt="">
+
+	<div class="flex row mt-5">
+		{% for user in users %}
+			<a href="{{ path('user', {id: user.id, slug: user.slug}) }}" class="col-lg-6 col-md-12 col-12 mt-2 text-decoration-none mx-auto">
+				<div class="card mb-4">
+					<h5 class="card-header text-primary d-flex justify-content-between">{{ user.fullname }}
+						{% if user.isOpenToWork %}
+							<span class="badge bg-success">Open to Work !</span>
+						{% else %}
+							<span class="badge bg-secondary">Busy, sorry !</span>
+						{% endif %}
+					</h5>
+
+					<div class="card-body">
+						<div class="d-flex flex-sm-row">
+							<div class="col-sm-4 p-2">
+								<div class="bg-light rounded-circle mx-auto" style="width:70px;height:70px">
+									<img src="" class="img-thumbnail" alt="">
+								</div>
 							</div>
-						</div>
-						<div class="col-sm-8 mb-2 mb-sm-0">
-							<h5 class="card-title text-primary">Special title treatment</h5>
-							<p class="card-text text-primary">With supporting text below as a natural lead-in to additional content.</p>
+							<div class="col-sm-8 mb-2 mb-sm-0">
+								<h5 class="card-title text-primary">{{user.title}}</h5>
+								<p class="card-text text-primary" ;>{{user.subtitle}}</p>
+								<div class="d-flex">
+									<div class="badge-container p-1">
+										<div class="badge rounded-pill text-bg-secondary">#Bootstrap</div>
+									</div>
+									<div class="badge-container p-1">
+										<div class="badge rounded-pill text-bg-secondary">#Symfony</div>
+									</div>
+									<div class="badge-container p-1">
+										<div class="badge rounded-pill text-bg-secondary">#React</div>
+									</div>
+								</div>
+
+
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
+			</a>
+
+		{% endfor %}
+
+
 	</div>
 
 

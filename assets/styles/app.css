@@ -1,5 +1,15 @@
 body{
-
     padding-top :100px;
+}
 
+.cardUser{
+    text-overflow: ellipsis;
+}
+
+.form-check-input {
+    background-color: #6c757d; /* Gris Bootstrap */
+}
+
+.form-check-input:checked {
+    background-color: #18bc9c; /* Vert Bootstrap */
 }

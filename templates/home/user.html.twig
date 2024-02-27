@@ -1,0 +1,49 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PortFolioCreator - Welcome !
+{% endblock %}
+
+{% block body %}
+
+	{% include 'partials/flash.html.twig' %}
+
+
+	<div class="p-md-5 mb-4 mt-4 border">
+		<div class="container-fluid ">
+			<h1 class="display-5 pb-2">{{ user.title }}</h1>
+			<p class="fs-4 text-success">{{ user.subtitle }}</p>
+
+			<div class="d-flex flex-wrap">
+				<div class="col-md-8 col-12 p-1">
+					<p class="fs-5 text-justify">
+						{{ user.shortDescription }}
+					</p>
+
+					{% if user.longDescription is not empty %}
+						<div class="d-flex">
+							<button id="moreInfoButton" class="seeMore btn btn-outline-success mt-4 btn-lg border" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="false" aria-controls="collapseProfile">See More</button>
+						</div>
+					{% endif %}
+
+
+				</div>
+
+				<div class="col-md-4 col-12 text-center p-2 overflow-hidden">
+					<img src="#" class="card-img-top" alt="test">
+
+
+				</div>
+			</div>
+
+			<div class="collapse col-lg-8 col-12 " id="collapseProfile">
+				<div class="card card-body pt-4 text-justify  border-0 rounded-0">
+					<p class="fs-6">
+						{{ user.longDescription | nl2br }}
+					</p>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}
