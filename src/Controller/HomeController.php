@@ -6,23 +6,15 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
-    #[Route('/', name: 'home')]
-    public function index(Request $request, EntityManagerInterface $em): Response
+    #[Route('/', name: 'home', methods: ['GET'])]
+    public function index(UserRepository $userRepository): Response
     {
-        $query = $request->query->get('filterAvailability');
-
-        if ($query === 'on') {
-            $users = $em->getRepository(User::class)->findOpenToWork(true);
-        } else {
-            $users = $em->getRepository(User::class)->findAll();
-        }
-
+        $users = $userRepository->findAll();
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'users' => $users
@@ -32,11 +24,10 @@ class HomeController extends AbstractController
 
 
 
-    #[Route('/{slug}-{id}', name: 'user', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'])]
-    public function show(Request $request, string $slug, int $id, UserRepository $repository): Response
+    #[Route('/{slug}-{id}', name: 'user', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'], methods: ['GET'])]
+    public function show(string $slug, int $id, EntityManagerInterface $em): Response
     {
-        $user = $repository->find($id);
-
+        $user = $em->getRepository(User::class)->find($id);
         if ($user->getSlug() !== $slug) {
             return $this->redirectToRoute('user', ['slug' => $user->getSlug(), 'id' => $user->getId()]);
         }

@@ -3,6 +3,7 @@
 namespace App\Entity;
 
 use App\Repository\ExperienceRepository;
+use App\Validator\BanWord;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -17,11 +18,15 @@ class Experience
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank()]
-    private ?string $title = null;
+    #[Assert\Length(min: 2, max: 100)]
+    #[BanWord()]
+    private string $title = '';
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank()]
-    private ?string $location = null;
+    #[Assert\Length(min: 1, max: 100)]
+    #[BanWord()]
+    private string $location = '';
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull()]
@@ -29,6 +34,7 @@ class Experience
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     #[Assert\NotNull()]
+    #[Assert\GreaterThan(propertyPath: "startDate", message: "End date must be greater than start date.")]
     private ?\DateTimeInterface $endDate = null;
 
     #[ORM\Column(type: Types::BOOLEAN)]
@@ -40,7 +46,7 @@ class Experience
         return $this->id;
     }
 
-    public function getTitle(): ?string
+    public function getTitle(): string
     {
         return $this->title;
     }
@@ -52,7 +58,7 @@ class Experience
         return $this;
     }
 
-    public function getLocation(): ?string
+    public function getLocation(): string
     {
         return $this->location;
     }
