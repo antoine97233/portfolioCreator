@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Controller\Admin;
 
 use App\Entity\Experience;
 use App\Form\ExperienceType;
@@ -10,11 +10,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 
+#[Route('/admin/experiences', name: 'admin.experience.')]
 class ExperienceController extends AbstractController
 {
 
-    #[Route('/experiences', name: 'experience.index')]
+    #[Route('/', name: 'index')]
     public function index(ExperienceRepository $experienceRepository): Response
     {
 
@@ -23,14 +25,14 @@ class ExperienceController extends AbstractController
 
         $experiences = $experienceRepository->findAll();
 
-        return $this->render('experience/index.html.twig', [
+        return $this->render('admin/experience/index.html.twig', [
             'controller_name' => 'HomeController',
             'experiences' => $experiences
         ]);
     }
 
 
-    #[Route('/experience/add', name: 'experience.add', methods: ['GET', 'POST'])]
+    #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
     public function add(
         Request $request,
         EntityManagerInterface $em
@@ -49,15 +51,15 @@ class ExperienceController extends AbstractController
                 'New experience added successfully'
             );
 
-            return $this->redirectToRoute('experience.index');
+            return $this->redirectToRoute('admin.experience.index');
         }
 
-        return $this->render('experience/add.html.twig', [
+        return $this->render('admin/experience/add.html.twig', [
             'form' => $form->createView()
         ]);
     }
 
-    #[Route('/experience/{id}/edit', name: 'experience.edit', methods: ['GET', 'POST'])]
+    #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     public function edit(
         Experience $experience,
         Request $request,
@@ -74,17 +76,17 @@ class ExperienceController extends AbstractController
                 'Experience edited successfully'
             );
 
-            return $this->redirectToRoute('experience.index');
+            return $this->redirectToRoute('admin.experience.index');
         }
 
-        return $this->render('experience/edit.html.twig', [
+        return $this->render('admin/experience/edit.html.twig', [
 
             'form' => $form->createView()
         ]);
     }
 
 
-    #[Route('/experience/{id}/delete', name: 'experience.delete', methods: ['DELETE'])]
+    #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
     public function delete(
         EntityManagerInterface $manager,
         Experience $experience
@@ -98,6 +100,6 @@ class ExperienceController extends AbstractController
             'Experience deleted successfully'
         );
 
-        return $this->redirectToRoute('experience.index');
+        return $this->redirectToRoute('admin.experience.index');
     }
 }

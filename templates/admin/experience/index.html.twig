@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/admin.html.twig' %}
 
 {% block title %}PortFolioCreator - Experiences
 {% endblock %}
@@ -8,7 +8,7 @@
 	{% include 'partials/flash.html.twig' %}
 
 	<div class="m-5 text-center col-12 col-sm-8 col-md-4 col-lg-4 col-xl-2 mx-auto">
-		<a href="{{ path('experience.add') }}" class="btn btn-outline-success btn-block text-primary">Add new Experience</a>
+		<a href="{{ path('admin.experience.add') }}" class="btn btn-outline-success btn-block text-primary">Add new Experience</a>
 	</div>
 
 	{% if experiences is not empty %}
@@ -41,8 +41,8 @@
 							<td
 								class="text-center d-flex gap-1">
 								{# <a href="{{ path('task_add', {id: experience.id, source:'experience'}) }}" class="btn btn-primary btn-block" style="width:100px">Add Task</a> #}
-								<a href="{{ path('experience.edit', {id: experience.id}) }}" class="btn btn-outline-warning btn-block text-primary" style="width:100px">Edit</a>
-								<form action="{{ path('experience.delete', {id: experience.id}) }}" method="post" style="display: inline;">
+								<a href="{{ path('admin.experience.edit', {id: experience.id}) }}" class="btn btn-outline-warning btn-block text-primary" style="width:100px">Edit</a>
+								<form action="{{ path('admin.experience.delete', {id: experience.id}) }}" method="post" style="display: inline;">
 									<input type="hidden" name="_method" value="DELETE">
 									<button type="submit" class="btn btn-outline-danger text-primary" style="width:100px; height: 38px;">Delete</button>
 								</form>
