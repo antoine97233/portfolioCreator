@@ -8,9 +8,17 @@
 	{% include 'partials/flash.html.twig' %}
 
 
-	<div class="p-md-5 mb-4 mt-4 border">
-		<div class="container-fluid ">
-			<h1 class="display-5 pb-2">{{ user.title }}</h1>
+	<div class="card  mb-4 mt-4 border">
+		<h1 class="h4 card-header d-flex justify-content-between">{{user.fullname}}
+
+			{% if user.isOpenToWork %}
+				<span class="badge bg-success">Open to Work !</span>
+			{% else %}
+				<span class="badge bg-secondary">Busy, sorry !</span>
+			{% endif %}
+		</h1>
+		<div class="card-body container-fluid p-2 p-sm-3 p-md-5">
+			<h2 class="display-5 pb-2">{{ user.title }}</h2>
 			<p class="fs-4 text-success">{{ user.subtitle }}</p>
 
 			<div class="d-flex flex-wrap">
@@ -19,11 +27,18 @@
 						{{ user.shortDescription }}
 					</p>
 
-					{% if user.longDescription is not empty %}
-						<div class="d-flex">
-							<button id="moreInfoButton" class="seeMore btn btn-outline-success mt-4 btn-lg border" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="false" aria-controls="collapseProfile">See More</button>
-						</div>
-					{% endif %}
+					<div class="d-flex gap-2">
+
+						{% if user.longDescription is not empty %}
+							<button id="moreInfoButton" class="seeMore btn btn-outline-success mt-4 btn-lg border" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="false" aria-controls="collapseProfile">
+								<i class="fa-solid fa-chevron-down"></i>
+							</button>
+						{% endif %}
+
+						<a href="{{ path('contact', {id: user.id, slug: user.slug}) }}" class="seeMore btn btn-outline-success mt-4 btn-lg border" type="button">
+							<i class="fa-solid fa-envelope"></i>
+						</a>
+					</div>
 
 
 				</div>
@@ -36,12 +51,22 @@
 			</div>
 
 			<div class="collapse col-lg-8 col-12 " id="collapseProfile">
-				<div class="card card-body pt-4 text-justify  border-0 rounded-0">
+				<div class="card card-body pt-4 text-justify border-0 rounded-0">
 					<p class="fs-6">
 						{{ user.longDescription | nl2br }}
 					</p>
 
 				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="p-md-5 p-2 mb-4 mt-4 border">
+		<div class="container-fluid py-5">
+			<div class="h-100 bg-body-tertiary">
+				<h3 class="mb-5">Contact</h3>
+
+				<ul class="list-unstyled d-flex flex-column"></ul>
 			</div>
 		</div>
 	</div>
