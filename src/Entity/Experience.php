@@ -4,6 +4,8 @@ namespace App\Entity;
 
 use App\Repository\ExperienceRepository;
 use App\Validator\BanWord;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -41,9 +43,17 @@ class Experience
     #[Assert\NotNull()]
     private ?bool $isFormation = null;
 
-    #[ORM\ManyToOne(inversedBy: 'experiences')]
+    #[ORM\ManyToOne(inversedBy: 'experiences', cascade: ['persist'])]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
+
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'experience', cascade: ['remove'])]
+    private Collection $task;
+
+    public function __construct()
+    {
+        $this->task = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -118,6 +128,36 @@ class Experience
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Task>
+     */
+    public function getTask(): Collection
+    {
+        return $this->task;
+    }
+
+    public function addTask(Task $task): static
+    {
+        if (!$this->task->contains($task)) {
+            $this->task->add($task);
+            $task->setExperience($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTask(Task $task): static
+    {
+        if ($this->task->removeElement($task)) {
+            // set the owning side to null (unless already changed)
+            if ($task->getExperience() === $this) {
+                $task->setExperience(null);
+            }
+        }
 
         return $this;
     }

@@ -21,6 +21,31 @@ class ExperienceRepository extends ServiceEntityRepository
         parent::__construct($registry, Experience::class);
     }
 
+
+    public function findAllWithTasksByUser(): array
+    {
+        return $this->createQueryBuilder('e')
+            ->leftJoin('e.task', 't')
+            ->orderBy('e.endDate', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
+
+    // public function findAllWithTasksByUser(User $user): array
+    // {
+    //     return $this->createQueryBuilder('e')
+    //         ->leftJoin('e.tasks', 't') // Supposons que la propriété de relation dans Experience est appelée "tasks"
+    //         ->leftJoin('e.user', 'u')  // Supposons que la propriété de relation dans Experience est appelée "user"
+    //         ->andWhere('u = :user')
+    //         ->setParameter('user', $user)
+    //         ->orderBy('e.end_date', 'DESC')
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+
+
+
     //    /**
     //     * @return Experience[] Returns an array of Experience objects
     //     */

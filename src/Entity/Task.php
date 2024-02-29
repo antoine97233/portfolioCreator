@@ -20,6 +20,10 @@ class Task
     #[Assert\Length(min: 2, max: 255)]
     private ?string $description = '';
 
+    #[ORM\ManyToOne(inversedBy: 'task')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Experience $experience = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -33,6 +37,18 @@ class Task
     public function setDescription(string $description): static
     {
         $this->description = $description;
+
+        return $this;
+    }
+
+    public function getExperience(): ?Experience
+    {
+        return $this->experience;
+    }
+
+    public function setExperience(?Experience $experience): static
+    {
+        $this->experience = $experience;
 
         return $this;
     }

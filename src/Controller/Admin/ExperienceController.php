@@ -5,6 +5,7 @@ namespace App\Controller\Admin;
 use App\Entity\Experience;
 use App\Form\ExperienceType;
 use App\Repository\ExperienceRepository;
+use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,17 +18,27 @@ class ExperienceController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
-    public function index(ExperienceRepository $experienceRepository): Response
+    public function index(ExperienceRepository $experienceRepository, TaskRepository $taskRepository): Response
     {
 
         // $user = $this->getUser();
         // $experiences = $experienceRepository->findBy(['user' => $user], ['end_date' => 'DESC']);
 
-        $experiences = $experienceRepository->findAll();
+        $results = $experienceRepository->findAllWithTasksByUser();
+
+        $experiences = [];
+        $tasks = [];
+
+        foreach ($results as $experience) {
+            $experiences[] = $experience;
+            $tasks[$experience->getId()] = $experience->getTask();
+        }
 
         return $this->render('admin/experience/index.html.twig', [
             'controller_name' => 'HomeController',
-            'experiences' => $experiences
+            'experiences' => $experiences,
+            'tasks' => $tasks,
+
         ]);
     }
 
