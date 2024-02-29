@@ -6,6 +6,11 @@
 {% block body %}
 
 	<div class="p-5">
+		<h1 class="text-center p-4">{{user.fullname}}</h1>
+
+		<img src="{{ vich_uploader_asset(user, 'thumbnailFile')}}" style="width:200px;height:auto" class="p-4" alt="">
+
+
 		{{form(form)}}
 		</div>
 	{% endblock %}

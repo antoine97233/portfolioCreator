@@ -18,11 +18,13 @@
 			{% endif %}
 		</h1>
 		<div class="card-body container-fluid p-2 p-sm-3 p-md-5">
-			<h2 class="display-5 pb-2">{{ user.title }}</h2>
-			<p class="fs-4 text-success">{{ user.subtitle }}</p>
+
 
 			<div class="d-flex flex-wrap">
+
 				<div class="col-md-8 col-12 p-1">
+					<h2 class="display-5 pb-2">{{ user.title }}</h2>
+					<p class="fs-4 text-success">{{ user.subtitle }}</p>
 					<p class="fs-5 text-justify">
 						{{ user.shortDescription }}
 					</p>
@@ -40,24 +42,26 @@
 						</a>
 					</div>
 
+					<div class="collapse mt-4" id="collapseProfile">
+						<div class="card card-body pt-4 text-justify border-0">
+							<p class="fs-6">
+								{{ user.longDescription | nl2br }}
+							</p>
+
+						</div>
+					</div>
+
 
 				</div>
 
-				<div class="col-md-4 col-12 text-center p-2 overflow-hidden">
-					<img src="#" class="card-img-top" alt="test">
+				<div class="col-md-4 col-12 text-center p-4 overflow-hidden">
+					<img src="/images/users/{{user.thumbnail}}" class="card-img-top rounded-circle" alt="{{user.fullname}}">
 
 
 				</div>
 			</div>
 
-			<div class="collapse col-lg-8 col-12 " id="collapseProfile">
-				<div class="card card-body pt-4 text-justify border-0 rounded-0">
-					<p class="fs-6">
-						{{ user.longDescription | nl2br }}
-					</p>
 
-				</div>
-			</div>
 		</div>
 	</div>
 

@@ -2,6 +2,8 @@
 
 namespace App\Form;
 
+use DateTimeImmutable;
+use Symfony\Component\Form\Event\PostSubmitEvent;
 use Symfony\Component\Form\Event\PreSubmitEvent;
 use Symfony\Component\String\Slugger\SluggerInterface;
 
@@ -23,6 +25,16 @@ class FormListenerFactory
                 $data['slug'] = strtolower($this->slugger->slug($data[$field]));
                 $event->setData($data);
             }
+        };
+    }
+
+
+    public function timestamps(): callable
+    {
+        return function (PostSubmitEvent $event) {
+
+            $data = $event->getData();
+            $data->setUpdatedAt(new DateTimeImmutable());
         };
     }
 }
