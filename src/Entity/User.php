@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\DBAL\Types\Types;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
@@ -72,10 +74,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: Types::JSON)]
     private array $roles = [];
 
+    #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', orphanRemoval: true)]
+    private Collection $experiences;
+
 
     public function __construct()
     {
         $this->updatedAt = new \DateTimeImmutable();
+        $this->experiences = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -312,5 +318,35 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         // add $this->salt too if you don't use Bcrypt or Argon2i
         [$this->id, $this->username, $this->password] = $data;
+    }
+
+    /**
+     * @return Collection<int, Experience>
+     */
+    public function getExperiences(): Collection
+    {
+        return $this->experiences;
+    }
+
+    public function addExperience(Experience $experience): static
+    {
+        if (!$this->experiences->contains($experience)) {
+            $this->experiences->add($experience);
+            $experience->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeExperience(Experience $experience): static
+    {
+        if ($this->experiences->removeElement($experience)) {
+            // set the owning side to null (unless already changed)
+            if ($experience->getUser() === $this) {
+                $experience->setUser(null);
+            }
+        }
+
+        return $this;
     }
 }
