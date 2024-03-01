@@ -3,9 +3,12 @@
 namespace App\Entity;
 
 use App\Repository\UserRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
@@ -13,6 +16,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
+#[UniqueEntity(fields: ['email'], message: 'There is already an account with this email')]
+#[Vich\Uploadable]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     #[ORM\Id]
@@ -40,19 +46,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
-    #[Assert\NotBlank]
-    #[Assert\Length(min: 2, max: 100)]
     private ?string $fullname = '';
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $slug = '';
 
-
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     private ?string $title = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    #[Assert\Length(min: 2, max: 100)]
     private ?string $subtitle = '';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -67,16 +69,20 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     private ?\DateTimeImmutable $updatedAt = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $thumbnail = null;
 
-    #[Vich\UploadableField(mapping: 'users', fileNameProperty: 'thumbnail')]
-    #[Assert\Image()]
-    private ?File $thumbnailFile = null;
+    #[ORM\Column(type: 'boolean')]
+    private $isVisible = false;
+
+    #[ORM\Column(type: 'boolean')]
+    private $isVerified = false;
+
+    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'user', cascade: ['remove'])]
+    private Collection $media;
 
     public function __construct()
     {
         $this->updatedAt = new \DateTimeImmutable();
+        $this->media = new ArrayCollection();
     }
 
 
@@ -117,6 +123,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         $roles = $this->roles;
         // guarantee every user at least has ROLE_USER
         $roles[] = 'ROLE_USER';
+
+        if ($this->isVerified()) {
+            $roles[] = 'ROLE_VERIFIED';
+        }
 
         return array_unique($roles);
     }
@@ -265,34 +275,66 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getThumbnail(): ?string
+
+
+    public function isVerified(): bool
     {
-        return $this->thumbnail;
+        return $this->isVerified;
     }
 
-    public function setThumbnail(?string $thumbnail): static
+    public function setIsVerified(bool $isVerified): static
     {
-        $this->thumbnail = $thumbnail;
+        $this->isVerified = $isVerified;
 
         return $this;
     }
 
     /**
-     * Get the value of thumbnailFile
+     * Get the value of isVisible
      */
-    public function getThumbnailFile(): ?File
+    public function getIsVisible()
     {
-        return $this->thumbnailFile;
+        return $this->isVisible;
     }
 
     /**
-     * Set the value of thumbnailFile
+     * Set the value of isVisible
      *
      * @return  self
      */
-    public function setThumbnailFile($thumbnailFile): static
+    public function setIsVisible($isVisible)
     {
-        $this->thumbnailFile = $thumbnailFile;
+        $this->isVisible = $isVisible;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Media>
+     */
+    public function getMedia(): Collection
+    {
+        return $this->media;
+    }
+
+    public function addMedium(Media $medium): static
+    {
+        if (!$this->media->contains($medium)) {
+            $this->media->add($medium);
+            $medium->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMedium(Media $medium): static
+    {
+        if ($this->media->removeElement($medium)) {
+            // set the owning side to null (unless already changed)
+            if ($medium->getUser() === $this) {
+                $medium->setUser(null);
+            }
+        }
 
         return $this;
     }

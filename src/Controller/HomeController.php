@@ -14,7 +14,7 @@ class HomeController extends AbstractController
     #[Route('/', name: 'home', methods: ['GET'])]
     public function index(UserRepository $userRepository): Response
     {
-        $users = $userRepository->findAll();
+        $users = $userRepository->findVisible(true);
         return $this->render('home/index.html.twig', [
             'controller_name' => 'HomeController',
             'users' => $users
@@ -27,7 +27,8 @@ class HomeController extends AbstractController
     #[Route('/{slug}-{id}', name: 'user', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'], methods: ['GET'])]
     public function show(string $slug, int $id, EntityManagerInterface $em): Response
     {
-        $user = $em->getRepository(User::class)->find($id);
+        $user = $em->getRepository(User::class)->findUserWithMedia($id);
+
         if ($user->getSlug() !== $slug) {
             return $this->redirectToRoute('user', ['slug' => $user->getSlug(), 'id' => $user->getId()]);
         }

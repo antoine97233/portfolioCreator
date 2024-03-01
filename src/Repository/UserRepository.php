@@ -40,6 +40,31 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function findVisible(bool $isVisible): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u', 'm')
+            ->leftJoin('u.media', 'm')
+            ->where('u.isVisible = :isVisible')
+            ->setParameter('isVisible', $isVisible)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findUserWithMedia(int $userId): ?User
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u', 'm')
+            ->leftJoin('u.media', 'm')
+            ->where('u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
+
+
 
     public function findOpenToWork(bool $isOpenToWork): array
     {
@@ -53,12 +78,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findByEmailOrUsername(string $usernameOrEmail): ?User
     {
         return $this->createQueryBuilder("u")
-            ->Where("u.email = :identifier")
-            ->orWhere("u.username = :identifier")
+            ->Where("u.email = :identifier OR u.username= :identifier")
+            ->andWhere("u.isVerified = true")
             ->setParameter("identifier", $usernameOrEmail)
             ->setMaxResults(1)
             ->getQuery()
-            ->getSingleResult();
+            ->getOneOrNullResult();
     }
 
     //    /**

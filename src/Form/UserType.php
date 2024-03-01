@@ -4,8 +4,8 @@ namespace App\Form;
 
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
-use Symfony\Component\Form\Extension\Core\Type\HiddenType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
+
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -26,10 +26,6 @@ class UserType extends AbstractType
             ->add('fullname', TextType::class, [
                 'empty_data' => ''
             ])
-            ->add('slug', HiddenType::class, [
-                'mapped' => false,
-            ])
-            ->add('thumbnailFile', FileType::class)
             ->add('title', TextType::class, [
                 'empty_data' => ''
             ])
@@ -43,8 +39,11 @@ class UserType extends AbstractType
                 'empty_data' => ''
             ])
             ->add('isOpenToWork')
+            ->add('isVisible', CheckboxType::class, [
+                'label' => "Do you want to be visible on the plateform ?",
+                'required' => false
+            ])
             ->add('save', SubmitType::class)
-            ->addEventListener(FormEvents::PRE_SUBMIT, $this->listenerFactory->autoSlug('fullname'))
             ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->timestamps());
     }
 

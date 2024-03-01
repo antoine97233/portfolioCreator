@@ -5,7 +5,6 @@ namespace App\Controller\Admin;
 use App\Entity\Experience;
 use App\Form\ExperienceType;
 use App\Repository\ExperienceRepository;
-use App\Repository\TaskRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -19,11 +18,11 @@ class ExperienceController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
-    #[IsGranted('ROLE_USER')]
-    public function index(ExperienceRepository $experienceRepository, TaskRepository $taskRepository): Response
+    #[IsGranted('ROLE_VERIFIED')]
+    public function index(ExperienceRepository $experienceRepository): Response
     {
 
-        // $user = $this->getUser();
+        $user = $this->getUser();
         // $experiences = $experienceRepository->findBy(['user' => $user], ['end_date' => 'DESC']);
 
         $results = $experienceRepository->findAllWithTasksByUser();
