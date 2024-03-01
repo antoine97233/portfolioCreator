@@ -20,6 +20,7 @@ class ExperienceController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(ExperienceRepository $experienceRepository, TaskRepository $taskRepository): Response
     {
+        $this->denyAccessUnlessGranted('ROLE_USER');
 
         // $user = $this->getUser();
         // $experiences = $experienceRepository->findBy(['user' => $user], ['end_date' => 'DESC']);

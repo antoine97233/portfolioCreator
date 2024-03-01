@@ -43,10 +43,6 @@ class Experience
     #[Assert\NotNull()]
     private ?bool $isFormation = null;
 
-    #[ORM\ManyToOne(inversedBy: 'experiences', cascade: ['persist'])]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
-
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'experience', cascade: ['remove'])]
     private Collection $task;
 
@@ -120,17 +116,6 @@ class Experience
         return $this;
     }
 
-    public function getUser(): ?User
-    {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): static
-    {
-        $this->user = $user;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, Task>
