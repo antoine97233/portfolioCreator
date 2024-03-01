@@ -12,15 +12,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/experiences', name: 'admin.experience.')]
 class ExperienceController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
+    #[IsGranted('ROLE_USER')]
     public function index(ExperienceRepository $experienceRepository, TaskRepository $taskRepository): Response
     {
-        $this->denyAccessUnlessGranted('ROLE_USER');
 
         // $user = $this->getUser();
         // $experiences = $experienceRepository->findBy(['user' => $user], ['end_date' => 'DESC']);
