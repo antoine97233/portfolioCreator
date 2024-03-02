@@ -79,10 +79,14 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $media;
 
+    #[ORM\ManyToMany(targetEntity: Skill::class, mappedBy: 'user')]
+    private Collection $skills;
+
     public function __construct()
     {
         $this->updatedAt = new \DateTimeImmutable();
         $this->media = new ArrayCollection();
+        $this->skills = new ArrayCollection();
     }
 
 
@@ -334,6 +338,33 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($medium->getUser() === $this) {
                 $medium->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skill>
+     */
+    public function getSkills(): Collection
+    {
+        return $this->skills;
+    }
+
+    public function addSkill(Skill $skill): static
+    {
+        if (!$this->skills->contains($skill)) {
+            $this->skills->add($skill);
+            $skill->addUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skill $skill): static
+    {
+        if ($this->skills->removeElement($skill)) {
+            $skill->removeUser($this);
         }
 
         return $this;

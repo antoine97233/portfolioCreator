@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Repository\SkillRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -25,22 +26,38 @@ class HomeController extends AbstractController
 
 
     #[Route('/users', name: 'users', methods: ['GET'])]
-    public function showUsers(UserRepository $userRepository, Request $request): Response
+    public function showUsers(UserRepository $userRepository, SkillRepository $skillRepository, Request $request): Response
     {
+
+
 
         $page = $request->query->getInt('page', 1);
         $limit = 4;
+
+        // Récupérez la liste des compétences
+        $skills = $skillRepository->findAll();
+
+        // Récupérez les utilisateurs paginés
         $users = $userRepository->paginateUsers($page, $limit);
-        $maxPage = ceil($users->count() / $limit);
+
+        // Si des compétences sont sélectionnées, filtrez les utilisateurs en conséquence
+        $selectedSkills = $request->get('skills', []);
+        if (!empty($selectedSkills)) {
+            $users = $userRepository->findBySkills($selectedSkills);
+        }
+
         $usersTotal = $userRepository->findAllWithCount();
+        $maxPage = ceil($usersTotal / $limit);
 
         return $this->render('home/userList.html.twig', [
             'users' => $users,
             'maxPage' => $maxPage,
             'page' => $page,
-            'usersTotal' => $usersTotal
+            'usersTotal' => $usersTotal,
+            'skills' => $skills,
         ]);
     }
+
 
 
 
