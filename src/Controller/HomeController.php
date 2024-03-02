@@ -6,18 +6,39 @@ use App\Entity\User;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'home', methods: ['GET'])]
-    public function index(UserRepository $userRepository): Response
+    public function index(UserRepository $userRepository, Request $request): Response
     {
+
         $users = $userRepository->findVisible(true);
+
         return $this->render('home/index.html.twig', [
-            'controller_name' => 'HomeController',
-            'users' => $users
+            'users' => $users,
+        ]);
+    }
+
+
+    #[Route('/users', name: 'users', methods: ['GET'])]
+    public function showUsers(UserRepository $userRepository, Request $request): Response
+    {
+
+        $page = $request->query->getInt('page', 1);
+        $limit = 4;
+        $users = $userRepository->paginateUsers($page, $limit);
+        $maxPage = ceil($users->count() / $limit);
+        $usersTotal = $userRepository->findAllWithCount();
+
+        return $this->render('home/userList.html.twig', [
+            'users' => $users,
+            'maxPage' => $maxPage,
+            'page' => $page,
+            'usersTotal' => $usersTotal
         ]);
     }
 
@@ -25,7 +46,7 @@ class HomeController extends AbstractController
 
 
     #[Route('/{slug}-{id}', name: 'user', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'], methods: ['GET'])]
-    public function show(string $slug, int $id, EntityManagerInterface $em): Response
+    public function showUser(string $slug, int $id, EntityManagerInterface $em): Response
     {
         $user = $em->getRepository(User::class)->findUserWithMedia($id);
 

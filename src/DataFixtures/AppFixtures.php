@@ -23,22 +23,24 @@ class AppFixtures extends Fixture
     }
 
 
-    private function loadUsers(ObjectManager $manager): void
+    public function loadUSers(ObjectManager $manager): void
     {
-        $user = new User();
-        $user->setUsername("Antoine")
-            ->setEmail("antoine.jolivet29@gmail.com")
-            ->setSlug("antoine-jolivet")
-            ->setRoles([]);
+        // Create 10 users with fake information
+        for ($i = 1; $i <= 10; $i++) {
+            $user = new User();
+            $user->setUsername("User{$i}")
+                ->setEmail("user{$i}@example.com")
+                ->setSlug("user-{$i}")
+                ->setRoles([]);
 
-        $hashPassword = $this->hasher->hashPassword(
-            $user,
-            "test"
-        );
+            // Use a simple password for demo purposes
+            $hashPassword = $this->hasher->hashPassword($user, "password");
 
-        $user->setPassword($hashPassword);
+            $user->setPassword($hashPassword);
 
-        $manager->persist($user);
+            $manager->persist($user);
+        }
+
         $manager->flush();
     }
 }

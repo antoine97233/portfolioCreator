@@ -4,7 +4,11 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\Pagination\PaginationInterface;
+use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -21,7 +25,7 @@ use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
  */
 class UserRepository extends ServiceEntityRepository implements PasswordUpgraderInterface
 {
-    public function __construct(ManagerRegistry $registry)
+    public function __construct(ManagerRegistry $registry, private PaginatorInterface $paginator)
     {
         parent::__construct($registry, User::class);
     }
@@ -40,6 +44,17 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
+    public function findAllWithCount(): int
+    {
+        return $this->createQueryBuilder('u')
+            ->select('COUNT(u.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+
+
+
     public function findVisible(bool $isVisible): array
     {
         return $this->createQueryBuilder('u')
@@ -47,6 +62,8 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->leftJoin('u.media', 'm')
             ->where('u.isVisible = :isVisible')
             ->setParameter('isVisible', $isVisible)
+            ->setMaxResults(2)
+            ->setFirstResult(0)
             ->getQuery()
             ->getResult();
     }
@@ -61,8 +78,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getOneOrNullResult();
     }
-
-
 
 
 
@@ -85,6 +100,35 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+
+    public function paginateUsers(int $page, int $limit): PaginationInterface
+    {
+
+        return $this->paginator->paginate(
+            $this->createQueryBuilder('r'),
+            $page,
+            $limit
+        );
+    }
+
+
+    // public function paginateUsers(int $page, int $limit): Paginator
+    // {
+    //     $query = $this->createQueryBuilder('u')
+    //         ->leftJoin('u.media', 'm')
+    //         ->andWhere('u.isVisible = :isVisible')
+    //         ->setParameter('isVisible', true)
+    //         ->setFirstResult(($page - 1) * $limit)
+    //         ->setMaxResults($limit)
+    //         ->getQuery()
+    //         ->setHint(Paginator::HINT_ENABLE_DISTINCT, false);
+
+    //     return new Paginator($query, false);
+    // }
+
+
+
 
     //    /**
     //     * @return User[] Returns an array of User objects

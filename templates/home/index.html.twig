@@ -30,7 +30,7 @@
 		</div>
 	</div>
 
-	<form method="get" action="{{ path('home') }}" class="d-flex justify-content-center">
+	<form method="get" action="{{ path('home') }}" class="d-flex justify-content-center p-2">
 		<div class="form-check form-switch mb-3 text-center">
 			<input class="form-check-input border-light" type="checkbox" id="filterAvailability" name="filterAvailability">
 			<label class="form-check-label text-secondary" for="filterAvailability">Show only available users</label>
@@ -91,5 +91,9 @@
 
 	</div>
 
+	<div class="text-center mt-52 p-2">
+		<a href="{{path('users')}}" type="button" class="btn btn-success btn-sm">See all users</a>
+	</div>
 
-</div>{% endblock %}
+
+{% endblock %}
