@@ -46,6 +46,10 @@ class Experience
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'experience', cascade: ['remove'])]
     private Collection $task;
 
+    #[ORM\ManyToOne(inversedBy: 'experiences')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
+
     public function __construct()
     {
         $this->task = new ArrayCollection();
@@ -143,6 +147,18 @@ class Experience
                 $task->setExperience(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }

@@ -52,23 +52,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getSingleScalarResult();
     }
 
-    /**
-     *
-     * @return SkillWithCountDTO[]
-     */
-    public function test(): array
-    {
-
-        return $this->createQueryBuilder('s')
-            ->select('NEW App\\DTO\\SkillWithCountDTO(s.id, s.title COUNT(s.id))')
-            ->leftJoin('s.user', 'u')
-            ->groupBy('s.id')
-            ->getQuery()
-            ->getResult();
-    }
-
-
-
     public function findBySkills(array $skillIds): array
     {
         return $this->createQueryBuilder('u')
@@ -93,6 +76,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getResult();
     }
+
 
     public function findUserWithMedia(int $userId): ?User
     {

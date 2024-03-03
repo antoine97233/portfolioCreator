@@ -30,21 +30,12 @@ class HomeController extends AbstractController
     {
 
 
-
         $page = $request->query->getInt('page', 1);
         $limit = 4;
 
-        // Récupérez la liste des compétences
-        $skills = $skillRepository->findAll();
+        $skills = $skillRepository->findAllWithCount();
 
-        // Récupérez les utilisateurs paginés
         $users = $userRepository->paginateUsers($page, $limit);
-
-        // Si des compétences sont sélectionnées, filtrez les utilisateurs en conséquence
-        $selectedSkills = $request->get('skills', []);
-        if (!empty($selectedSkills)) {
-            $users = $userRepository->findBySkills($selectedSkills);
-        }
 
         $usersTotal = $userRepository->findAllWithCount();
         $maxPage = ceil($usersTotal / $limit);
