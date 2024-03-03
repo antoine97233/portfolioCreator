@@ -2,27 +2,24 @@
 
 namespace App\Controller\API;
 
+use App\DTO\PaginationDTO;
 use App\Entity\User;
 use App\Repository\UserRepository;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Requirement\Requirement;
-use Symfony\Component\Serializer\SerializerInterface;
 
 class UsersController extends AbstractController
 {
 
-    #[Route("/api/users")]
-    public function index(UserRepository $userRepository, Request $request, SerializerInterface $serializer)
-    {
-
-        $users = $userRepository->paginateUsers($request->query->getInt('page', 1));
-
-        // dd($serializer->serialize($users, 'csv', [
-        //     'groups' => ['users.index']
-        // ]));
-
+    #[Route("/api/users", name: "api_users_get", methods: ["GET"])]
+    public function index(
+        UserRepository $userRepository,
+        #[MapQueryString()]
+        ?PaginationDTO $paginationDTO = null
+    ) {
+        $users = $userRepository->paginateUsers($paginationDTO?->page);
         return $this->json($users, 200, [], [
             'groups' => ['users.index']
         ]);

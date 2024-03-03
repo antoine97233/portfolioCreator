@@ -21,7 +21,7 @@ class Skill
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 2, max: 100)]
-    #[Groups('users.show')]
+    #[Groups(['skills.index', 'skills.create'])]
     private ?string $title = null;
 
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'skills')]

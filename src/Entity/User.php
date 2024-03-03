@@ -28,6 +28,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
+    #[Groups('users.index')]
     private ?string $username = null;
 
     /**
@@ -51,6 +52,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $fullname = '';
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups('users.index')]
     private ?string $slug = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
