@@ -9,6 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class UsersController extends AbstractController
 {
@@ -33,5 +34,13 @@ class UsersController extends AbstractController
         return $this->json($user, 200, [], [
             'groups' => ['users.index', 'users.show']
         ]);
+    }
+
+
+    #[Route("/api/me/")]
+    #[IsGranted("ROLE_USER")]
+    public function me()
+    {
+        return $this->json($this->getUser());
     }
 }

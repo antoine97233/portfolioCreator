@@ -94,6 +94,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $experiences;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $apiToken = null;
+
     public function __construct()
     {
         $this->updatedAt = new \DateTimeImmutable();
@@ -409,6 +412,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $experience->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getApiToken(): ?string
+    {
+        return $this->apiToken;
+    }
+
+    public function setApiToken(?string $apiToken): static
+    {
+        $this->apiToken = $apiToken;
 
         return $this;
     }
