@@ -5,8 +5,10 @@ namespace App\Controller\Admin;
 use App\Entity\Experience;
 use App\Form\ExperienceType;
 use App\Repository\ExperienceRepository;
+use App\Security\Voter\ExperienceVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,14 +20,20 @@ class ExperienceController extends AbstractController
 {
 
     #[Route('/', name: 'index')]
-    #[IsGranted('ROLE_VERIFIED')]
-    public function index(ExperienceRepository $experienceRepository): Response
+    #[IsGranted(ExperienceVoter::LIST)]
+    public function index(ExperienceRepository $experienceRepository, Security $security): Response
     {
 
-        $user = $this->getUser();
-        // $experiences = $experienceRepository->findBy(['user' => $user], ['end_date' => 'DESC']);
 
-        $results = $experienceRepository->findAllWithTasksByUser();
+        $userId = $security->getUser()->getId();
+
+        $canListAll = $security->isGranted(ExperienceVoter::LIST_ALL);
+
+        if ($canListAll) {
+            $results = $experienceRepository->findAll();
+        } else {
+            $results = $experienceRepository->findAllWithTasksByUser($userId);
+        }
 
         $experiences = [];
         $tasks = [];
@@ -45,6 +53,7 @@ class ExperienceController extends AbstractController
 
 
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
+    #[IsGranted(ExperienceVoter::ADD)]
     public function add(
         Request $request,
         EntityManagerInterface $em
@@ -72,6 +81,7 @@ class ExperienceController extends AbstractController
     }
 
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
+    #[IsGranted(ExperienceVoter::EDIT, subject: 'experience')]
     public function edit(
         Experience $experience,
         Request $request,

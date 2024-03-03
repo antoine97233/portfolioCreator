@@ -22,11 +22,14 @@ class ExperienceRepository extends ServiceEntityRepository
     }
 
 
-    public function findAllWithTasksByUser(): array
+    public function findAllWithTasksByUser(int $userId): array
     {
+
         return $this->createQueryBuilder('e')
+            ->andWhere('e.user = :user')
             ->leftJoin('e.task', 't')
             ->orderBy('e.endDate', 'DESC')
+            ->setParameter('user', $userId)
             ->getQuery()
             ->getResult();
     }
