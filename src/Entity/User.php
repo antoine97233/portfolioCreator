@@ -2,18 +2,18 @@
 
 namespace App\Entity;
 
-use App\Repository\UserRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
-
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
-use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
-use Symfony\Component\HttpFoundation\File\File;
-use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
-use Symfony\Component\Security\Core\User\UserInterface;
-use Symfony\Component\Validator\Constraints as Assert;
+use App\Repository\UserRepository;
+
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\Serializer\Annotation\Groups;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 
 #[ORM\Entity(repositoryClass: UserRepository::class)]
 #[UniqueEntity(fields: ['username'], message: 'There is already an account with this username')]
@@ -24,6 +24,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups('users.index')]
     private ?int $id = null;
 
     #[ORM\Column(length: 180, unique: true)]
@@ -46,21 +47,26 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Groups('users.index')]
     private ?string $fullname = '';
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     private ?string $slug = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Groups('users.index')]
     private ?string $title = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Groups('users.index')]
     private ?string $subtitle = '';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('users.index')]
     private ?string $shortDescription = '';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups('users.show')]
     private ?string $longDescription = '';
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
@@ -80,6 +86,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private Collection $media;
 
     #[ORM\ManyToMany(targetEntity: Skill::class, mappedBy: 'user')]
+    #[Groups('users.show')]
     private Collection $skills;
 
     #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', cascade: ['remove'])]

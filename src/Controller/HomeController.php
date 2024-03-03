@@ -31,14 +31,13 @@ class HomeController extends AbstractController
 
 
         $page = $request->query->getInt('page', 1);
-        $limit = 4;
 
         $skills = $skillRepository->findAllWithCount();
 
-        $users = $userRepository->paginateUsers($page, $limit);
+        $users = $userRepository->paginateUsers($page);
 
         $usersTotal = $userRepository->findAllWithCount();
-        $maxPage = ceil($usersTotal / $limit);
+        $maxPage = ceil($usersTotal / 4);
 
         return $this->render('home/userList.html.twig', [
             'users' => $users,
