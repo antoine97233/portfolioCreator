@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
+use function Symfony\Component\String\u;
 
 /**
  * @extends ServiceEntityRepository<User>
@@ -121,6 +122,50 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             4
         );
     }
+
+    /**
+     * @return User[]
+     */
+    public function findBySearchQuery(string $query): array
+    {
+        $searchTerms = $this->extractSearchTerms($query);
+
+        if (0 === \count($searchTerms)) {
+            return [];
+        }
+
+        $queryBuilder = $this->createQueryBuilder('u');
+
+        foreach ($searchTerms as $key => $term) {
+            $queryBuilder
+                ->orWhere('u.fullname LIKE :f_' . $key)
+                ->setParameter('f_' . $key, '%' . $term . '%');
+        }
+
+        /** @var User[] $result */
+        $result = $queryBuilder
+            ->orderBy('u.updatedAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        return $result;
+    }
+
+    /**
+     * Transforms the search string into an array of search terms.
+     *
+     * @return string[]
+     */
+    private function extractSearchTerms(string $searchQuery): array
+    {
+        $terms = array_unique(u($searchQuery)->replaceMatches('/[[:space:]]+/', ' ')->trim()->split(' '));
+
+        // ignore the search terms that are too short
+        return array_filter($terms, static function ($term) {
+            return 2 <= $term->length();
+        });
+    }
+
 
 
     // public function paginateUsers(int $page, int $limit): Paginator

@@ -21,74 +21,11 @@
 		</p>
 	</div>
 
-	<div class="form-group bg-light pt-2 pb-2 d-flex align-items-center mx-auto col-12 col-md-6 rounded">
-		<div class="col-1">
-			<i class="fa-solid fa-magnifying-glass"></i>
-		</div>
-		<div class="col-11 ">
-			<input type="search" class="form-control search-field" placeholder="Search an user here..." autocomplete="off" data-model="query" autofocus>
-		</div>
-	</div>
-
-	<form method="get" action="{{ path('home') }}" class="d-flex justify-content-center p-2">
-		<div class="form-check form-switch mb-3 text-center">
-			<input class="form-check-input border-light" type="checkbox" id="filterAvailability" name="filterAvailability">
-			<label class="form-check-label text-secondary" for="filterAvailability">Show only available users</label>
-		</div>
-	</form>
-
 
 	<div class="flex row mt-5">
-		{% if users is not empty %}
-
-			{% for user in users %}
-				<a href="{{ path('user', {id: user.id, slug: user.slug}) }}" class="col-lg-6 col-md-12 col-12 mt-2 text-decoration-none mx-auto">
-					<div class="card mb-4">
-						<h5 class="card-header text-primary d-flex justify-content-between">{{ user.fullname }}
-							{% if user.isOpenToWork %}
-								<span class="badge bg-success">Open to Work !</span>
-							{% else %}
-								<span class="badge bg-secondary">Busy, sorry !</span>
-							{% endif %}
-						</h5>
-
-						<div class="card-body">
-							<div class="d-flex flex-sm-row">
-								<div class="col-sm-4 p-2">
-									<div class="mx-auto" style="width:70px;height:70px">
-										{% if user.media is not null %}
-											{% for media in user.media %}
-												<img src="/images/users/{{ media.thumbnail }}" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
-											{% endfor %}
-										{% endif %}
-									</div>
-								</div>
-								<div class="col-sm-8 mb-2 mb-sm-0">
-									<h5 class="card-title text-primary">{{user.title}}</h5>
-									<p class="card-text text-primary" ;>{{user.subtitle}}</p>
-									<div class="d-flex">
-										<div class="badge-container p-1">
-											<div class="badge rounded-pill text-bg-secondary">#Bootstrap</div>
-										</div>
-										<div class="badge-container p-1">
-											<div class="badge rounded-pill text-bg-secondary">#Symfony</div>
-										</div>
-										<div class="badge-container p-1">
-											<div class="badge rounded-pill text-bg-secondary">#React</div>
-										</div>
-									</div>
-
-
-								</div>
-							</div>
-						</div>
-					</div>
-				</a>
-
-			{% endfor %}
-		{% endif %}
-
-
+		{{ component('user_search', {
+        query: query
+    }) }}
 	</div>
 
 	<div class="text-center mt-52 p-2">

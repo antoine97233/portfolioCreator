@@ -40,6 +40,18 @@ class SkillRepository extends ServiceEntityRepository
     }
 
 
+    public function findAllByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('s')
+            ->leftJoin('s.user', 'u')
+            ->andWhere('u.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
 
 
     //    /**

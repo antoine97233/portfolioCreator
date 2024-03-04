@@ -21,6 +21,8 @@ class HomeController extends AbstractController
 
         return $this->render('home/index.html.twig', [
             'users' => $users,
+            'query' => (string) $request->query->get('q', '')
+
         ]);
     }
 
@@ -39,6 +41,7 @@ class HomeController extends AbstractController
         $usersTotal = $userRepository->findAllWithCount();
         $maxPage = ceil($usersTotal / 4);
 
+
         return $this->render('home/userList.html.twig', [
             'users' => $users,
             'maxPage' => $maxPage,
@@ -47,7 +50,6 @@ class HomeController extends AbstractController
             'skills' => $skills,
         ]);
     }
-
 
 
 
