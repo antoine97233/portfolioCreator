@@ -9,13 +9,13 @@
 		<h1 class="text-center p-4">Add new skill</h1>
 		{{ form_start(form) }}
 
-		{{ form_row(form.title) }}
+		{# {{ form_row(form.title) }} #}
 
+		{{ form_row(form.skill) }}
 
 		{# Affichage du prototype pour les ajouts dynamiques #}
-		{{ form_widget(form.scoreSkills.vars.prototype)|raw }}
-
-		<button type="submit" class="btn btn-primary">Save</button>
+		{{ form_widget(form.scoreSkills.vars.prototype)|raw }}<button type="submit" class="btn btn-primary">
+			Save</button>
 
 		{{ form_end(form) }}
 	</div>

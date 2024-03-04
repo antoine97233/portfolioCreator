@@ -3,9 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\User as AppUser;
-use App\Entity\Skill;
-use App\Form\SkillType;
-use App\Form\UserSkillType;
+use App\Form\AttributeSkillType;
 use App\Repository\SkillRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -20,14 +18,11 @@ class SkillController extends AbstractController
     #[Route('/', name: 'index')]
     public function index(SkillRepository $skillRepository, Security $security): Response
     {
-
         /** @var UserInterface $user */
         $user = $security->getUser();
         $userId = $user->getId();
 
-
         $skillsByUser = $skillRepository->findAllByUser($userId);
-
 
         return $this->render('admin/skill/index.html.twig', [
             'controller_name' => 'SkillController',
@@ -46,21 +41,25 @@ class SkillController extends AbstractController
         /** @var AppUser $user */
         $user = $security->getUser();
 
-
-        $skill = new Skill();
-        $form = $this->createForm(SkillType::class, $skill);
+        $form = $this->createForm(AttributeSkillType::class);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            foreach ($skill->getScoreSkills() as $scoreSkill) {
-                $scoreSkill->setUser($user);
+            $data = $form->getData();
 
+            $selectedSkill = $data['skill'];
+            $scoreSkills = $data['scoreSkills'];
+            $user->addSkill($selectedSkill);
+
+            $em->persist($selectedSkill);
+
+            foreach ($scoreSkills as $scoreSkill) {
+                /** @var ScoreSkill $scoreSkill */
+                $scoreSkill->setSkill($selectedSkill);
+                $scoreSkill->setUser($user);
                 $em->persist($scoreSkill);
             }
 
-            $user->addSkill($skill);
-
-            $em->persist($skill);
             $em->flush();
 
             $this->addFlash(
