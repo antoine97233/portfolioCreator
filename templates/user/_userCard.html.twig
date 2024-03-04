@@ -1,0 +1,42 @@
+<a href="{{ path('user', {id: user.id, slug: user.slug}) }}" class="col-lg-6 col-md-12 col-12 mt-2 text-decoration-none mx-auto">
+	<div class="card mb-4">
+		<h5 class="card-header text-primary d-flex justify-content-between">{{ user.fullname }}
+			{% if user.isOpenToWork %}
+				<span class="badge bg-success">Open to Work !</span>
+			{% else %}
+				<span class="badge bg-secondary">Busy, sorry !</span>
+			{% endif %}
+		</h5>
+
+		<div class="card-body">
+			<div class="d-flex flex-sm-row">
+				<div class="col-sm-4 p-2">
+					<div class="mx-auto" style="width:70px;height:70px">
+						{% if user.media is not null %}
+							{% for media in user.media %}
+								<img src="/images/users/{{ media.thumbnail }}" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
+							{% endfor %}
+						{% endif %}
+					</div>
+				</div>
+				<div class="col-sm-8 mb-2 mb-sm-0">
+					<h5 class="card-title text-primary">{{user.title}}</h5>
+					<p class="card-text text-primary" ;>{{user.subtitle}}</p>
+					<div class="d-flex">
+						<div class="badge-container p-1">
+							<div class="badge rounded-pill text-bg-secondary">#Bootstrap</div>
+						</div>
+						<div class="badge-container p-1">
+							<div class="badge rounded-pill text-bg-secondary">#Symfony</div>
+						</div>
+						<div class="badge-container p-1">
+							<div class="badge rounded-pill text-bg-secondary">#React</div>
+						</div>
+					</div>
+
+
+				</div>
+			</div>
+		</div>
+	</div>
+</a>
