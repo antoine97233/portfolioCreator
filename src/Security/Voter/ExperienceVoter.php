@@ -17,6 +17,7 @@ class ExperienceVoter extends Voter
     public const ADD = 'EXPERIENCE_ADD';
     public const LIST = 'EXPERIENCE_LIST';
     public const LIST_ALL = 'EXPERIENCE_ALL';
+    public const DELETE = 'EXPERIENCE_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -39,9 +40,10 @@ class ExperienceVoter extends Voter
         switch ($attribute) {
             case self::EDIT:
                 return $subject->getUser()->getId() === $user->getId();
-
                 break;
-
+            case self::DELETE:
+                return $subject->getUser()->getId() === $user->getId();
+                break;
             case self::VIEW:
             case self::LIST:
             case self::ADD:

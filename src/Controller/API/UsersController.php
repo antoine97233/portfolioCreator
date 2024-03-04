@@ -17,10 +17,10 @@ class UsersController extends AbstractController
     #[Route("/api/users", name: "api_users_get", methods: ["GET"])]
     public function index(
         UserRepository $userRepository,
-        #[MapQueryString()]
-        ?PaginationDTO $paginationDTO = null
+        // #[MapQueryString()]
+        // ?PaginationDTO $paginationDTO = null
     ) {
-        $users = $userRepository->paginateUsers($paginationDTO?->page);
+        $users = $userRepository->findAll();
         return $this->json($users, 200, [], [
             'groups' => ['users.index']
         ]);

@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\User as AppUser;
 use App\Entity\Experience;
 use App\Form\ExperienceType;
 use App\Repository\ExperienceRepository;
@@ -19,16 +20,24 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class ExperienceController extends AbstractController
 {
 
+    private $security;
+
+    public function __construct(Security $security)
+    {
+        $this->security = $security;
+    }
+
     #[Route('/', name: 'index')]
     #[IsGranted(ExperienceVoter::LIST)]
-    public function index(ExperienceRepository $experienceRepository, Security $security): Response
-    {
+    public function index(
+        ExperienceRepository $experienceRepository,
+    ): Response {
 
         /** @var UserInterface $user */
-        $user = $security->getUser();
+        $user = $this->security->getUser();
         $userId = $user->getId();
 
-        $canListAll = $security->isGranted(ExperienceVoter::LIST_ALL);
+        $canListAll = $this->security->isGranted(ExperienceVoter::LIST_ALL);
 
         if ($canListAll) {
             $results = $experienceRepository->findAll();
@@ -57,13 +66,18 @@ class ExperienceController extends AbstractController
     #[IsGranted(ExperienceVoter::ADD)]
     public function add(
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): Response {
+
+        /** @var AppUser $user */
+        $user = $this->security->getUser();
+
         $experience = new Experience;
         $form = $this->createForm(ExperienceType::class, $experience);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $experience->setUser($user);
 
             $em->persist($experience);
             $em->flush();
@@ -103,7 +117,6 @@ class ExperienceController extends AbstractController
         }
 
         return $this->render('admin/experience/edit.html.twig', [
-
             'form' => $form->createView()
         ]);
     }
@@ -111,12 +124,12 @@ class ExperienceController extends AbstractController
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
     public function delete(
-        EntityManagerInterface $manager,
+        EntityManagerInterface $em,
         Experience $experience
     ): Response {
 
-        $manager->remove($experience);
-        $manager->flush();
+        $em->remove($experience);
+        $em->flush();
 
         $this->addFlash(
             'success',
