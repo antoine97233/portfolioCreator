@@ -97,12 +97,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $apiToken = null;
 
+    #[ORM\OneToMany(targetEntity: ScoreSkill::class, mappedBy: 'user', cascade: ['remove'])]
+    private Collection $scoreSkills;
+
     public function __construct()
     {
         $this->updatedAt = new \DateTimeImmutable();
         $this->media = new ArrayCollection();
         $this->skills = new ArrayCollection();
         $this->experiences = new ArrayCollection();
+        $this->scoreSkills = new ArrayCollection();
     }
 
 
@@ -424,6 +428,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setApiToken(?string $apiToken): static
     {
         $this->apiToken = $apiToken;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ScoreSkill>
+     */
+    public function getScoreSkills(): Collection
+    {
+        return $this->scoreSkills;
+    }
+
+    public function addScoreSkill(ScoreSkill $scoreSkill): static
+    {
+        if (!$this->scoreSkills->contains($scoreSkill)) {
+            $this->scoreSkills->add($scoreSkill);
+            $scoreSkill->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScoreSkill(ScoreSkill $scoreSkill): static
+    {
+        if ($this->scoreSkills->removeElement($scoreSkill)) {
+            // set the owning side to null (unless already changed)
+            if ($scoreSkill->getUser() === $this) {
+                $scoreSkill->setUser(null);
+            }
+        }
 
         return $this;
     }

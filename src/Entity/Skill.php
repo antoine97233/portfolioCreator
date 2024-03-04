@@ -27,9 +27,13 @@ class Skill
     #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'skills')]
     private Collection $user;
 
+    #[ORM\OneToMany(targetEntity: ScoreSkill::class, mappedBy: 'skill', cascade: ['persist', 'remove'])]
+    private Collection $scoreSkills;
+
     public function __construct()
     {
         $this->user = new ArrayCollection();
+        $this->scoreSkills = new ArrayCollection();
     }
 
 
@@ -71,6 +75,36 @@ class Skill
     public function removeUser(User $user): static
     {
         $this->user->removeElement($user);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, ScoreSkill>
+     */
+    public function getScoreSkills(): Collection
+    {
+        return $this->scoreSkills;
+    }
+
+    public function addScoreSkill(ScoreSkill $scoreSkill): static
+    {
+        if (!$this->scoreSkills->contains($scoreSkill)) {
+            $this->scoreSkills->add($scoreSkill);
+            $scoreSkill->setSkill($this);
+        }
+
+        return $this;
+    }
+
+    public function removeScoreSkill(ScoreSkill $scoreSkill): static
+    {
+        if ($this->scoreSkills->removeElement($scoreSkill)) {
+            // set the owning side to null (unless already changed)
+            if ($scoreSkill->getSkill() === $this) {
+                $scoreSkill->setSkill(null);
+            }
+        }
 
         return $this;
     }

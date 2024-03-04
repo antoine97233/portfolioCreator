@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\User as AppUser;
 use App\Entity\Skill;
 use App\Form\SkillType;
 use App\Form\UserSkillType;
@@ -24,6 +25,7 @@ class SkillController extends AbstractController
         $user = $security->getUser();
         $userId = $user->getId();
 
+
         $skillsByUser = $skillRepository->findAllByUser($userId);
 
 
@@ -38,12 +40,27 @@ class SkillController extends AbstractController
     public function add(
         Request $request,
         EntityManagerInterface $em,
+        Security $security
     ): Response {
+
+        /** @var AppUser $user */
+        $user = $security->getUser();
+
+
         $skill = new Skill();
         $form = $this->createForm(SkillType::class, $skill);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            foreach ($skill->getScoreSkills() as $scoreSkill) {
+                $scoreSkill->setUser($user);
+
+                $em->persist($scoreSkill);
+            }
+
+            $user->addSkill($skill);
+
+            $em->persist($skill);
             $em->flush();
 
             $this->addFlash(
