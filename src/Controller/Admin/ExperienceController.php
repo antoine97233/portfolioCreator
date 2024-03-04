@@ -24,8 +24,9 @@ class ExperienceController extends AbstractController
     public function index(ExperienceRepository $experienceRepository, Security $security): Response
     {
 
-
-        $userId = $security->getUser()->getId();
+        /** @var UserInterface $user */
+        $user = $security->getUser();
+        $userId = $user->getId();
 
         $canListAll = $security->isGranted(ExperienceVoter::LIST_ALL);
 
