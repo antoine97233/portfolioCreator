@@ -21,6 +21,24 @@ class ScoreSkillRepository extends ServiceEntityRepository
         parent::__construct($registry, ScoreSkill::class);
     }
 
+
+
+
+    public function findAllSkillsWithScoresByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('scoreSkill')
+            ->select('skill', 'scoreSkill', 'user')
+            ->leftJoin('scoreSkill.skill', 'skill')
+            ->leftJoin('scoreSkill.user', 'user')
+            ->andWhere('user.id = :userId')
+            ->setParameter('userId', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+
+
+
     //    /**
     //     * @return ScoreSkill[] Returns an array of ScoreSkill objects
     //     */

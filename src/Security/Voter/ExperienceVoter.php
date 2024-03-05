@@ -2,22 +2,16 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Experience;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
-use Symfony\Component\Security\Core\User\UserInterface;
 
 class ExperienceVoter extends Voter
 {
-
-
     public const EDIT = 'EXPERIENCE_EDIT';
     public const VIEW = 'EXPERIENCE_VIEW';
     public const ADD = 'EXPERIENCE_ADD';
     public const LIST = 'EXPERIENCE_LIST';
-    public const LIST_ALL = 'EXPERIENCE_ALL';
-    public const DELETE = 'EXPERIENCE_DELETE';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
@@ -27,6 +21,14 @@ class ExperienceVoter extends Voter
             && $subject instanceof \App\Entity\Experience;
     }
 
+    /**
+     * voteOnAttribute
+     *
+     * @param  mixed $attribute
+     * @param  Experience|null $subject
+     * @param  mixed $token
+     * @return bool
+     */
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
         $user = $token->getUser();
@@ -36,14 +38,13 @@ class ExperienceVoter extends Voter
             return false;
         }
 
+
         // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
                 return $subject->getUser()->getId() === $user->getId();
                 break;
-            case self::DELETE:
-                return $subject->getUser()->getId() === $user->getId();
-                break;
+
             case self::VIEW:
             case self::LIST:
             case self::ADD:

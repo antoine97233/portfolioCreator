@@ -26,15 +26,11 @@ class Skill
     #[Groups(['skills.index', 'skills.create'])]
     private ?string $title = null;
 
-    #[ORM\ManyToMany(targetEntity: User::class, inversedBy: 'skills')]
-    private Collection $user;
-
     #[ORM\OneToMany(targetEntity: ScoreSkill::class, mappedBy: 'skill', cascade: ['persist', 'remove'])]
     private Collection $scoreSkills;
 
     public function __construct()
     {
-        $this->user = new ArrayCollection();
         $this->scoreSkills = new ArrayCollection();
     }
 
@@ -57,29 +53,6 @@ class Skill
         return $this;
     }
 
-    /**
-     * @return Collection<int, User>
-     */
-    public function getUser(): Collection
-    {
-        return $this->user;
-    }
-
-    public function addUser(User $user): static
-    {
-        if (!$this->user->contains($user)) {
-            $this->user->add($user);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): static
-    {
-        $this->user->removeElement($user);
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, ScoreSkill>

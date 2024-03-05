@@ -11,7 +11,7 @@
 		<a href="{{ path('admin.skill.add') }}" class="btn btn-outline-success btn-block text-primary">Add new Skill</a>
 	</div>
 
-	{% if skills is not empty %}
+	{% if scoresSkills is not empty %}
 		<div class="table-responsive">
 			<table class="table table-light">
 				<thead>
@@ -22,12 +22,14 @@
 					</tr>
 				</thead>
 				<tbody>
-					{% for skill in skills %}
+					{% for scoreSkill in scoresSkills %}
 						<tr class="table">
-							<td>{{ skill.title }}</td>
-							<td></td>
+							<td>{{ scoreSkill.skill.title }}</td>
+							<td>{{ scoreSkill.score }}
+								/ 5</td>
 							<td class="text-center d-flex gap-1">
-								<form action="{{ path('admin.skill.remove', {id: skill.id}) }}" method="post" style="display: inline;">
+								<a href="{{ path('admin.skill.edit', {id: scoreSkill.id}) }}" class="btn btn-outline-warning btn-block text-primary" style="width:100px">Edit</a>
+								<form action="{{ path('admin.skill.delete', {id: scoreSkill.id}) }}" method="post" style="display: inline;">
 									<input type="hidden" name="_method" value="DELETE">
 									<button type="submit" class="btn btn-outline-danger text-primary" style="width:100px; height: 38px;">Delete</button>
 								</form>

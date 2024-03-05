@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\User as AppUser;
 use App\Entity\Experience;
 use App\Form\ExperienceType;
 use App\Repository\ExperienceRepository;
@@ -19,7 +18,6 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 #[Route('/admin/experiences', name: 'admin.experience.')]
 class ExperienceController extends AbstractController
 {
-
     private $security;
 
     public function __construct(Security $security)
@@ -29,21 +27,16 @@ class ExperienceController extends AbstractController
 
     #[Route('/', name: 'index')]
     #[IsGranted(ExperienceVoter::LIST)]
-    public function index(
-        ExperienceRepository $experienceRepository,
-    ): Response {
+    public function index(ExperienceRepository $experienceRepository): Response
+    {
 
         /** @var UserInterface $user */
         $user = $this->security->getUser();
         $userId = $user->getId();
 
-        $canListAll = $this->security->isGranted(ExperienceVoter::LIST_ALL);
 
-        if ($canListAll) {
-            $results = $experienceRepository->findAll();
-        } else {
-            $results = $experienceRepository->findAllWithTasksByUser($userId);
-        }
+        $results = $experienceRepository->findAllWithTasksByUser($userId);
+
 
         $experiences = [];
         $tasks = [];
@@ -57,22 +50,16 @@ class ExperienceController extends AbstractController
             'controller_name' => 'HomeController',
             'experiences' => $experiences,
             'tasks' => $tasks,
-
         ]);
     }
 
-
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
     #[IsGranted(ExperienceVoter::ADD)]
-    public function add(
-        Request $request,
-        EntityManagerInterface $em,
-    ): Response {
-
-        /** @var AppUser $user */
+    public function add(Request $request, EntityManagerInterface $em): Response
+    {
         $user = $this->security->getUser();
 
-        $experience = new Experience;
+        $experience = new Experience();
         $form = $this->createForm(ExperienceType::class, $experience);
         $form->handleRequest($request);
 
@@ -91,17 +78,14 @@ class ExperienceController extends AbstractController
         }
 
         return $this->render('admin/experience/add.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(ExperienceVoter::EDIT, subject: 'experience')]
-    public function edit(
-        Experience $experience,
-        Request $request,
-        EntityManagerInterface $em
-    ): Response {
+    public function edit(Experience $experience, Request $request, EntityManagerInterface $em): Response
+    {
         $form = $this->createForm(ExperienceType::class, $experience);
         $form->handleRequest($request);
 
@@ -117,17 +101,14 @@ class ExperienceController extends AbstractController
         }
 
         return $this->render('admin/experience/edit.html.twig', [
-            'form' => $form->createView()
+            'form' => $form->createView(),
         ]);
     }
 
-
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
-    public function delete(
-        EntityManagerInterface $em,
-        Experience $experience
-    ): Response {
-
+    #[IsGranted(ExperienceVoter::EDIT, subject: 'experience')]
+    public function delete(EntityManagerInterface $em, Experience $experience): Response
+    {
         $em->remove($experience);
         $em->flush();
 
