@@ -25,7 +25,7 @@ class ExperienceController extends AbstractController
         $this->security = $security;
     }
 
-    #[Route('/', name: 'index')]
+    #[Route('/', name: 'index', methods: ['GET'])]
     #[IsGranted(ExperienceVoter::LIST)]
     public function index(ExperienceRepository $experienceRepository): Response
     {

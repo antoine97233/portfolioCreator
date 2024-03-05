@@ -16,6 +16,7 @@
 			<table class="table table-light">
 				<thead>
 					<tr>
+						<th scope="col" class="bg-light" colspan="1"></th>
 						<th scope="col">Title</th>
 						<th scope="col">Type</th>
 						<th scope="col">Location</th>
@@ -27,6 +28,8 @@
 				<tbody>
 					{% for experience in experiences %}
 						<tr class="table">
+							<td scope="col" class="bg-light" colspan="1"></td>
+
 							<td>{{ experience.title }}</td>
 							<td>
 								{% if experience.isFormation %}
@@ -38,16 +41,47 @@
 							<td>{{ experience.location }}</td>
 							<td>{{ experience.startDate|date("d/m/Y") }}</td>
 							<td>{{ experience.endDate ? experience.endDate|date("d/m/Y") : 'Present' }}</td>
-							<td
-								class="text-center d-flex gap-1">
-								{# <a href="{{ path('task_add', {id: experience.id, source:'experience'}) }}" class="btn btn-primary btn-block" style="width:100px">Add Task</a> #}
-								<a href="{{ path('admin.experience.edit', {id: experience.id}) }}" class="btn btn-outline-warning btn-block text-primary" style="width:100px">Edit</a>
-								<form action="{{ path('admin.experience.delete', {id: experience.id}) }}" method="post" style="display: inline;">
+							<td class="text-center d-flex gap-1">
+								<a href="{{ path('admin.task.add', {id: experience.id, source:'experience'}) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Add Task</a>
+								<a href="{{ path('admin.experience.edit', {id: experience.id}) }}" class="btn btn-outline-warning btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Edit</a>
+								<form action="{{ path('admin.experience.delete', {id: experience.id}) }}" method="post">
 									<input type="hidden" name="_method" value="DELETE">
-									<button type="submit" class="btn btn-outline-danger text-primary" style="width:100px; height: 38px;">Delete</button>
+									<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
 								</form>
 							</td>
 						</tr>
+
+						{% if experience.task is not empty %}
+							{% for task in experience.task %}
+								<tr class="table">
+									<td>
+										<strong>Task
+											{{ loop.index }}</strong>
+									</td>
+									<td colspan="5">
+										<p>
+											{{ task.Description }}</p>
+									</td>
+
+									<td colspan="2" class="text-center">
+
+										<form action="{{ path('admin.task.delete', {id: task.id}) }}" method="post">
+											<input type="hidden" name="_method" value="DELETE">
+											<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
+										</form>
+
+
+									</td>
+								</tr>
+							{% endfor %}
+						{% else %}
+							<tr class="table-light">
+								<td></td>
+								<td colspan="6" class="text-left">
+									No tasks for this experience
+								</td>
+							</tr>
+						{% endif %}
 					{% endfor %}
 				</tbody>
 			</table>
@@ -55,5 +89,4 @@
 	{% else %}
 		<p class="text-center">No experience added</p>
 	{% endif %}
-
 {% endblock %}

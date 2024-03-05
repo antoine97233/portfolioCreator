@@ -24,6 +24,9 @@ class Task
     #[ORM\JoinColumn(nullable: false)]
     private ?Experience $experience = null;
 
+    #[ORM\ManyToOne(inversedBy: 'task')]
+    private ?Project $project = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -49,6 +52,18 @@ class Task
     public function setExperience(?Experience $experience): static
     {
         $this->experience = $experience;
+
+        return $this;
+    }
+
+    public function getProject(): ?Project
+    {
+        return $this->project;
+    }
+
+    public function setProject(?Project $project): static
+    {
+        $this->project = $project;
 
         return $this;
     }
