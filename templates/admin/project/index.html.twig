@@ -1,0 +1,74 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PortFolioCreator - Projects
+{% endblock %}
+
+{% block body %}
+
+	{% include 'partials/flash.html.twig' %}
+
+	<div class="m-5 text-center col-12 col-sm-8 col-md-4 col-lg-4 col-xl-2 mx-auto">
+		<a href="{{ path('admin.project.add') }}" class="btn btn-outline-success btn-block text-primary">Add new Project</a>
+	</div>
+
+	{% if projects is not empty %}
+		<div class="table-responsive">
+			<table class="table table-light">
+				<thead>
+					<tr>
+						<th scope="col" class="bg-light" colspan="1"></th>
+						<th scope="col">Title</th>
+						<th scope="col">Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for project in projects %}
+						<tr class="table">
+							<td scope="col" class="bg-light" colspan="1"></td>
+
+							<td>{{ project.title }}</td>
+							<td class="text-center d-flex gap-1">
+								<a href="{{ path('admin.task.add', {id: project.id, source:'project'}) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Add Task</a>
+								<a href="{{ path('admin.project.edit', {id: project.id}) }}" class="btn btn-outline-warning btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Edit</a>
+								<form action="{{ path('admin.project.delete', {id: project.id}) }}" method="post">
+									<input type="hidden" name="_method" value="DELETE">
+									<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
+								</form>
+							</td>
+						</tr>
+
+						{% if project.task is not empty %}
+							{% for task in project.task %}
+								<tr class="table">
+									<td>
+										<strong>Task
+											{{ loop.index }}</strong>
+									</td>
+									<td colspan="5">
+										<p>{{ task.Description }}</p>
+									</td>
+
+									<td colspan="2" class="text-center">
+										<form action="{{ path('admin.task.delete', {id: task.id, source:'project'}) }}" method="post">
+											<input type="hidden" name="_method" value="DELETE">
+											<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
+										</form>
+									</td>
+								</tr>
+							{% endfor %}
+						{% else %}
+							<tr class="table-light">
+								<td></td>
+								<td colspan="6" class="text-left">
+									No tasks for this project
+								</td>
+							</tr>
+						{% endif %}
+					{% endfor %}
+				</tbody>
+			</table>
+		</div>
+	{% else %}
+		<p class="text-center">No projects added</p>
+	{% endif %}
+{% endblock %}

@@ -65,7 +65,7 @@
 
 									<td colspan="2" class="text-center">
 
-										<form action="{{ path('admin.task.delete', {id: task.id}) }}" method="post">
+										<form action="{{ path('admin.task.delete', {id: task.id, source:'experience'}) }}" method="post">
 											<input type="hidden" name="_method" value="DELETE">
 											<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
 										</form>

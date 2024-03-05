@@ -21,6 +21,17 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
+    public function findAllWithTasksByUser(int $userId): array
+    {
+
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.user = :user')
+            ->leftJoin('p.task', 't')
+            ->setParameter('user', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
     //    /**
     //     * @return Project[] Returns an array of Project objects
     //     */

@@ -21,10 +21,11 @@ class Task
     private ?string $description = '';
 
     #[ORM\ManyToOne(inversedBy: 'task')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Experience $experience = null;
 
     #[ORM\ManyToOne(inversedBy: 'task')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Project $project = null;
 
     public function getId(): ?int

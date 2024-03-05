@@ -56,7 +56,11 @@ class TaskController extends AbstractController
                 'New task added successfully'
             );
 
-            return $this->redirectToRoute('admin.experience.index');
+            if ($source === 'experience') {
+                return $this->redirectToRoute('admin.experience.index');
+            } elseif ($source === 'project') {
+                return $this->redirectToRoute('admin.project.index');
+            }
         }
 
         return $this->render('admin/task/add.html.twig', [
@@ -67,11 +71,13 @@ class TaskController extends AbstractController
 
 
 
-    #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
+    #[Route('/{id}/{source}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
     #[IsGranted(TaskVoter::EDIT, subject: 'task')]
     public function delete(
         EntityManagerInterface $manager,
-        Task $task
+        Task $task,
+        string $source
+
     ): Response {
 
 
@@ -83,6 +89,10 @@ class TaskController extends AbstractController
             'Experience deleted successfully'
         );
 
-        return $this->redirectToRoute('admin.experience.index');
+        if ($source === 'experience') {
+            return $this->redirectToRoute('admin.experience.index');
+        } elseif ($source === 'project') {
+            return $this->redirectToRoute('admin.project.index');
+        }
     }
 }
