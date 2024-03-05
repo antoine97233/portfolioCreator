@@ -9,8 +9,10 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: SkillRepository::class)]
+#[UniqueEntity(fields: ['title'], message: 'This skill already exists. Please check the list')]
 class Skill
 {
     #[ORM\Id]
@@ -18,7 +20,7 @@ class Skill
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 2, max: 100)]
     #[Groups(['skills.index', 'skills.create'])]

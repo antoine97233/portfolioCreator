@@ -17,6 +17,7 @@ class AttributeSkillType extends AbstractType
             ->add('skill', EntityType::class, [
                 'class' => Skill::class,
                 'choice_label' => 'title',
+                'autocomplete' => true
             ])->add('scoreSkills', CollectionType::class, [
                 'entry_type' => ScoreSkillType::class,
                 'allow_add' => true,

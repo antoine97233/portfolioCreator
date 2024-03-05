@@ -40,7 +40,8 @@ class SkillRepository extends ServiceEntityRepository
     }
 
 
-    public function findAllByUser(int $userId): array
+
+    public function findAllByUserWithScore(int $userId): array
     {
         return $this->createQueryBuilder('s')
             ->leftJoin('s.user', 'u')

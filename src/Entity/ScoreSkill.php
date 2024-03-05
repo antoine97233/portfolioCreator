@@ -5,8 +5,10 @@ namespace App\Entity;
 use App\Repository\ScoreSkillRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Doctrine\ORM\Mapping\UniqueConstraint;
 
 #[ORM\Entity(repositoryClass: ScoreSkillRepository::class)]
+#[UniqueConstraint(name: "unique_user_skill", columns: ['user_id', 'skill_id'])]
 class ScoreSkill
 {
     #[ORM\Id]
