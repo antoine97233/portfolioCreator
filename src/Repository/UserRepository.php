@@ -83,7 +83,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->createQueryBuilder('u')
             ->select('u', 'm')
-            ->leftJoin('u.media', 'm')
+            ->leftJoin('u.media', 'm') // Vous pouvez utiliser 'LEFT JOIN' directement dans DQL
             ->where('u.id = :userId')
             ->setParameter('userId', $userId)
             ->getQuery()

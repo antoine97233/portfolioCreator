@@ -28,6 +28,11 @@ class UserType extends AbstractType
             ->add('title', TextType::class, [
                 'empty_data' => ''
             ])
+            ->add('mediaFile', FileType::class, [
+                'label' => 'Upload Media',
+                'mapped' => false,
+                'required' => false,
+            ])
             ->add('subtitle', TextType::class, [
                 'empty_data' => ''
             ])
@@ -41,11 +46,6 @@ class UserType extends AbstractType
             ->add('isVisible', CheckboxType::class, [
                 'label' => "Do you want to be visible on the platform?",
                 'required' => false
-            ])
-            ->add('mediaFile', FileType::class, [
-                'label' => 'Upload Media',
-                'mapped' => false,  // Ne sera pas mappé directement vers l'entité User
-                'required' => false, // À définir selon vos besoins
             ])
             ->add('save', SubmitType::class)
             ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->timestamps());

@@ -1,6 +1,5 @@
 <?php
 
-// src/EventListener/UniqueConstraintListener.php
 
 namespace App\EventListener;
 
@@ -17,7 +16,7 @@ class UniqueConstraintListener
         $exception = $event->getThrowable();
 
         if ($exception instanceof UniqueConstraintViolationException) {
-            $this->errorMessage = 'You have already this skill.';
+            $this->errorMessage = 'Duplicate data';
 
             $response = new JsonResponse([
                 'error' => $this->errorMessage,
