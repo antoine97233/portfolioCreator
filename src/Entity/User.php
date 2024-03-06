@@ -81,9 +81,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'user', cascade: ['persist', 'remove'])]
-    private Collection $media;
-
 
     #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $experiences;
@@ -97,10 +94,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Project::class, mappedBy: 'user')]
     private Collection $projects;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Media $media = null;
+
     public function __construct()
     {
         $this->updatedAt = new \DateTimeImmutable();
-        $this->media = new ArrayCollection();
         $this->experiences = new ArrayCollection();
         $this->scoreSkills = new ArrayCollection();
         $this->projects = new ArrayCollection();
@@ -330,35 +329,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    /**
-     * @return Collection<int, Media>
-     */
-    public function getMedia(): Collection
-    {
-        return $this->media;
-    }
-
-    public function addMedium(Media $medium): static
-    {
-        if (!$this->media->contains($medium)) {
-            $this->media->add($medium);
-            $medium->setUser($this);
-        }
-
-        return $this;
-    }
-
-    public function removeMedium(Media $medium): static
-    {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getUser() === $this) {
-                $medium->setUser(null);
-            }
-        }
-
-        return $this;
-    }
 
 
     /**
@@ -459,6 +429,28 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
                 $project->setUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getMedia(): ?Media
+    {
+        return $this->media;
+    }
+
+    public function setMedia(?Media $media): static
+    {
+        // unset the owning side of the relation if necessary
+        if ($media === null && $this->media !== null) {
+            $this->media->setUser(null);
+        }
+
+        // set the owning side of the relation if necessary
+        if ($media !== null && $media->getUser() !== $this) {
+            $media->setUser($this);
+        }
+
+        $this->media = $media;
 
         return $this;
     }
