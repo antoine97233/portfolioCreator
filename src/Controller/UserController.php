@@ -17,23 +17,28 @@ class UserController extends AbstractController
     #[Route('/user/{id}/edit', name: 'user.edit', methods: ['GET', 'POST'])]
     public function edit(User $user, Request $request, EntityManagerInterface $em): Response
     {
-
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            $mediaFile = $form->get('mediaFile')->getData();
+
+            if ($mediaFile) {
+                $media = new Media();
+                $media->setThumbnailFile($mediaFile);
+                $media->setUser($user);
+                $em->persist($media);
+            }
 
             $em->flush();
 
             $this->addFlash(
                 'success',
-                'informations edited successfully'
+                'Informations edited successfully'
             );
 
             return $this->redirectToRoute('user', ['slug' => $user->getSlug(), 'id' => $user->getId()]);
         }
-
-
 
         return $this->render('user/edit.html.twig', [
             'controller_name' => 'UserController',
@@ -41,6 +46,7 @@ class UserController extends AbstractController
             'form' => $form
         ]);
     }
+
 
 
     #[Route('/media/add', name: 'media.add', methods: ['GET', 'POST'])]

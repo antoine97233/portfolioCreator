@@ -7,9 +7,11 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Validator\Constraints as Assert;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: MediaRepository::class)]
 #[Vich\Uploadable]
+#[UniqueEntity(fields: ['user'], message: 'This user already has a media.')]
 class Media
 {
     #[ORM\Id]
@@ -25,13 +27,14 @@ class Media
     private ?File $thumbnailFile = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?User $user = null;
 
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $updatedAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'media')]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Project $project = null;
 
     public function __construct()
