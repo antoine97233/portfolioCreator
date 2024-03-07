@@ -30,13 +30,13 @@ class Project
     #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'project')]
     private Collection $task;
 
-    #[ORM\OneToMany(targetEntity: Media::class, mappedBy: 'project')]
-    private Collection $media;
+    #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
+    private ?Media $media = null;
+
 
     public function __construct()
     {
         $this->task = new ArrayCollection();
-        $this->media = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,32 +122,24 @@ class Project
         return $this;
     }
 
-    /**
-     * @return Collection<int, Media>
-     */
-    public function getMedia(): Collection
+    public function getMedia(): ?Media
     {
         return $this->media;
     }
 
-    public function addMedium(Media $medium): static
+    public function setMedia(?Media $media): static
     {
-        if (!$this->media->contains($medium)) {
-            $this->media->add($medium);
-            $medium->setProject($this);
+        // unset the owning side of the relation if necessary
+        if ($media === null && $this->media !== null) {
+            $this->media->setProject(null);
         }
 
-        return $this;
-    }
-
-    public function removeMedium(Media $medium): static
-    {
-        if ($this->media->removeElement($medium)) {
-            // set the owning side to null (unless already changed)
-            if ($medium->getProject() === $this) {
-                $medium->setProject(null);
-            }
+        // set the owning side of the relation if necessary
+        if ($media !== null && $media->getProject() !== $this) {
+            $media->setProject($this);
         }
+
+        $this->media = $media;
 
         return $this;
     }

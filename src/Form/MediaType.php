@@ -11,7 +11,8 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-
+use Vich\UploaderBundle\Form\Type\VichFileType;
+use Vich\UploaderBundle\Form\Type\VichImageType;
 
 class MediaType extends AbstractType
 {
@@ -24,16 +25,16 @@ class MediaType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add(
-                'thumbnailFile',
-                FileType::class,
-            )
-            ->add('user', EntityType::class, [
-                'class' => User::class,
-                'choice_label' => 'id',
+            ->add('thumbnailFile', VichFileType::class, [
+                'label' => 'Upload Media',
+                'required' => false
             ])
             ->add('save', SubmitType::class)
-            ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->timestamps());;
+            ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->timestamps());
+
+        // if ($options['data']->getId() !== null) {
+        //     $builder->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->removeMedia());
+        // }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

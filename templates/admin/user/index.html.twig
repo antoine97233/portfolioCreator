@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PortFolioCreator - Welcome !
+{% endblock %}
+
+{% block body %}
+
+	{% include 'partials/flash.html.twig' %}
+
+
+	<div class="card  mb-4 mt-4 border">
+		<h1 class="h4 card-header d-flex justify-content-between">{{user.fullname}}
+
+			{% if user.isOpenToWork %}
+				<span class="badge bg-success shadow-sm">Open to Work !</span>
+			{% else %}
+				<span class="badge bg-secondary shadow-sm">Busy, sorry !</span>
+			{% endif %}
+		</h1>
+		<div class="card-body container-fluid p-2 p-sm-3 p-md-5">
+
+
+			<div class="d-flex flex-wrap justify-content-between">
+
+				<div class="col-md-8 col-12  p-4 position-relative border rounded mb-2">
+					<a class="btn btn-warning position-absolute top-0 end-0 shadow-sm" href="{{path('admin.user.edit',{id:app.user.id})}}">
+						<i class="fa-solid fa-pen-to-square"></i>
+					</a>
+					<h2 class="display-5 pb-2">{{ user.title }}</h2>
+					<p class="fs-4 text-success">{{ user.subtitle }}</p>
+					<p class="fs-5 text-justify">
+						{{ user.shortDescription }}
+					</p>
+
+
+					<div class="mt-4" id="collapseProfile">
+						<div class="card card-body pt-4 text-justify border-0">
+							<p class="fs-6">
+								{{ user.longDescription | nl2br }}
+							</p>
+
+						</div>
+					</div>
+
+
+				</div>
+
+				<div class="col-md-3 col-12 text-right p-4 overflow-hidden position-relative border rounded">
+					{% if user.media is null or user.media.thumbnail is null %}
+						<a class="btn btn-warning position-absolute top-0 end-0 shadow-sm" href="{{path('admin.media.add',{id:app.user.id, source:'user'})}}">
+							<i class="fa-solid fa-pen-to-square"></i>
+						</a>
+						<img src="/images/users/user.png" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
+					{% else  %}
+
+						<form action="{{path('admin.media.delete',{id:user.media.id})}}" method="post" style="display: inline;">
+							<input type="hidden" name="_method" value="DELETE">
+							<button type="submit" class="btn btn-danger position-absolute top-0 end-0 shadow-sm">
+								<i class="fa-solid fa-xmark text-light"></i>
+							</button>
+						</form>
+
+
+						<img src="/images/users/{{ user.media.thumbnail }}" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
+
+
+					{% endif %}
+				</div>
+
+			</div>
+
+
+		</div>
+	</div>
+
+	<div class="p-md-5 p-2 mb-4 mt-4 border">
+		<div class="container-fluid py-5">
+			<div class="h-100 bg-body">
+				<h3 class="mb-5">Contact</h3>
+
+				<ul class="list-unstyled d-flex flex-column"></ul>
+			</div>
+		</div>
+	</div>
+
+{% endblock %}

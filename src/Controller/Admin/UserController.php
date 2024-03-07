@@ -6,6 +6,7 @@ use App\Entity\Media;
 use App\Entity\User;
 use App\Form\UserPasswordType;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use App\Security\Voter\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -28,27 +29,36 @@ class UserController extends AbstractController
         $this->security = $security;
     }
 
+    #[Route('/{id}', name: 'index', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
+    #[IsGranted(UserVoter::EDIT, subject: 'user')]
+    public function index(
+        UserRepository $userRepository,
+        User $user,
+    ): Response {
+
+        $user = $userRepository->find($user);
+
+
+        return $this->render('/admin/user/index.html.twig', [
+            'controller_name' => 'UserController',
+            'user' => $user,
+        ]);
+    }
+
+
+
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function edit(
         User $user,
         Request $request,
-        EntityManagerInterface $em
+        EntityManagerInterface $em,
     ): Response {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
 
+
         if ($form->isSubmitted() && $form->isValid()) {
-
-            $mediaFile = $form->get('mediaFile')->getData();
-
-            if ($mediaFile) {
-                $media = new Media();
-                $media->setThumbnailFile($mediaFile);
-                $media->setUser($user);
-
-                $em->persist($media);
-            }
 
             $em->flush();
 
@@ -57,7 +67,7 @@ class UserController extends AbstractController
                 'Informations edited successfully'
             );
 
-            return $this->redirectToRoute('user', ['slug' => $user->getSlug(), 'id' => $user->getId()]);
+            return $this->redirectToRoute('user', ['id' => $user->getId(), 'slug' => $user->getSlug()]);
         }
 
         return $this->render('/admin/user/edit.html.twig', [

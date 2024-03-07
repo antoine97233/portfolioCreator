@@ -2,6 +2,7 @@
 
 namespace App\Controller\Admin;
 
+use App\Entity\Media;
 use App\Entity\Project;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
@@ -51,6 +52,7 @@ class ProjectController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+
             $project->setUser($user);
 
             $em->persist($project);
@@ -77,6 +79,21 @@ class ProjectController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
+            if ($form->get('removeMedia')->getData()) {
+                $media = $project->getMedia();
+                $project->setMedia(null);
+                $em->remove($media);
+            } else {
+                $mediaFile = $form->get('mediaFile')->getData();
+                if ($mediaFile) {
+                    $media = new Media();
+                    $media->setThumbnailFile($mediaFile);
+                    $media->setProject($project);
+                    $project->setMedia($media);
+                    $em->persist($media);
+                }
+            }
+
             $em->flush();
 
             $this->addFlash(
@@ -89,6 +106,7 @@ class ProjectController extends AbstractController
 
         return $this->render('admin/project/edit.html.twig', [
             'form' => $form->createView(),
+            'formType' => 'edit'
         ]);
     }
 
@@ -96,6 +114,14 @@ class ProjectController extends AbstractController
     #[IsGranted(ProjectVoter::EDIT, subject: 'project')]
     public function delete(EntityManagerInterface $em, Project $project): Response
     {
+
+        $media = $project->getMedia();
+
+        if ($media) {
+            $em->remove($media);
+        }
+
+
         $em->remove($project);
         $em->flush();
 

@@ -27,13 +27,7 @@ class UserType extends AbstractType
             ])
             ->add('title', TextType::class, [
                 'empty_data' => ''
-            ])
-            ->add('mediaFile', FileType::class, [
-                'label' => 'Upload Media',
-                'mapped' => false,
-                'required' => false,
-            ])
-            ->add('subtitle', TextType::class, [
+            ])->add('subtitle', TextType::class, [
                 'empty_data' => ''
             ])
             ->add('shortDescription', TextType::class, [
