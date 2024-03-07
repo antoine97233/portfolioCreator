@@ -35,12 +35,9 @@ class ScoreSkillController extends AbstractController
         $user = $this->security->getUser();
         $userId = $user->getId();
 
-
         $scoresSkills = $scoreSkillRepository->findAllSkillsWithScoresByUser($userId);
 
-
         return $this->render('admin/skill/index.html.twig', [
-            'controller_name' => 'SkillController',
             'scoresSkills' => $scoresSkills,
         ]);
     }
@@ -75,8 +72,10 @@ class ScoreSkillController extends AbstractController
             return $this->redirectToRoute('admin.skill.index');
         }
 
-        return $this->render('admin/skill/add.html.twig', [
-            'form' => $form->createView()
+        return $this->render('admin/form/form.html.twig', [
+            'form' => $form->createView(),
+            'action' => 'Add',
+            'table' => 'skill'
         ]);
     }
 
@@ -102,8 +101,10 @@ class ScoreSkillController extends AbstractController
             return $this->redirectToRoute('admin.skill.index');
         }
 
-        return $this->render('admin/skill/edit.html.twig', [
-            'form' => $form->createView()
+        return $this->render('admin/form/form.html.twig', [
+            'form' => $form->createView(),
+            'action' => 'Edit',
+            'table' => 'skill'
         ]);
     }
 

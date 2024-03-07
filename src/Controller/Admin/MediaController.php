@@ -68,40 +68,10 @@ class MediaController extends AbstractController
         }
 
 
-        return $this->render('admin/media/add.html.twig', [
+        return $this->render('admin/form/form.html.twig', [
             'form' => $form->createView(),
-            'media' => $media
-        ]);
-    }
-
-    #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
-    public function edit(
-        Request $request,
-        EntityManagerInterface $em,
-        Media $media
-    ): Response {
-
-        /** @var User */
-        $user = $this->security->getUser();
-
-
-        $form = $this->createForm(MediaType::class, $media);
-        $form->handleRequest($request);
-
-        if ($form->isSubmitted() && $form->isValid()) {
-            $em->flush();
-
-            $this->addFlash(
-                'success',
-                'Media edited successfully'
-            );
-
-            return $this->redirectToRoute('admin.user.index', ['id' => $user->getId()]);
-        }
-
-        return $this->render('admin/media/edit.html.twig', [
-            'form' => $form->createView(),
-            'media' => $media,
+            'action' => 'Add',
+            'table' => 'Media'
         ]);
     }
 

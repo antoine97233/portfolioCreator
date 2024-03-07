@@ -11,12 +11,12 @@
 		<div class="card-body">
 			<div class="d-flex flex-sm-row">
 				<div class="col-sm-4 p-2">
-					<div class="mx-auto" style="width:70px;height:70px">
-						{% if user.media is not null %}
-							{% for media in user.media %}
-								<img src="/images/users/{{ media.thumbnail }}" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
-							{% endfor %}
-						{% endif %}
+					<div
+						class="mx-auto" style="width:70px;height:70px">{# {% if user.media is not null %}
+														{% for media in user.media %}
+															<img src="/images/users/{{ media.thumbnail }}" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
+														{% endfor %}
+													{% endif %} #}
 					</div>
 				</div>
 				<div class="col-sm-8 mb-2 mb-sm-0">

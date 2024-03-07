@@ -5,7 +5,9 @@ namespace App\Entity;
 use App\Repository\ProjectRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: ProjectRepository::class)]
 class Project
@@ -15,19 +17,24 @@ class Project
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $title = null;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 1, max: 100)]
+    private ?string $title = '';
 
-    #[ORM\Column(length: 255)]
-    private ?string $description = null;
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 1, max: 500)]
+    private ?string $description = '';
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $link = null;
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Url()]
+    private ?string $link = '';
 
     #[ORM\ManyToOne(inversedBy: 'projects')]
     private ?User $user = null;
 
-    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'project')]
+    #[ORM\OneToMany(targetEntity: Task::class, mappedBy: 'project', cascade: ['remove'])]
     private Collection $task;
 
     #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]

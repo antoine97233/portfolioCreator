@@ -8,6 +8,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvents;
@@ -23,20 +24,37 @@ class UserType extends AbstractType
     {
         $builder
             ->add('fullname', TextType::class, [
-                'empty_data' => ''
+                'empty_data' => '',
+                'label' => "Full name",
+                'required' => false
             ])
             ->add('title', TextType::class, [
-                'empty_data' => ''
+                'empty_data' => '',
+                'label' => "Job Title",
+                'required' => false
             ])->add('subtitle', TextType::class, [
-                'empty_data' => ''
+                'empty_data' => '',
+                'label' => "Job Subtitle",
+                'required' => false
             ])
-            ->add('shortDescription', TextType::class, [
-                'empty_data' => ''
+            ->add('shortDescription', TextareaType::class, [
+                'empty_data' => '',
+                'required' => false,
+                'attr' => [
+                    'rows' => 3
+                ]
             ])
-            ->add('longDescription', TextType::class, [
-                'empty_data' => ''
+            ->add('longDescription', TextareaType::class, [
+                'empty_data' => '',
+                'required' => false,
+                'attr' => [
+                    'rows' => 8
+                ]
             ])
-            ->add('isOpenToWork')
+            ->add('isOpenToWork', CheckboxType::class, [
+                'label' => "Are you open to work ?",
+                'required' => false
+            ])
             ->add('isVisible', CheckboxType::class, [
                 'label' => "Do you want to be visible on the platform?",
                 'required' => false

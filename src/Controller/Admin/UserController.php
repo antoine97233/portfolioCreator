@@ -4,6 +4,7 @@ namespace App\Controller\Admin;
 
 use App\Entity\Media;
 use App\Entity\User;
+use App\Form\DeleteUserType;
 use App\Form\UserPasswordType;
 use App\Form\UserType;
 use App\Repository\UserRepository;
@@ -17,6 +18,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 #[Route('/admin/user', name: 'admin.user.')]
 class UserController extends AbstractController
@@ -70,21 +72,21 @@ class UserController extends AbstractController
             return $this->redirectToRoute('user', ['id' => $user->getId(), 'slug' => $user->getSlug()]);
         }
 
-        return $this->render('/admin/user/edit.html.twig', [
-            'controller_name' => 'UserController',
+        return $this->render('/admin/form/form.html.twig', [
             'user' => $user,
-            'form' => $form
+            'form' => $form,
+            'action' => 'Edit',
+            'table' => 'profile'
         ]);
     }
 
-    #[Route('/{id}/editpassword', name: 'user.edit.password', methods: ['GET', 'POST'])]
+    #[Route('/{id}/editpassword', name: 'password', methods: ['GET', 'POST'])]
     public function editPassword(
         Request $request,
         EntityManagerInterface $manager,
         UserPasswordHasherInterface $userPasswordHasher,
         int $id
     ): Response {
-
         /** @var User $user */
         $user = $this->security->getUser();
 
@@ -98,7 +100,6 @@ class UserController extends AbstractController
 
 
             if ($userPasswordHasher->isPasswordValid($user, $oldPassword)) {
-                $user->setUpdatedAt(new \DateTimeImmutable());
                 $user->setPassword(
                     $userPasswordHasher->hashPassword(
                         $user,
@@ -111,8 +112,7 @@ class UserController extends AbstractController
                     'Password edited successfully'
                 );
 
-                $manager->persist($user);
-                $manager->flush($user);
+                $manager->flush();
 
                 return $this->redirectToRoute('home');
             } else {
@@ -123,8 +123,60 @@ class UserController extends AbstractController
             }
         }
 
-        return $this->render('admin/user/editPassword.html.twig', [
-            'form' => $form->createView()
+        return $this->render('admin/form/form.html.twig', [
+            'form' => $form->createView(),
+            'action' => 'Edit',
+            'table' => 'password'
+        ]);
+    }
+
+    // ...
+
+
+    // ...
+
+    #[Route('/{id}/delete', name: 'delete')]
+    public function delete(
+        Request $request,
+        EntityManagerInterface $manager,
+        UserPasswordHasherInterface $userPasswordHasher,
+        TokenStorageInterface $tokenStorage // Ajoutez cette ligne
+    ): Response {
+        /** @var User $user */
+        $user = $this->security->getUser();
+
+        $form = $this->createForm(DeleteUserType::class);
+
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $plainPassword = $form->get('plainPassword')->getData();
+
+            if ($userPasswordHasher->isPasswordValid($user, $plainPassword)) {
+
+                $manager->remove($user);
+                $manager->flush();
+
+                $tokenStorage->setToken(null);
+
+                $this->addFlash(
+                    'success',
+                    'Account deleted successfully'
+                );
+
+                return $this->redirectToRoute('home');
+            } else {
+                $this->addFlash(
+                    'danger',
+                    'Incorrect password'
+                );
+            }
+        }
+
+        return $this->render('admin/form/form.html.twig', [
+            'form' => $form->createView(),
+            'action' => 'Delete',
+            'table' => 'account',
         ]);
     }
 }

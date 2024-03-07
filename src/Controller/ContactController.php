@@ -13,18 +13,16 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ContactController extends AbstractController
 {
-    #[Route('/{slug}-{id}/contact', name: 'contact', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'],)]
+    #[Route('/{slug}/{id}/contact', name: 'contact', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'],)]
     public function contact(
         string $slug,
         int $id,
         EntityManagerInterface $em,
         Request $request,
-        MailerInterface $mailer,
         EventDispatcherInterface $dispatcher
     ): Response {
         $user = $em->getRepository(User::class)->find($id);
@@ -38,7 +36,6 @@ class ContactController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
 
             try {
-
                 $dispatcher->dispatch(new ContactRequestEvent($data, $user));
                 $this->addFlash(
                     'success',
@@ -53,9 +50,10 @@ class ContactController extends AbstractController
 
             $this->redirectToRoute('contact', ['slug' => $user->getSlug(), 'id' => $user->getId()]);
         }
-        return $this->render('contact/contact.html.twig', [
-            'controller_name' => 'ContactController',
-            'form' => $form
+        return $this->render('admin/form/form.html.twig', [
+            'form' => $form,
+            'action' => 'Contact',
+            'table' => 'user'
         ]);
     }
 }

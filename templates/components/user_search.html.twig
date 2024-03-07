@@ -6,7 +6,7 @@
 	<div class="flex row mt-5">
 
 		{% for user in this.users %}
-			{{ include('user/_userCard.html.twig') }}
+			{{ include('public/_userCard.html.twig') }}
 
 		{% else %}
 			{% if query is not empty %}{% endif %}

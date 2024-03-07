@@ -24,6 +24,7 @@ class Media
 
     #[Vich\UploadableField(mapping: 'users', fileNameProperty: 'thumbnail')]
     #[Assert\Image()]
+    #[Assert\NotBlank()]
     private ?File $thumbnailFile = null;
 
     #[ORM\Column(nullable: true)]

@@ -47,7 +47,6 @@ class ExperienceController extends AbstractController
         }
 
         return $this->render('admin/experience/index.html.twig', [
-            'controller_name' => 'HomeController',
             'experiences' => $experiences,
             'tasks' => $tasks,
         ]);
@@ -77,8 +76,10 @@ class ExperienceController extends AbstractController
             return $this->redirectToRoute('admin.experience.index');
         }
 
-        return $this->render('admin/experience/add.html.twig', [
+        return $this->render('admin/form/form.html.twig', [
             'form' => $form->createView(),
+            'action' => 'Add',
+            'table' => 'experience'
         ]);
     }
 
@@ -100,8 +101,10 @@ class ExperienceController extends AbstractController
             return $this->redirectToRoute('admin.experience.index');
         }
 
-        return $this->render('admin/experience/edit.html.twig', [
+        return $this->render('admin/form/form.html.twig', [
             'form' => $form->createView(),
+            'action' => 'Edit',
+            'table' => 'experience'
         ]);
     }
 

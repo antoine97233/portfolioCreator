@@ -46,7 +46,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\Email]
     private ?string $email = null;
 
-    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Groups('users.index')]
     private ?string $fullname = '';
 
@@ -93,7 +93,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: ScoreSkill::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $scoreSkills;
 
-    #[ORM\OneToMany(targetEntity: Project::class, mappedBy: 'user')]
+    #[ORM\OneToMany(targetEntity: Project::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $projects;
 
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]

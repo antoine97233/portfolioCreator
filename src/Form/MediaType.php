@@ -31,10 +31,6 @@ class MediaType extends AbstractType
             ])
             ->add('save', SubmitType::class)
             ->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->timestamps());
-
-        // if ($options['data']->getId() !== null) {
-        //     $builder->addEventListener(FormEvents::POST_SUBMIT, $this->listenerFactory->removeMedia());
-        // }
     }
 
     public function configureOptions(OptionsResolver $resolver): void

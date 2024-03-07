@@ -17,6 +17,7 @@ class ScoreSkill
     private ?int $id = null;
 
     #[ORM\Column]
+    #[Assert\NotBlank()]
     #[Assert\Range(
         min: 1,
         max: 5,

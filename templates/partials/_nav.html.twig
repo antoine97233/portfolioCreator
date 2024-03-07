@@ -17,11 +17,12 @@
 
 				{% if app.user %}
 					<li class="nav-item">
-						<a class="nav-link " href="{{path('admin.project.index')}}">Projects</a>
-					</li>
-					<li class="nav-item">
 						<a class="nav-link " href="{{path('admin.experience.index')}}">Experiences</a>
 					</li>
+					<li class="nav-item">
+						<a class="nav-link " href="{{path('admin.project.index')}}">Projects</a>
+					</li>
+
 					<li class="nav-item">
 						<a class="nav-link " href="{{path('admin.skill.index')}}">Skills</a>
 					</li>
@@ -35,6 +36,12 @@
 							<i class="fa-solid fa-user"></i>
 						</button>
 						<ul class="dropdown-menu mt-2">
+							<li>
+								<a class="dropdown-item" href="{{path('admin.user.password',{id:app.user.id})}}">Edit password</a>
+							</li>
+							<li>
+								<a class="dropdown-item" href="{{path('admin.user.delete',{id:app.user.id})}}">Delete account</a>
+							</li>
 							<li>
 								<a class="dropdown-item" href="{{path('logout')}}">Logout</a>
 							</li>

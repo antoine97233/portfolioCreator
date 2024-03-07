@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 class UserPasswordType extends AbstractType
 {
@@ -18,8 +19,12 @@ class UserPasswordType extends AbstractType
         $builder
             ->add('plainPassword', RepeatedType::class, [
                 'type' => PasswordType::class,
+                'first_options' => [
+                    'label' => 'Old password',
+
+                ],
                 'second_options' => [
-                    'label' => 'Confirm password',
+                    'label' => 'Confirm old password',
 
                 ]
             ])
@@ -37,6 +42,10 @@ class UserPasswordType extends AbstractType
                         'minMessage' => 'Your password should be at least {{ limit }} characters',
                         // max length allowed by Symfony for security reasons
                         'max' => 4096,
+                    ]),
+                    new Regex([
+                        'pattern' => '/^(?=.*[A-Z])(?=.*\d).+$/',
+                        'message' => 'Your password must contain at least one uppercase letter and one digit.',
                     ]),
                 ],
             ])

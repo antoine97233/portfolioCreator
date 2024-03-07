@@ -19,7 +19,7 @@ class HomeController extends AbstractController
 
         $users = $userRepository->findVisible(true);
 
-        return $this->render('home/index.html.twig', [
+        return $this->render('public/index.html.twig', [
             'users' => $users,
             'query' => (string) $request->query->get('q', '')
 
@@ -42,7 +42,7 @@ class HomeController extends AbstractController
         $maxPage = ceil($usersTotal / 4);
 
 
-        return $this->render('home/userList.html.twig', [
+        return $this->render('public/userList.html.twig', [
             'users' => $users,
             'maxPage' => $maxPage,
             'page' => $page,
@@ -63,7 +63,7 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('user', ['slug' => $user->getSlug(), 'id' => $user->getId()]);
         }
 
-        return $this->render('home/user.html.twig', [
+        return $this->render('public/user.html.twig', [
             'controller_name' => 'HomeController',
             'user' => $user
         ]);

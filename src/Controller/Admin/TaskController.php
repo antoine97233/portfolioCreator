@@ -63,8 +63,10 @@ class TaskController extends AbstractController
             }
         }
 
-        return $this->render('admin/task/add.html.twig', [
-            'form' => $form->createView()
+        return $this->render('admin/form/form.html.twig', [
+            'form' => $form->createView(),
+            'action' => 'Add',
+            'table' => 'task'
         ]);
     }
 

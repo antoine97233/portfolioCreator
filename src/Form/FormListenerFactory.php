@@ -43,21 +43,4 @@ class FormListenerFactory
             $data->setUpdatedAt(new DateTimeImmutable());
         };
     }
-
-    public function removeMedia()
-    {
-        return function (PostSubmitEvent $event) {
-            $data = $event->getData();
-            $form = $event->getForm();
-
-            $delete = $form->get('thumbnailFile')->get('delete')->getData();
-
-
-            if ($data instanceof Media && $data->getId() !== null && $delete) {
-                $data->getUser()->setMedia(null);
-                $this->managerRegistry->remove($data);
-                $this->managerRegistry->flush();
-            }
-        };
-    }
 }

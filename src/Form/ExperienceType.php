@@ -31,7 +31,14 @@ class ExperienceType extends AbstractType
             )
             ->add('startDate', DateType::class)
             ->add('endDate', DateType::class, ['required' => false])
-            ->add('isFormation', CheckboxType::class, ['required' => false])
+            ->add(
+                'isFormation',
+                CheckboxType::class,
+                [
+                    'required' => false,
+                    'label' => "Is this an academic experience ?",
+                ]
+            )
             ->add('save', SubmitType::class)
             ->addEventListener(FormEvents::PRE_SUBMIT, $this->autoEndDate(...));
     }

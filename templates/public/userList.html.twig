@@ -52,22 +52,22 @@
 
 						</li>
 
-						{% for skill in skills %}
-							<li class="list-group-item d-flex justify-content-between">
-								<div class="form-check">
-									<input class="form-check-input" type="checkbox" value="{{skill.id}}" id="flexCheckDefault">
-									<label class="form-check-label" for="flexCheckDefault">
-										{{skill.title}}
-									</label>
-								</div>
-								<div>
-									<span class="ml-2 badge text-bg-secondary rounded-pill">{{skill.count}}
-									</span>
-
-								</div>
-
-							</li>
-						{% endfor %}
+						{# {% for skill in skills %}
+													<li class="list-group-item d-flex justify-content-between">
+														<div class="form-check">
+															<input class="form-check-input" type="checkbox" value="{{skill.id}}" id="flexCheckDefault">
+															<label class="form-check-label" for="flexCheckDefault">
+																{{skill.title}}
+															</label>
+														</div>
+														<div>
+															<span class="ml-2 badge text-bg-secondary rounded-pill">{{skill.count}}
+															</span>
+						
+														</div>
+						
+													</li>
+												{% endfor %} #}
 						<li class="list-group-item">
 							<a href="#" type="button" class="btn btn-success">Apply filter</a>
 						</li>
