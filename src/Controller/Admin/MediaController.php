@@ -77,16 +77,24 @@ class MediaController extends AbstractController
 
 
 
-    #[Route('/{id}/delete', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
+    #[Route('/{id}/{source}/delete', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
     public function delete(
+        UserRepository $userRepository,
+        ProjectRepository $projectRepository,
         EntityManagerInterface $manager,
-        Media $media
+        Media $media,
+        string $source
     ): Response {
 
         /** @var User */
         $user = $this->security->getUser();
 
-        $media->setUser(null);
+
+        if ($source === 'user') {
+            $media->setUser(null);
+        } elseif ($source === 'project') {
+            $media->setProject(null);
+        }
 
         $manager->remove($media);
         $manager->flush();
@@ -96,6 +104,10 @@ class MediaController extends AbstractController
             'Image deleted successfully'
         );
 
-        return $this->redirectToRoute('admin.user.index', ['id' => $user->getId()]);
+        if ($source === 'user') {
+            return $this->redirectToRoute('admin.user.index', ['id' => $user->getId()]);
+        } elseif ($source === 'project') {
+            return $this->redirectToRoute('admin.project.index');
+        }
     }
 }
