@@ -36,22 +36,20 @@ class HomeController extends AbstractController
         SkillRepository $skillRepository,
         Request $request
     ): Response {
-        $page = $request->query->getInt('page', 1);
         $skills = $skillRepository->findAllWithCount();
-
         $usersTotal = $userRepository->findAllWithCount();
         $selectedSkills = [];
+        $isOpenToWork = $request->query->get('filterAvailability', false);
 
         if ($request->isMethod('GET')) {
             if ($request->query->has('selectedSkills')) {
                 $selectedSkills = $request->query->all()['selectedSkills'];
-                $users = $userRepository->findBySkills($selectedSkills);
+                $users = $userRepository->findBySkillsAndOpenToWork($selectedSkills, $isOpenToWork);
                 $usersTotal = count($users);
             } elseif ($request->query->has('removeFilter')) {
-                $selectedSkills = [];
                 return $this->redirectToRoute('users');
             } else {
-                $users = $userRepository->paginateUsers($page);
+                $users = $userRepository->findByOpenToWork($isOpenToWork);
             }
         }
 
@@ -60,8 +58,10 @@ class HomeController extends AbstractController
             'usersTotal' => $usersTotal,
             'skills' => $skills,
             'selectedSkills' => $selectedSkills,
+            'isOpenToWork' => $isOpenToWork,
         ]);
     }
+
 
 
 

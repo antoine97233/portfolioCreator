@@ -79,6 +79,34 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $qb->getResult();
     }
 
+    // ...
+
+    public function findBySkillsAndOpenToWork(array $skillIds, bool $isOpenToWork): array
+    {
+        $qb = $this->createQueryBuilder('u')
+            ->join('u.scoreSkills', 'ss')
+            ->join('ss.skill', 'sk')
+            ->where('sk.id IN (:skillIds)')
+            ->andWhere('u.isOpenToWork = :isOpenToWork')
+            ->setParameter('skillIds', $skillIds)
+            ->setParameter('isOpenToWork', $isOpenToWork)
+            ->getQuery();
+
+        return $qb->getResult();
+    }
+
+    public function findByOpenToWork(bool $isOpenToWork): array
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.isOpenToWork = :isOpenToWork')
+            ->setParameter('isOpenToWork', $isOpenToWork)
+            ->getQuery()
+            ->getResult();
+    }
+
+    // ...
+
+
 
 
     public function findVisible(bool $isVisible): array
