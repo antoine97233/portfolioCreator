@@ -24,6 +24,7 @@ class ScoreSkillRepository extends ServiceEntityRepository
 
 
 
+
     public function findAllSkillsWithScoresByUser(int $userId): array
     {
         return $this->createQueryBuilder('scoreSkill')

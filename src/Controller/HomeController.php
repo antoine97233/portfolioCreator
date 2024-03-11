@@ -30,29 +30,41 @@ class HomeController extends AbstractController
     }
 
 
-    #[Route('/users', name: 'users', methods: ['GET'])]
+    #[Route('/users', name: 'users', methods: ['GET', 'POST'])]
     public function showUsers(
         UserRepository $userRepository,
         SkillRepository $skillRepository,
         Request $request
     ): Response {
-
-
         $page = $request->query->getInt('page', 1);
         $skills = $skillRepository->findAllWithCount();
-        $users = $userRepository->paginateUsers($page);
-        $usersTotal = $userRepository->findAllWithCount();
-        $maxPage = ceil($usersTotal / 4);
 
+        $usersTotal = $userRepository->findAllWithCount();
+        $selectedSkills = [];
+
+        if ($request->isMethod('GET')) {
+            if ($request->query->has('selectedSkills')) {
+                $selectedSkills = $request->query->all()['selectedSkills'];
+                $users = $userRepository->findBySkills($selectedSkills);
+                $usersTotal = count($users);
+            } elseif ($request->query->has('removeFilter')) {
+                $selectedSkills = [];
+                return $this->redirectToRoute('users');
+            } else {
+                $users = $userRepository->paginateUsers($page);
+            }
+        }
 
         return $this->render('public/userList.html.twig', [
             'users' => $users,
-            'maxPage' => $maxPage,
-            'page' => $page,
             'usersTotal' => $usersTotal,
             'skills' => $skills,
+            'selectedSkills' => $selectedSkills,
         ]);
     }
+
+
+
 
 
 

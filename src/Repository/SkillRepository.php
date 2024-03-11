@@ -21,23 +21,25 @@ class SkillRepository extends ServiceEntityRepository
         parent::__construct($registry, Skill::class);
     }
 
-
-
     /**
-     *
      * @return SkillWithCountDTO[]
      */
     public function findAllWithCount(): array
     {
-
         return $this->createQueryBuilder('s')
-            ->select('NEW App\\DTO\\SkillWithCountDTO(s.id, s.title, COUNT(u.id))')
-            ->leftJoin('s.user', 'u')
-            ->groupBy('s.id')
-            ->orderBy('COUNT(u.id)', 'DESC')
+            ->select('NEW App\\DTO\\SkillWithCountDTO(s.id, s.title, COUNT(DISTINCT ss.user))')
+            ->leftJoin('s.scoreSkills', 'ss')
+            ->groupBy('s.id, s.title')
+            ->orderBy('COUNT(DISTINCT ss.user)', 'DESC')
             ->getQuery()
             ->getResult();
     }
+
+
+
+
+
+
 
 
 

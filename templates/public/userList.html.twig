@@ -23,17 +23,24 @@
 
 	<div class="row">
 
-		<div class="col-12 col-lg-2">
+		<div class="col-12 col-lg-3">
 			<div class="rounded h-100">
 
 				<div class="d-grid pb-2 mt-2 mb-2">
-					<a class="btn btn-success btn-sm" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
+					<a class="btn btn-success btn-sm shadow-sm" data-bs-toggle="collapse" href="#collapseExample" role="button" aria-expanded="true" aria-controls="collapseExample">
 						<i class="fa-solid fa-filter"></i>
 					</a>
 				</div>
 
 				<div class="collapse show show-md mb-2" id="collapseExample">
 					<ul class="list-group">
+						{% if selectedSkills %}
+							<form method="get" action="{{ path('users') }}">
+								<li class="list-group-item text-center">
+									<button type="submit" class="btn btn-sm  btn-secondary shadow-sm" name="removeFilter" style="min-width:150px">Remove Filter</button>
+								</li>
+							</form>
+						{% endif %}
 						<li class="list-group-item  justify-content-between align-items-start">
 
 
@@ -51,26 +58,27 @@
 
 
 						</li>
+						<form method="get" action="{{ path('users') }}">
+							{% for skill in skills %}
+								<li class="list-group-item d-flex justify-content-between">
+									<div class="form-check">
+										<input class="form-check-input" type="checkbox" name="selectedSkills[]" value="{{ skill.id }}" id="flexCheckDefault" {% if skill.id in selectedSkills %} checked {% endif %}>
+										<label class="form-check-label" for="flexCheckDefault">
+											{{ skill.title }}
+										</label>
+									</div>
+									<div>
+										<span class="ml-2 badge text-bg-secondary rounded-pill">{{ skill.countUsers }}</span>
+									</div>
+								</li>
+							{% endfor %}
 
-						{# {% for skill in skills %}
-													<li class="list-group-item d-flex justify-content-between">
-														<div class="form-check">
-															<input class="form-check-input" type="checkbox" value="{{skill.id}}" id="flexCheckDefault">
-															<label class="form-check-label" for="flexCheckDefault">
-																{{skill.title}}
-															</label>
-														</div>
-														<div>
-															<span class="ml-2 badge text-bg-secondary rounded-pill">{{skill.count}}
-															</span>
-						
-														</div>
-						
-													</li>
-												{% endfor %} #}
-						<li class="list-group-item">
-							<a href="#" type="button" class="btn btn-success">Apply filter</a>
-						</li>
+							<li class="list-group-item text-center">
+								<button type="submit" class="btn btn-sm btn-success shadow-sm" style="min-width:150px">Apply Filter</button>
+
+							</li>
+						</form>
+
 					</ul>
 				</div>
 
@@ -78,13 +86,13 @@
 		</div>
 
 
-		<div class="col-12 col-lg-10">
+		<div class="col-12 col-lg-9">
 			<div class="flex row ">
 				{% if users is not empty %}
 
 					{% for user in users %}
 						<a href="{{ path('user', {id: user.id, slug: user.slug}) }}" class="col-lg-6 col-md-12 col-12 mt-2 text-decoration-none mx-auto">
-							<div class="card mb-4">
+							<div class="card mb-4 shadow-sm">
 								<h5 class="card-header text-primary d-flex justify-content-between">{{ user.fullname }}
 									{% if user.isOpenToWork %}
 										<span class="badge bg-success">Open to Work !</span>
@@ -131,9 +139,9 @@
 					{% endfor %}
 				{% endif %}
 			</div>
-			<div class="d-flex justify-content-center mt-4">
-				{{ knp_pagination_render(users) }}
-			</div>
+			{# <div class="d-flex justify-content-center mt-4">
+																																																																																																																						{{ knp_pagination_render(users) }}
+																																																																																																																					</div> #}
 		</div>
 
 

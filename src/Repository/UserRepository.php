@@ -53,14 +53,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getSingleScalarResult();
     }
 
+    // public function findBySkills(array $skillIds): array
+    // {
+    //     return $this->createQueryBuilder('u')
+    //         ->join('u.skills', 's')
+    //         ->andWhere('s.id IN (:skillIds)')
+    //         ->setParameter('skillIds', $skillIds)
+    //         ->getQuery()
+    //         ->getResult();
+    // }
+
+    /**
+     * @param array $skillIds
+     * @return User[]
+     */
     public function findBySkills(array $skillIds): array
     {
-        return $this->createQueryBuilder('u')
-            ->join('u.skills', 's')
-            ->andWhere('s.id IN (:skillIds)')
+        $qb = $this->createQueryBuilder('u')
+            ->join('u.scoreSkills', 'ss')
+            ->join('ss.skill', 'sk')
+            ->where('sk.id IN (:skillIds)')
             ->setParameter('skillIds', $skillIds)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
+
+        return $qb->getResult();
     }
 
 
@@ -83,7 +99,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     {
         return $this->createQueryBuilder('u')
             ->select('u', 'm')
-            ->leftJoin('u.media', 'm') // Vous pouvez utiliser 'LEFT JOIN' directement dans DQL
+            ->leftJoin('u.media', 'm')
             ->where('u.id = :userId')
             ->setParameter('userId', $userId)
             ->getQuery()
@@ -113,15 +129,30 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
 
-    public function paginateUsers(int $page): PaginationInterface
+    public function paginateUsers(int $page, array $selectedSkills = []): PaginationInterface
     {
+        $queryBuilder = $this->createQueryBuilder('u')
+            ->leftJoin('u.scoreSkills', 'ss')
+            ->leftJoin('ss.skill', 'sk')
+            ->andWhere('u.isVisible = :isVisible')
+            ->setParameter('isVisible', true);
+
+        if (!empty($selectedSkills)) {
+            $queryBuilder
+                ->andWhere('sk.id IN (:selectedSkills)')
+                ->setParameter('selectedSkills', $selectedSkills);
+        }
+
+        $query = $queryBuilder
+            ->getQuery();
 
         return $this->paginator->paginate(
-            $this->createQueryBuilder('r'),
+            $query,
             $page,
             4
         );
     }
+
 
     /**
      * @return User[]
