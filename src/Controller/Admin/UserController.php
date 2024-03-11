@@ -2,7 +2,6 @@
 
 namespace App\Controller\Admin;
 
-use App\Entity\Media;
 use App\Entity\User;
 use App\Form\DeleteUserType;
 use App\Form\UserPasswordType;
@@ -11,7 +10,6 @@ use App\Repository\UserRepository;
 use App\Security\Voter\UserVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -19,30 +17,22 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/admin/user', name: 'admin.user.')]
 class UserController extends AbstractController
 {
 
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
-
     #[Route('/{id}', name: 'index', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function index(
+        #[CurrentUser] User $user,
         UserRepository $userRepository,
-        User $user,
     ): Response {
 
         $user = $userRepository->find($user);
 
-
         return $this->render('/admin/user/index.html.twig', [
-            'controller_name' => 'UserController',
             'user' => $user,
         ]);
     }
@@ -52,7 +42,7 @@ class UserController extends AbstractController
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function edit(
-        User $user,
+        #[CurrentUser] User $user,
         Request $request,
         EntityManagerInterface $em,
     ): Response {
@@ -81,14 +71,14 @@ class UserController extends AbstractController
     }
 
     #[Route('/{id}/editpassword', name: 'password', methods: ['GET', 'POST'])]
+    #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function editPassword(
+        #[CurrentUser] User $user,
         Request $request,
         EntityManagerInterface $manager,
         UserPasswordHasherInterface $userPasswordHasher,
-        int $id
     ): Response {
-        /** @var User $user */
-        $user = $this->security->getUser();
+
 
         $form = $this->createForm(UserPasswordType::class);
 
@@ -130,20 +120,17 @@ class UserController extends AbstractController
         ]);
     }
 
-    // ...
 
-
-    // ...
 
     #[Route('/{id}/delete', name: 'delete')]
+    #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function delete(
+        #[CurrentUser] User $user,
         Request $request,
         EntityManagerInterface $manager,
         UserPasswordHasherInterface $userPasswordHasher,
-        TokenStorageInterface $tokenStorage // Ajoutez cette ligne
+        TokenStorageInterface $tokenStorage
     ): Response {
-        /** @var User $user */
-        $user = $this->security->getUser();
 
         $form = $this->createForm(DeleteUserType::class);
 

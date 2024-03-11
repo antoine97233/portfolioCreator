@@ -8,7 +8,6 @@ use App\Event\ContactRequestEvent;
 use App\Form\ContactType;
 use Doctrine\ORM\EntityManagerInterface;
 use Exception;
-use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;

@@ -2,23 +2,22 @@
 
 namespace App\Security\Voter;
 
+use App\Entity\ScoreSkill;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ScoreSkillVoter extends Voter
 {
-    public const EDIT = 'SCORESKILL_EDIT';
-    public const VIEW = 'SCORESKILL_VIEW';
-    public const ADD = 'SCORESKILL_ADD';
-    public const LIST = 'SCORESKILL_LIST';
+    public const DELETE = 'delete';
+    public const EDIT = 'edit';
+    public const SHOW = 'show';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
         // replace with your own logic
         // https://symfony.com/doc/current/security/voters.html
-        return (in_array($attribute, [self::ADD, self::LIST])) || (in_array($attribute, [self::EDIT, self::VIEW]))
-            && $subject instanceof \App\Entity\ScoreSkill;
+        return $subject instanceof ScoreSkill && \in_array($attribute, [self::SHOW, self::EDIT, self::DELETE], true);
     }
 
     /**
@@ -33,21 +32,16 @@ class ScoreSkillVoter extends Voter
     {
         $user = $token->getUser();
 
-        // if the user is anonymous, do not grant access
         if (!$user instanceof User) {
             return false;
         }
 
-
-        // ... (check conditions and return true to grant permission) ...
         switch ($attribute) {
             case self::EDIT:
+            case self::DELETE:
                 return $subject->getUser()->getId() === $user->getId();
                 break;
-
-            case self::VIEW:
-            case self::LIST:
-            case self::ADD:
+            case self::SHOW:
                 return true;
                 break;
         }

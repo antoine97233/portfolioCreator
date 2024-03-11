@@ -10,12 +10,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 
 class HomeController extends AbstractController
 {
     #[Route('/', name: 'home', methods: ['GET'])]
-    public function index(UserRepository $userRepository, Request $request): Response
-    {
+    public function index(
+        UserRepository $userRepository,
+        Request $request
+    ): Response {
 
         $users = $userRepository->findVisible(true);
 
@@ -28,16 +31,16 @@ class HomeController extends AbstractController
 
 
     #[Route('/users', name: 'users', methods: ['GET'])]
-    public function showUsers(UserRepository $userRepository, SkillRepository $skillRepository, Request $request): Response
-    {
+    public function showUsers(
+        UserRepository $userRepository,
+        SkillRepository $skillRepository,
+        Request $request
+    ): Response {
 
 
         $page = $request->query->getInt('page', 1);
-
         $skills = $skillRepository->findAllWithCount();
-
         $users = $userRepository->paginateUsers($page);
-
         $usersTotal = $userRepository->findAllWithCount();
         $maxPage = ceil($usersTotal / 4);
 
@@ -54,9 +57,12 @@ class HomeController extends AbstractController
 
 
 
-    #[Route('/{slug}-{id}', name: 'user', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'], methods: ['GET'])]
-    public function showUser(string $slug, int $id, EntityManagerInterface $em): Response
-    {
+    #[Route('/{slug}/{id}', name: 'user', requirements: ['id' => Requirement::DIGITS, 'slug' => '[a-z0-9-]+'], methods: ['GET'])]
+    public function showUser(
+        string $slug,
+        int $id,
+        EntityManagerInterface $em
+    ): Response {
         $user = $em->getRepository(User::class)->findUserWithMedia($id);
 
         if ($user->getSlug() !== $slug) {
@@ -64,7 +70,6 @@ class HomeController extends AbstractController
         }
 
         return $this->render('public/user.html.twig', [
-            'controller_name' => 'HomeController',
             'user' => $user
         ]);
     }

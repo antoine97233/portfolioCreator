@@ -3,7 +3,7 @@
 namespace App\Controller\Admin;
 
 use App\Entity\ScoreSkill;
-use App\Entity\User as AppUser;
+use App\Entity\User;
 use App\Form\ScoreSkillType;
 use App\Repository\ScoreSkillRepository;
 use App\Security\Voter\ScoreSkillVoter;
@@ -11,31 +11,24 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/admin/skills', name: 'admin.skill.')]
 class ScoreSkillController extends AbstractController
 {
 
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
 
     #[Route('/', name: 'index')]
-    #[IsGranted(ScoreSKillVoter::LIST)]
-    public function index(ScoreSkillRepository $scoreSkillRepository): Response
-    {
-        /** @var UserInterface $user */
-        $user = $this->security->getUser();
-        $userId = $user->getId();
+    public function index(
+        #[CurrentUser] User $user,
+        ScoreSkillRepository $scoreSkillRepository
+    ): Response {
 
-        $scoresSkills = $scoreSkillRepository->findAllSkillsWithScoresByUser($userId);
+
+        $scoresSkills = $scoreSkillRepository->findAllSkillsWithScoresByUser($user->getId());
 
         return $this->render('admin/skill/index.html.twig', [
             'scoresSkills' => $scoresSkills,
@@ -44,14 +37,11 @@ class ScoreSkillController extends AbstractController
 
 
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
-    #[IsGranted(ScoreSkillVoter::ADD)]
     public function add(
         Request $request,
         EntityManagerInterface $em,
+        #[CurrentUser] User $user,
     ): Response {
-
-        /** @var AppUser $user */
-        $user = $this->security->getUser();
 
         $scoreSkill = new ScoreSkill();
 
@@ -109,7 +99,7 @@ class ScoreSkillController extends AbstractController
     }
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted(ScoreSkillVoter::EDIT, subject: 'scoreSkill')]
+    #[IsGranted(ScoreSkillVoter::DELETE, subject: 'scoreSkill')]
     public function delete(
         ScoreSkill $scoreSkill,
         EntityManagerInterface $em,

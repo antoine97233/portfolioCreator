@@ -19,9 +19,7 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class TaskController extends AbstractController
 {
 
-
     #[Route('/add/{id}/{source}/', name: 'add', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
-    #[IsGranted(TaskVoter::ADD)]
     public function add(
         Request $request,
         EntityManagerInterface $em,
@@ -31,7 +29,6 @@ class TaskController extends AbstractController
         string $source
     ): Response {
 
-
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
         $form->handleRequest($request);
@@ -40,11 +37,9 @@ class TaskController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             if ($source === 'experience') {
                 $experience = $experienceRepository->find($id);
-                $this->denyAccessUnlessGranted(TaskVoter::ADD, $experience);
                 $task->setExperience($experience);
             } elseif ($source === 'project') {
                 $project = $projectRepository->find($id);
-                $this->denyAccessUnlessGranted(TaskVoter::ADD, $project);
                 $task->setProject($project);
             }
 
@@ -74,12 +69,11 @@ class TaskController extends AbstractController
 
 
     #[Route('/{id}/{source}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
-    #[IsGranted(TaskVoter::EDIT, subject: 'task')]
+    #[IsGranted(TaskVoter::DELETE, subject: 'task')]
     public function delete(
         EntityManagerInterface $manager,
         Task $task,
         string $source
-
     ): Response {
 
 

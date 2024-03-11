@@ -53,7 +53,7 @@
 						<img src="/images/users/user.png" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
 					{% else  %}
 
-						<form action="{{path('admin.media.delete',{id:user.media.id})}}" method="post" style="display: inline;">
+						<form action="{{path('admin.media.delete',{id:user.media.id,source:'user'})}}" method="post" style="display: inline;">
 							<input type="hidden" name="_method" value="DELETE">
 							<button type="submit" class="btn btn-danger position-absolute top-0 end-0 shadow-sm">
 								<i class="fa-solid fa-xmark text-light"></i>

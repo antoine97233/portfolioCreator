@@ -3,31 +3,28 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Media;
+use App\Entity\User;
 use App\Form\MediaType;
 use App\Repository\ProjectRepository;
 use App\Repository\UserRepository;
+use App\Security\Voter\MediaVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
+use Symfony\Component\Finder\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/admin/media', name: 'admin.media.')]
 class MediaController extends AbstractController
 {
 
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
-
-
     #[Route('/{id}/{source}/add', name: 'add', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
     public function add(
+        #[CurrentUser] User $user,
         UserRepository $userRepository,
         ProjectRepository $projectRepository,
         Request $request,
@@ -36,8 +33,17 @@ class MediaController extends AbstractController
         string $source,
     ): Response {
 
-        /** @var User */
-        $user = $this->security->getUser();
+        if ($source === 'user') {
+            if ($id !== $user->getId()) {
+                throw new AccessDeniedException('You are not allowed to access this resource.');
+            }
+        } elseif ($source === 'project') {
+            $project = $projectRepository->find($id);
+
+            if ($user->getId() !== $project->getUser()->getId()) {
+                throw new AccessDeniedException('You are not allowed to access this resource.');
+            }
+        }
 
         $media = new Media();
 
@@ -67,7 +73,6 @@ class MediaController extends AbstractController
             }
         }
 
-
         return $this->render('admin/form/form.html.twig', [
             'form' => $form->createView(),
             'action' => 'Add',
@@ -78,17 +83,13 @@ class MediaController extends AbstractController
 
 
     #[Route('/{id}/{source}/delete', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
+    #[IsGranted(MediaVoter::DELETE, subject: 'media')]
     public function delete(
-        UserRepository $userRepository,
-        ProjectRepository $projectRepository,
+        #[CurrentUser] User $user,
         EntityManagerInterface $manager,
         Media $media,
         string $source
     ): Response {
-
-        /** @var User */
-        $user = $this->security->getUser();
-
 
         if ($source === 'user') {
             $media->setUser(null);

@@ -3,37 +3,30 @@
 namespace App\Controller\Admin;
 
 use App\Entity\Project;
+use App\Entity\User;
 use App\Form\ProjectType;
 use App\Repository\ProjectRepository;
 use App\Security\Voter\ProjectVoter;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use Symfony\Component\Security\Http\Attribute\CurrentUser;
 
 #[Route('/admin/projects', name: 'admin.project.')]
 class ProjectController extends AbstractController
 {
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
 
     #[Route('/', name: 'index', methods: ['GET'])]
-    #[IsGranted(ProjectVoter::LIST)]
-    public function index(ProjectRepository $projectRepository): Response
-    {
-        /** @var UserInterface $user */
-        $user = $this->security->getUser();
-        $userId = $user->getId();
+    public function index(
+        #[CurrentUser] User $user,
+        ProjectRepository $projectRepository
+    ): Response {
 
-        $projects = $projectRepository->findAllWithTasksByUser($userId);
+        $projects = $projectRepository->findAllWithTasksByUser($user->getId());
 
         return $this->render('admin/project/index.html.twig', [
             'projects' => $projects,
@@ -41,10 +34,11 @@ class ProjectController extends AbstractController
     }
 
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
-    #[IsGranted(ProjectVoter::ADD)]
-    public function add(Request $request, EntityManagerInterface $em): Response
-    {
-        $user = $this->security->getUser();
+    public function add(
+        #[CurrentUser] User $user,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
 
         $project = new Project();
         $form = $this->createForm(ProjectType::class, $project);
@@ -74,8 +68,12 @@ class ProjectController extends AbstractController
 
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(ProjectVoter::EDIT, subject: 'project')]
-    public function edit(Project $project, Request $request, EntityManagerInterface $em): Response
-    {
+    public function edit(
+        Project $project,
+        Request $request,
+        EntityManagerInterface $em
+    ): Response {
+
         $form = $this->createForm(ProjectType::class, $project);
         $form->handleRequest($request);
 
@@ -92,15 +90,16 @@ class ProjectController extends AbstractController
 
         return $this->render('admin/form/form.html.twig', [
             'form' => $form->createView(),
-            'action' => 'Edit',
-            'table' => 'project'
+
         ]);
     }
 
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
-    #[IsGranted(ProjectVoter::EDIT, subject: 'project')]
-    public function delete(EntityManagerInterface $em, Project $project): Response
-    {
+    #[IsGranted(ProjectVoter::DELETE, subject: 'project')]
+    public function delete(
+        EntityManagerInterface $em,
+        Project $project
+    ): Response {
 
         $em->remove($project);
         $em->flush();

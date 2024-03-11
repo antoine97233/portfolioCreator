@@ -2,25 +2,25 @@
 
 namespace App\Security\Voter;
 
-use App\Entity\Task;
+use App\Entity\Media;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
-class TaskVoter extends Voter
+class MediaVoter extends Voter
 {
     public const DELETE = 'delete';
     public const EDIT = 'edit';
     public const SHOW = 'show';
+    public const ADD = 'add';
 
     protected function supports(string $attribute, mixed $subject): bool
     {
-        return $subject instanceof Task && \in_array($attribute, [self::SHOW, self::EDIT, self::DELETE], true);
+        return $subject instanceof Media && \in_array($attribute, [self::SHOW, self::EDIT, self::DELETE], true);
     }
 
     protected function voteOnAttribute(string $attribute, mixed $subject, TokenInterface $token): bool
     {
-
         $user = $token->getUser();
 
         if (!$user instanceof User) {
@@ -36,16 +36,16 @@ class TaskVoter extends Voter
         }
     }
 
-    private function canDelete(Task $task, User $user): bool
+    private function canDelete(Media $media, User $user): bool
     {
-        $isTaskProject = $task->getProject() !== null;
-        $isTaskExperience = $task->getExperience() !== null;
+        $isUserMedia = $media->getUser() !== null;
+        $isProjectMedia = $media->getProject() !== null;
 
-        if ($isTaskProject && $task->getProject()->getUser()->getId() === $user->getId()) {
+        if ($isUserMedia && $media->getUser()->getId() === $user->getId()) {
             return true;
         }
 
-        if ($isTaskExperience && $task->getProject()->getUser()->getId() === $user->getId()) {
+        if ($isProjectMedia && $media->getProject()->getUser()->getId() === $user->getId()) {
             return true;
         }
 
