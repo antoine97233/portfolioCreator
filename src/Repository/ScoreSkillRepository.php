@@ -25,6 +25,12 @@ class ScoreSkillRepository extends ServiceEntityRepository
 
 
 
+    /**
+     * Récupère les skills appartenant à un utilisateur avec les scores associés
+     *
+     * @param  mixed $userId
+     * @return array
+     */
     public function findAllSkillsWithScoresByUser(int $userId): array
     {
         return $this->createQueryBuilder('scoreSkill')

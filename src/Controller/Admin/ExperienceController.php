@@ -20,13 +20,21 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class ExperienceController extends AbstractController
 {
 
+
+    /**
+     * Affiche la liste des expériences et des tâches associées
+     *
+     * @param User $user
+     * @param ExperienceRepository $userRepository
+     * @return Response
+     */
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(
         #[CurrentUser] User $user,
         ExperienceRepository $experienceRepository
     ): Response {
 
-        $results = $experienceRepository->findAllWithTasksByUser($user->getId());
+        $results = $experienceRepository->findExperienceWithTasksByUser($user->getId());
 
         $experiences = [];
         $tasks = [];
@@ -43,6 +51,16 @@ class ExperienceController extends AbstractController
     }
 
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
+
+
+    /**
+     * Affiche le formulaire d'ajout d'expérience
+     *
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     public function add(
         #[CurrentUser] User $user,
         Request $request,
@@ -74,6 +92,15 @@ class ExperienceController extends AbstractController
         ]);
     }
 
+
+    /**
+     * Affiche le formulaire d'ajout d'expérience
+     *
+     * @param Experience $experience
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(ExperienceVoter::EDIT, subject: 'experience')]
     public function edit(
@@ -102,6 +129,13 @@ class ExperienceController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime une expérience
+     *
+     * @param EntityManagerInterface $em
+     * @param Experience $experience
+     * @return Response
+     */
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(ExperienceVoter::DELETE, subject: 'experience')]
     public function delete(EntityManagerInterface $em, Experience $experience): Response

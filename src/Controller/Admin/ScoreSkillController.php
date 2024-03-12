@@ -21,12 +21,18 @@ class ScoreSkillController extends AbstractController
 {
 
 
+    /**
+     * Affiche la liste des skills appartenant à l'utilisateur ainsi que le score associé
+     *
+     * @param User $user
+     * @param ScoreSkillRepository $scoreSkillRepository
+     * @return Response
+     */
     #[Route('/', name: 'index')]
     public function index(
         #[CurrentUser] User $user,
         ScoreSkillRepository $scoreSkillRepository
     ): Response {
-
 
         $scoresSkills = $scoreSkillRepository->findAllSkillsWithScoresByUser($user->getId());
 
@@ -36,6 +42,13 @@ class ScoreSkillController extends AbstractController
     }
 
 
+    /**
+     * Affiche le formulaire d'ajout de skill
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
     public function add(
         Request $request,
@@ -70,6 +83,14 @@ class ScoreSkillController extends AbstractController
     }
 
 
+    /**
+     * Affiche le formulaire d'édition d'une skill
+     *
+     * @param ScoreSkill $scoreSkill
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(ScoreSkillVoter::EDIT, subject: 'scoreSkill')]
     public function edit(
@@ -98,6 +119,13 @@ class ScoreSkillController extends AbstractController
         ]);
     }
 
+    /**
+     * Supprime une skill associée à un utilisateur
+     *
+     * @param ScoreSkill $scoreSkill
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(ScoreSkillVoter::DELETE, subject: 'scoreSkill')]
     public function delete(

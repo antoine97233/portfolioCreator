@@ -14,13 +14,21 @@ use Symfony\Component\Routing\Requirement\Requirement;
 
 class HomeController extends AbstractController
 {
+
+    /**
+     * Affiche la page d'accueil avec le composant de recherche d'utilisateur
+     *
+     * @param UserRepository $userRepository
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/', name: 'home', methods: ['GET'])]
     public function index(
         UserRepository $userRepository,
         Request $request
     ): Response {
 
-        $users = $userRepository->findVisible(true);
+        $users = $userRepository->findUserVisible(true);
 
         return $this->render('public/index.html.twig', [
             'users' => $users,
@@ -29,14 +37,21 @@ class HomeController extends AbstractController
         ]);
     }
 
-
+    /**
+     * Affiche la liste des utilisateurs avec les filtres
+     *
+     * @param UserRepository $userRepository
+     * @param SkillRepository $skillRepository
+     * @param Request $request
+     * @return Response
+     */
     #[Route('/users', name: 'users', methods: ['GET', 'POST'])]
     public function showUsers(
         UserRepository $userRepository,
         SkillRepository $skillRepository,
         Request $request
     ): Response {
-        $skills = $skillRepository->findAllWithCount();
+        $skills = $skillRepository->findSkillsWithCount();
         $selectedSkills = [];
         $isOpenToWork = $request->query->get('filterAvailability', false);
 
@@ -44,9 +59,9 @@ class HomeController extends AbstractController
             if ($request->query->has('selectedSkills')) {
                 $selectedSkills = $request->query->all()['selectedSkills'];
                 if ($isOpenToWork) {
-                    $users = $userRepository->findBySkillsAndOpenToWork($selectedSkills, true);
+                    $users = $userRepository->findUserBySkillsAndOpenToWork($selectedSkills, true);
                 } else {
-                    $users = $userRepository->findBySkills($selectedSkills);
+                    $users = $userRepository->findUserBySkills($selectedSkills);
                 }
             } elseif ($request->query->has('removeFilter')) {
                 return $this->redirectToRoute('users');
@@ -71,24 +86,21 @@ class HomeController extends AbstractController
     }
 
 
-
-
-
-
-
-
-
-
-
+    /**
+     * Affiche le profil d'un utilisateur avec toutes ses informations
+     *
+     * @param string $slug de l'utilisateur
+     * @param integer $id de l'utilisateur
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/{slug}/{id}', name: 'user', requirements: ['id' => Requirement::DIGITS, 'slug' => '[a-z0-9-]+'], methods: ['GET'])]
     public function showUser(
         string $slug,
         int $id,
         EntityManagerInterface $em
     ): Response {
-        $user = $em->getRepository(User::class)->findUserWithMedia($id);
-
-
+        $user = $em->getRepository(User::class)->findUserWithAll($id);
 
         if ($user->getSlug() !== $slug) {
             return $this->redirectToRoute('user', ['slug' => $user->getSlug(), 'id' => $user->getId()]);

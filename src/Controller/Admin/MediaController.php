@@ -22,6 +22,17 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class MediaController extends AbstractController
 {
 
+    /**
+     * Affiche le formulaire d'ajout de média
+     *
+     * @param User $user
+     * @param UserRepository $userReposiroty
+     * @param ProjectRepository $projectRepository
+     * @param Request $request
+     * @param int $id du projet ou de l'utilisateur selon la source
+     * @param string $source détermine si un projet ou un utilisateur
+     * @return Response
+     */
     #[Route('/{id}/{source}/add', name: 'add', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
     public function add(
         #[CurrentUser] User $user,
@@ -82,11 +93,20 @@ class MediaController extends AbstractController
 
 
 
+    /**
+     * Supprime un media
+     *
+     * @param User $user
+     * @param EntityManagerInterface $em
+     * @param Media media sélectionné
+     * @param string $source détermine si un projet ou un utilisateur
+     * @return Response
+     */
     #[Route('/{id}/{source}/delete', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
     #[IsGranted(MediaVoter::DELETE, subject: 'media')]
     public function delete(
         #[CurrentUser] User $user,
-        EntityManagerInterface $manager,
+        EntityManagerInterface $em,
         Media $media,
         string $source
     ): Response {
@@ -97,8 +117,8 @@ class MediaController extends AbstractController
             $media->setProject(null);
         }
 
-        $manager->remove($media);
-        $manager->flush();
+        $em->remove($media);
+        $em->flush();
 
         $this->addFlash(
             'success',

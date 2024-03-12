@@ -20,19 +20,35 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class ProjectController extends AbstractController
 {
 
+    /**
+     * Affiche la liste des projets et des tâches associées
+     *
+     * @param User $user
+     * @param ProjectRepository $projectRepository
+     * @return Response
+     */
     #[Route('/', name: 'index', methods: ['GET'])]
     public function index(
         #[CurrentUser] User $user,
         ProjectRepository $projectRepository
     ): Response {
 
-        $projects = $projectRepository->findAllWithTasksByUser($user->getId());
+        $projects = $projectRepository->findProjectWithTasksByUser($user->getId());
 
         return $this->render('admin/project/index.html.twig', [
             'projects' => $projects,
         ]);
     }
 
+
+    /**
+     * Affiche le formulaire d'ajout de projet
+     *
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/add', name: 'add', methods: ['GET', 'POST'])]
     public function add(
         #[CurrentUser] User $user,
@@ -66,6 +82,15 @@ class ProjectController extends AbstractController
         ]);
     }
 
+
+    /**
+     * Affiche le formulaire d'édition d'un projet
+     *
+     * @param Project $project
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/{id}', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(ProjectVoter::EDIT, subject: 'project')]
     public function edit(
@@ -96,6 +121,14 @@ class ProjectController extends AbstractController
         ]);
     }
 
+
+    /**
+     * Supprime un projet
+     *
+     * @param EntityManagerInterface $em
+     * @param Project $project
+     * @return Response
+     */
     #[Route('/{id}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(ProjectVoter::DELETE, subject: 'project')]
     public function delete(

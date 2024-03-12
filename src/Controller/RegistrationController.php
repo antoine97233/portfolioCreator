@@ -27,6 +27,17 @@ class RegistrationController extends AbstractController
         $this->emailVerifier = $emailVerifier;
     }
 
+
+    /**
+     * Affiche le formulaire d'inscription à l'application
+     *
+     * @param Request $request
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param UserAuthenticatorInterface $userAuthenticator
+     * @param AppAuthenticator $authenticator
+     * @param EntityManagerInterface $entityManager
+     * @return Response
+     */
     #[Route('/register', name: 'register')]
     public function register(
         Request $request,
@@ -75,6 +86,14 @@ class RegistrationController extends AbstractController
         ]);
     }
 
+
+    /**
+     * Vérifie la demande de confirmation par email
+     *
+     * @param Request $request
+     * @param TranslatorInterface $translator
+     * @return Response
+     */
     #[Route('/verify/email', name: 'verify.email')]
     public function verifyUserEmail(
         Request $request,
@@ -94,6 +113,6 @@ class RegistrationController extends AbstractController
         // @TODO Change the redirect on success and handle or remove the flash message in your templates
         $this->addFlash('success', 'Your email address has been verified.');
 
-        return $this->redirectToRoute('register');
+        return $this->redirectToRoute('login');
     }
 }

@@ -4,11 +4,9 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\Tools\Pagination\Paginator;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\User\PasswordAuthenticatedUserInterface;
 use Symfony\Component\Security\Core\User\PasswordUpgraderInterface;
@@ -45,71 +43,54 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         $this->getEntityManager()->flush();
     }
 
-    public function findAllWithCount(): int
-    {
-        return $this->createQueryBuilder('u')
-            ->select('COUNT(u.id)')
-            ->getQuery()
-            ->getSingleScalarResult();
-    }
-
-    // public function findBySkills(array $skillIds): array
-    // {
-    //     return $this->createQueryBuilder('u')
-    //         ->join('u.skills', 's')
-    //         ->andWhere('s.id IN (:skillIds)')
-    //         ->setParameter('skillIds', $skillIds)
-    //         ->getQuery()
-    //         ->getResult();
-    // }
 
     /**
+     * Récupère les utilisateurs à partir d'une skill
+     * 
      * @param array $skillIds
      * @return User[]
      */
-    public function findBySkills(array $skillIds): array
+    public function findUserBySkills(array $skillIds): array
     {
-        $qb = $this->createQueryBuilder('u')
+        return $this->createQueryBuilder('u')
             ->join('u.scoreSkills', 'ss')
             ->join('ss.skill', 'sk')
             ->where('sk.id IN (:skillIds)')
             ->setParameter('skillIds', $skillIds)
-            ->getQuery();
-
-        return $qb->getResult();
+            ->getQuery()
+            ->getResult();
     }
 
-    // ...
 
-    public function findBySkillsAndOpenToWork(array $skillIds, bool $isOpenToWork): array
+    /**
+     * Récupère les utilisateurs avec les skills qui ont le statut openToWork
+     *
+     * @param  mixed $skillIds
+     * @param  mixed $isOpenToWork
+     * @return array
+     */
+    public function findUserBySkillsAndOpenToWork(array $skillIds, bool $isOpenToWork): array
     {
-        $qb = $this->createQueryBuilder('u')
+        return $this->createQueryBuilder('u')
             ->join('u.scoreSkills', 'ss')
             ->join('ss.skill', 'sk')
             ->where('sk.id IN (:skillIds)')
             ->andWhere('u.isOpenToWork = :isOpenToWork')
             ->setParameter('skillIds', $skillIds)
             ->setParameter('isOpenToWork', $isOpenToWork)
-            ->getQuery();
-
-        return $qb->getResult();
-    }
-
-    public function findByOpenToWork(bool $isOpenToWork): array
-    {
-        return $this->createQueryBuilder('u')
-            ->where('u.isOpenToWork = :isOpenToWork')
-            ->setParameter('isOpenToWork', $isOpenToWork)
             ->getQuery()
             ->getResult();
     }
 
-    // ...
 
 
-
-
-    public function findVisible(bool $isVisible): array
+    /**
+     * Récupère les utilisateurs qui ont choisi d'être visible
+     *
+     * @param  mixed $isVisible
+     * @return array
+     */
+    public function findUserVisible(bool $isVisible): array
     {
         return $this->createQueryBuilder('u')
             ->select('u', 'm')
@@ -123,7 +104,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
 
-    public function findUserWithMedia(int $userId): ?User
+    /**
+     * Récupère un utilisateur avec toutes les données qui lui appartiennent
+     *
+     * @param  mixed $userId
+     * @return User
+     */
+    public function findUserWithAll(int $userId): ?User
     {
         return $this->createQueryBuilder('u')
             ->select('u', 'm', 'e', 't', 'ss', 's', 'p', 'mp')
@@ -142,17 +129,13 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
 
 
-
-    public function findOpenToWork(bool $isOpenToWork): array
-    {
-        return $this->createQueryBuilder("o")
-            ->andWhere("o.isOpenToWork = :isOpenToWork")
-            ->setParameter("isOpenToWork", $isOpenToWork)
-            ->getQuery()
-            ->getResult();
-    }
-
-    public function findByEmailOrUsername(string $usernameOrEmail): ?User
+    /**
+     * Récupère un utilisateur par son email ou son username
+     *
+     * @param  mixed $usernameOrEmail
+     * @return User
+     */
+    public function findUserByEmailOrUsername(string $usernameOrEmail): ?User
     {
         return $this->createQueryBuilder("u")
             ->Where("u.email = :identifier OR u.username= :identifier")
@@ -163,30 +146,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getOneOrNullResult();
     }
 
-
-    public function paginateUsers(int $page, array $selectedSkills = []): PaginationInterface
-    {
-        $queryBuilder = $this->createQueryBuilder('u')
-            ->leftJoin('u.scoreSkills', 'ss')
-            ->leftJoin('ss.skill', 'sk')
-            ->andWhere('u.isVisible = :isVisible')
-            ->setParameter('isVisible', true);
-
-        if (!empty($selectedSkills)) {
-            $queryBuilder
-                ->andWhere('sk.id IN (:selectedSkills)')
-                ->setParameter('selectedSkills', $selectedSkills);
-        }
-
-        $query = $queryBuilder
-            ->getQuery();
-
-        return $this->paginator->paginate(
-            $query,
-            $page,
-            4
-        );
-    }
 
 
     /**
@@ -231,23 +190,6 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             return 2 <= $term->length();
         });
     }
-
-
-
-    // public function paginateUsers(int $page, int $limit): Paginator
-    // {
-    //     $query = $this->createQueryBuilder('u')
-    //         ->leftJoin('u.media', 'm')
-    //         ->andWhere('u.isVisible = :isVisible')
-    //         ->setParameter('isVisible', true)
-    //         ->setFirstResult(($page - 1) * $limit)
-    //         ->setMaxResults($limit)
-    //         ->getQuery()
-    //         ->setHint(Paginator::HINT_ENABLE_DISTINCT, false);
-
-    //     return new Paginator($query, false);
-    // }
-
 
 
 

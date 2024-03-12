@@ -23,6 +23,12 @@ use Symfony\Component\Security\Http\Attribute\CurrentUser;
 class UserController extends AbstractController
 {
 
+    /**
+     * Affiche la page d'administration de l'utilisateur connecté
+     * @param User $user
+     * @param UserRepository $userRepository
+     * @return Response
+     */
     #[Route('/{id}', name: 'index', methods: ['GET'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function index(
@@ -38,7 +44,14 @@ class UserController extends AbstractController
     }
 
 
-
+    /**
+     * Affiche le formulaire d'édition des informations de l'utilisateur
+     *
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @return Response
+     */
     #[Route('/{id}/edit', name: 'edit', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS])]
     #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function edit(
@@ -48,7 +61,6 @@ class UserController extends AbstractController
     ): Response {
         $form = $this->createForm(UserType::class, $user);
         $form->handleRequest($request);
-
 
         if ($form->isSubmitted() && $form->isValid()) {
 
@@ -70,16 +82,24 @@ class UserController extends AbstractController
         ]);
     }
 
+
+    /**
+     * Affiche le formulaire d'édition du password de l'utilisateur
+     *
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param UserPasswordHasherInterface $userPasswordHasher,
+     * @return Response
+     */
     #[Route('/{id}/editpassword', name: 'password', methods: ['GET', 'POST'])]
     #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function editPassword(
         #[CurrentUser] User $user,
         Request $request,
-        EntityManagerInterface $manager,
+        EntityManagerInterface $em,
         UserPasswordHasherInterface $userPasswordHasher,
     ): Response {
-
-
         $form = $this->createForm(UserPasswordType::class);
 
         $form->handleRequest($request);
@@ -87,7 +107,6 @@ class UserController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $oldPassword = $form->get('plainPassword')->getData();
             $newPassword = $form->get('newPassword')->getData();
-
 
             if ($userPasswordHasher->isPasswordValid($user, $oldPassword)) {
                 $user->setPassword(
@@ -102,7 +121,7 @@ class UserController extends AbstractController
                     'Password edited successfully'
                 );
 
-                $manager->flush();
+                $em->flush();
 
                 return $this->redirectToRoute('home');
             } else {
@@ -121,13 +140,22 @@ class UserController extends AbstractController
     }
 
 
-
+    /**
+     * Supprime le profil de l'utilisateur
+     *
+     * @param User $user
+     * @param Request $request
+     * @param EntityManagerInterface $request
+     * @param UserPasswordHasherInterface $userPasswordHasher
+     * @param TokenStorageInterface $tokenStorageInterface
+     * @return Response
+     */
     #[Route('/{id}/delete', name: 'delete')]
     #[IsGranted(UserVoter::EDIT, subject: 'user')]
     public function delete(
         #[CurrentUser] User $user,
         Request $request,
-        EntityManagerInterface $manager,
+        EntityManagerInterface $em,
         UserPasswordHasherInterface $userPasswordHasher,
         TokenStorageInterface $tokenStorage
     ): Response {
@@ -141,8 +169,8 @@ class UserController extends AbstractController
 
             if ($userPasswordHasher->isPasswordValid($user, $plainPassword)) {
 
-                $manager->remove($user);
-                $manager->flush();
+                $em->remove($user);
+                $em->flush();
 
                 $tokenStorage->setToken(null);
 

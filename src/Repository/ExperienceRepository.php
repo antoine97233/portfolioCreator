@@ -22,7 +22,13 @@ class ExperienceRepository extends ServiceEntityRepository
     }
 
 
-    public function findAllWithTasksByUser(int $userId): array
+    /**
+     * Récupère les expériences appartenant à un utilisateur avec les tâches associées
+     *
+     * @param  mixed $userId
+     * @return array
+     */
+    public function findExperienceWithTasksByUser(int $userId): array
     {
 
         return $this->createQueryBuilder('e')
@@ -34,17 +40,6 @@ class ExperienceRepository extends ServiceEntityRepository
             ->getResult();
     }
 
-    // public function findAllWithTasksByUser(User $user): array
-    // {
-    //     return $this->createQueryBuilder('e')
-    //         ->leftJoin('e.tasks', 't') // Supposons que la propriété de relation dans Experience est appelée "tasks"
-    //         ->leftJoin('e.user', 'u')  // Supposons que la propriété de relation dans Experience est appelée "user"
-    //         ->andWhere('u = :user')
-    //         ->setParameter('user', $user)
-    //         ->orderBy('e.end_date', 'DESC')
-    //         ->getQuery()
-    //         ->getResult();
-    // }
 
 
 

@@ -21,7 +21,14 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
-    public function findAllWithTasksByUser(int $userId): array
+
+    /**
+     * Récupère les projets appartenant à un utilisateur avec les tâches associées
+     *
+     * @param  mixed $userId
+     * @return array
+     */
+    public function findProjectWithTasksByUser(int $userId): array
     {
 
         return $this->createQueryBuilder('p')

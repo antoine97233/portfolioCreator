@@ -22,9 +22,11 @@ class SkillRepository extends ServiceEntityRepository
     }
 
     /**
+     * Récupère les skills avec le nb d'associations par utilisateur
+     * 
      * @return SkillWithCountDTO[]
      */
-    public function findAllWithCount(): array
+    public function findSkillsWithCount(): array
     {
         return $this->createQueryBuilder('s')
             ->select('NEW App\\DTO\\SkillWithCountDTO(s.id, s.title, COUNT(DISTINCT ss.user))')
@@ -34,26 +36,6 @@ class SkillRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
     }
-
-
-
-
-
-
-
-
-
-    public function findAllByUserWithScore(int $userId): array
-    {
-        return $this->createQueryBuilder('s')
-            ->leftJoin('s.user', 'u')
-            ->andWhere('u.id = :userId')
-            ->setParameter('userId', $userId)
-            ->getQuery()
-            ->getResult();
-    }
-
-
 
 
 

@@ -13,10 +13,22 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Routing\Requirement\Requirement;
 
 class ContactController extends AbstractController
 {
-    #[Route('/{slug}/{id}/contact', name: 'contact', requirements: ['id' => '\d+', 'slug' => '[a-z0-9-]+'],)]
+
+    /**
+     * Affiche le formulaire de contact d'un utilisateur
+     *
+     * @param string $slug slug de l'utilisateur
+     * @param integer $id de l'utilisateur
+     * @param EntityManagerInterface $em
+     * @param Request $request
+     * @param EventDispatcherInterface $dispatcher
+     * @return Response
+     */
+    #[Route('/{slug}/{id}/contact', name: 'contact', requirements: ['id' => Requirement::DIGITS, 'slug' => '[a-z0-9-]+'],)]
     public function contact(
         string $slug,
         int $id,

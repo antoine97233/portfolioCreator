@@ -19,6 +19,17 @@ use Symfony\Component\Security\Http\Attribute\IsGranted;
 class TaskController extends AbstractController
 {
 
+    /**
+     * Affiche le formulaire d'ajout d'une tâche
+     *
+     * @param Request $request
+     * @param EntityManagerInterface $em
+     * @param ExperienceRepository $experienceRepository
+     * @param ProjectRepository $projectRepository
+     * @param integer $id d'une expérience ou d'un projet selon la source
+     * @param string $source projet ou expérience
+     * @return Response
+     */
     #[Route('/add/{id}/{source}/', name: 'add', methods: ['GET', 'POST'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
     public function add(
         Request $request,
@@ -68,6 +79,14 @@ class TaskController extends AbstractController
 
 
 
+    /**
+     * Supprime une tâche associée a une experience ou un projet
+     *
+     * @param EntityManagerInterface $manager
+     * @param Task $task
+     * @param string $source projet ou expérience
+     * @return Response
+     */
     #[Route('/{id}/{source}', name: 'delete', methods: ['DELETE'], requirements: ['id' => Requirement::DIGITS, 'source' => '.+'])]
     #[IsGranted(TaskVoter::DELETE, subject: 'task')]
     public function delete(
