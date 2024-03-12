@@ -8,7 +8,7 @@
 	{% include 'partials/flash.html.twig' %}
 
 
-	<div class="card  mb-4 mt-4 border">
+	<div class="card  mb-4 mt-4 border shadow-sm">
 		<h1 class="h4 card-header d-flex justify-content-between">{{user.fullname}}
 
 			{% if user.isOpenToWork %}
@@ -32,12 +32,12 @@
 					<div class="d-flex gap-2">
 
 						{% if user.longDescription is not empty %}
-							<button id="moreInfoButton" class="seeMore btn btn-outline-success mt-4 btn-lg border" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="false" aria-controls="collapseProfile">
+							<button id="moreInfoButton" class="seeMore btn btn-outline-success mt-4 btn-lg border shadow-sm" type="button" data-bs-toggle="collapse" data-bs-target="#collapseProfile" aria-expanded="false" aria-controls="collapseProfile">
 								<i class="fa-solid fa-chevron-down"></i>
 							</button>
 						{% endif %}
 
-						<a href="{{ path('contact', {id: user.id, slug: user.slug}) }}" class="seeMore btn btn-outline-success mt-4 btn-lg border" type="button">
+						<a href="{{ path('contact', {id: user.id, slug: user.slug}) }}" class="seeMore btn btn-outline-success mt-4 btn-lg border shadow-sm" type="button">
 							<i class="fa-solid fa-envelope"></i>
 						</a>
 					</div>
@@ -66,14 +66,181 @@
 		</div>
 	</div>
 
-	<div class="p-md-5 p-2 mb-4 mt-4 border">
+	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+		<h3 class="display-5">Experiences</h2>
 		<div class="container-fluid py-5">
-			<div class="h-100 bg-body-tertiary">
-				<h3 class="mb-5">Contact</h3>
+			{% for experience in user.experiences %}
+				{% if not experience.isFormation %}
+					<div class="d-flex flex-wrap">
+						<div class="col-md-7 col-12 p-2">
+							<h5 class="text-success">
+								<i class="fa-solid fa-suitcase fa-sm mr-2"></i>
+								{{ experience.title }}
+							</h5>
+							<span class="ml-2">{{ experience.location }}</span>
+							<span class="ml-3">
+								({{ experience.startDate|date("d/m/Y") }}
+								-
+								{{ experience.endDate|date("d/m/Y") }})
+							</span>
+						</div>
+					</div>
 
-				<ul class="list-unstyled d-flex flex-column"></ul>
+					<div class="mb-5">
+						<ul>
+							{% for task in experience.task %}
+								<li>{{ task.description }}</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+		<h3 class="display-5">School</h2>
+		<div class="container-fluid py-5">
+			{% for experience in user.experiences %}
+				{% if  experience.isFormation %}
+					<div class="d-flex flex-wrap">
+						<div class="col-md-7 col-12 p-2">
+							<h5 class="text-success">
+								<i class="fa-solid fa-graduation-cap fa-sm mr-2"></i>
+								{{ experience.title }}
+							</h5>
+							<span class="ml-2">{{ experience.location }}</span>
+							<span class="ml-3">
+								({{ experience.startDate|date("d/m/Y") }}
+								-
+								{{ experience.endDate|date("d/m/Y") }})
+							</span>
+						</div>
+					</div>
+
+					<div class="mb-5">
+						<ul>
+							{% for task in experience.task %}
+								<li>{{ task.description }}</li>
+							{% endfor %}
+						</ul>
+					</div>
+				{% endif %}
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+		<h3 class="display-5">Skills</h2>
+		<div class="container-fluid py-5">
+			{% for scoreSkill in user.scoreSkills %}
+				<div class="d-flex flex-wrap">
+					<div class="col-12 p-2">
+						<h5 class="">
+							<i class="fa-solid fa-code fa-sm mr-2"></i>
+							{{ scoreSkill.skill.title }}
+						</h5>
+
+						<div class="col-12 col-md-4 col-lg-4">
+							<div class="progress">
+								<div class="progress-bar bg-success" role="progressbar" style="width: {{ (scoreSkill.score / 5) * 100 }}%;" aria-valuenow="{{ scoreSkill.score }}" aria-valuemin="0" aria-valuemax="5"></div>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+
+	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+		<h3 class="display-5">Projects</h3>
+		<div class="container-fluid py-5">
+			<div class="d-flex flex-wrap justify-content-start gap-5">
+				{% for project in user.projects %}
+					<div class="card col-md-5 col-12 shadow-sm p-4">
+						{% if project.media is not null and project.media.thumbnail is not null %}
+							<div class="overflow-hidden" style="width: 100%; height: 200px;">
+								<img src="/images/users/{{ project.media.thumbnail }}" class="card-img-top" alt="{{ project.title }}">
+							</div>
+						{% else %}
+							<div class="placeholder" style="width: 100%; height: 200px; background-color: #6c757d;"></div>
+						{% endif %}
+						<div class="card-body">
+							<h5 class="card-title">{{ project.title }}</h5>
+							{% set descriptionLines = project.description|split("\n")|slice(0, 3) %}
+							<p class="card-text">{{ descriptionLines|join("\n") }}</p>
+							<a href="#" class="btn btn-success shadow-sm" data-bs-toggle="modal" data-bs-target="#projectModal{{ project.id }}">See details</a>
+						</div>
+					</div>
+
+					<div class="modal fade" id="projectModal{{ project.id }}" tabindex="-1" aria-labelledby="projectModalLabel{{ project.id }}" aria-hidden="true">
+						<div class="modal-dialog modal-dialog-centered">
+							<div class="modal-content">
+								<div class="modal-header">
+									<h5 class="modal-title" id="projectModalLabel{{ project.id }}">{{ project.title }}</h5>
+									<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+								</div>
+								<div class="modal-body">
+									{% if project.media is not null and project.media.thumbnail is not null %}
+										<div class="overflow-hidden" style="width: 100%; height: 300px;">
+											<img src="/images/users/{{ project.media.thumbnail }}" class="card-img-top" alt="{{ project.title }}">
+										</div>
+									{% endif %}
+									<p class="mt-4">{{ project.description }}</p>
+
+									<ul>
+										{% for task in project.task %}
+											<li>{{ task.description }}</li>
+										{% endfor %}
+									</ul>
+								</div>
+								<div class="modal-footer d-flex">
+									<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+									<a href="{{project.link}}" type="button" class="btn btn-success">Link</a>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				{% endfor %}
 			</div>
 		</div>
 	</div>
 
+
+	{% if user.tel or user.linkedin  %}
+		<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+			<h3 class="display-5">Contact</h2>
+
+			<div class="container-fluid py-5">
+				<ul class="list-unstyled d-flex justify-content-start flex-wrap">
+					{% if user.tel %}
+						<li class="nav-item col-md-4 col-12 p-2 ">
+							<a class="h5 text-success" href="tel:{{ user.tel }}">
+								<i class="fa-solid fa-phone mr-2"></i>
+								Phone
+							</a>
+						</li>
+					{% endif %}
+					{% if user.linkedin %}
+						<li class="nav-item col-md-4 col-12 p-2">
+							<a class="h5 text-success" href="{{ user.linkedin }}">
+								<i class="fa-brands fa-linkedin fa-lg mr-2"></i>
+								Linkedin
+							</a>
+						</li>
+					{% endif %}
+					{% if user.email %}
+						<li class="nav-item col-md-4 col-12 p-2 ">
+							<a class="h5 text-success" href="mailto:{{ user.email }}">
+								<i class="fa-solid fa-envelope mr-2"></i>
+								Email
+							</a>
+						</li>
+					{% endif %}
+				</ul>
+			</div>
+		</div>
+	{% endif %}
 {% endblock %}

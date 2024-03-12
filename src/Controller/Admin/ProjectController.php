@@ -90,6 +90,8 @@ class ProjectController extends AbstractController
 
         return $this->render('admin/form/form.html.twig', [
             'form' => $form->createView(),
+            'action' => 'Edit',
+            'table' => 'project'
 
         ]);
     }

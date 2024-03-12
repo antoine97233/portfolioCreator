@@ -45,7 +45,7 @@ class TaskVoter extends Voter
             return true;
         }
 
-        if ($isTaskExperience && $task->getProject()->getUser()->getId() === $user->getId()) {
+        if ($isTaskExperience && $task->getExperience()->getUser()->getId() === $user->getId()) {
             return true;
         }
 

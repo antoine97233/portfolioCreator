@@ -8,7 +8,7 @@
 	{% include 'partials/flash.html.twig' %}
 
 
-	<div class="card  mb-4 mt-4 border">
+	<div class="card  mb-4 mt-4 border shadow-sm">
 		<h1 class="h4 card-header d-flex justify-content-between">{{user.fullname}}
 
 			{% if user.isOpenToWork %}
@@ -22,12 +22,22 @@
 
 			<div class="d-flex flex-wrap justify-content-between">
 
-				<div class="col-md-8 col-12  p-4 position-relative border rounded mb-2">
+				<div class="col-md-8 col-12  p-4 position-relative border rounded mb-2 shadow-sm">
 					<a class="btn btn-warning position-absolute top-0 end-0 shadow-sm" href="{{path('admin.user.edit',{id:app.user.id})}}">
 						<i class="fa-solid fa-pen-to-square"></i>
 					</a>
 					<h2 class="display-5 pb-2">{{ user.title }}</h2>
 					<p class="fs-4 text-success">{{ user.subtitle }}</p>
+					<p class="fs-6">
+						<span class="text-success">Phone</span>
+						:
+						{{ user.tel }}
+					</p>
+					<p class="fs-6">
+						<span class="text-success">Linkedin link</span>
+						:
+						{{ user.linkedin }}
+					</p>
 					<p class="fs-5 text-justify">
 						{{ user.shortDescription }}
 					</p>
@@ -45,7 +55,7 @@
 
 				</div>
 
-				<div class="col-md-3 col-12 text-right p-4 overflow-hidden position-relative border rounded">
+				<div class="col-md-3 col-12 text-right p-4 overflow-hidden position-relative border rounded shadow-sm">
 					{% if user.media is null or user.media.thumbnail is null %}
 						<a class="btn btn-warning position-absolute top-0 end-0 shadow-sm" href="{{path('admin.media.add',{id:app.user.id, source:'user'})}}">
 							<i class="fa-solid fa-pen-to-square"></i>
@@ -73,14 +83,5 @@
 		</div>
 	</div>
 
-	<div class="p-md-5 p-2 mb-4 mt-4 border">
-		<div class="container-fluid py-5">
-			<div class="h-100 bg-body">
-				<h3 class="mb-5">Contact</h3>
-
-				<ul class="list-unstyled d-flex flex-column"></ul>
-			</div>
-		</div>
-	</div>
 
 {% endblock %}

@@ -8,27 +8,27 @@
 	{% include 'partials/flash.html.twig' %}
 
 	<div class="m-5 text-center col-12 col-sm-8 col-md-4 col-lg-4 col-xl-2 mx-auto">
-		<a href="{{ path('admin.experience.add') }}" class="btn btn-outline-success btn-block text-primary">Add new Experience</a>
+		<a href="{{ path('admin.experience.add') }}" class="btn btn-outline-success btn-block text-primary shadow-sm">Add new Experience</a>
 	</div>
 
 	{% if experiences is not empty %}
-		<div class="table-responsive">
-			<table class="table table-light">
-				<thead>
-					<tr>
-						<th scope="col" class="bg-light" colspan="1"></th>
-						<th scope="col">Title</th>
-						<th scope="col">Type</th>
-						<th scope="col">Location</th>
-						<th scope="col">Start Date</th>
-						<th scope="col">End Date</th>
-						<th scope="col">Actions</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for experience in experiences %}
+		{% for experience in experiences %}
+			<div class="table-responsive border mb-5 rounded shadow-sm">
+				<table class="table table-light table-borderless">
+					<thead>
+						<tr>
+							<th scope="col"></th>
+							<th scope="col">Title</th>
+							<th scope="col">Type</th>
+							<th scope="col">Location</th>
+							<th scope="col">Start Date</th>
+							<th scope="col">End Date</th>
+							<th scope="col">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
 						<tr class="table">
-							<td scope="col" class="bg-light" colspan="1"></td>
+							<td scope="col"></td>
 
 							<td>{{ experience.title }}</td>
 							<td>
@@ -42,11 +42,11 @@
 							<td>{{ experience.startDate|date("d/m/Y") }}</td>
 							<td>{{ experience.endDate ? experience.endDate|date("d/m/Y") : 'Present' }}</td>
 							<td class="text-center d-flex gap-1">
-								<a href="{{ path('admin.task.add', {id: experience.id, source:'experience'}) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Add Task</a>
-								<a href="{{ path('admin.experience.edit', {id: experience.id}) }}" class="btn btn-outline-warning btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Edit</a>
+								<a href="{{ path('admin.task.add', {id: experience.id, source:'experience'}) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center shadow-sm" style="width:100px; height: 38px;">Add Task</a>
+								<a href="{{ path('admin.experience.edit', {id: experience.id}) }}" class="btn btn-outline-warning btn-sm text-primary d-flex align-items-center justify-content-center shadow-sm" style="width:100px; height: 38px;">Edit</a>
 								<form action="{{ path('admin.experience.delete', {id: experience.id}) }}" method="post">
 									<input type="hidden" name="_method" value="DELETE">
-									<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
+									<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center shadow-sm" style="width:100px; height: 38px;">Delete</button>
 								</form>
 							</td>
 						</tr>
@@ -59,17 +59,15 @@
 											{{ loop.index }}</strong>
 									</td>
 									<td colspan="5">
-										<p>
-											{{ task.Description }}</p>
+										<p>{{ task.description }}</p>
 									</td>
 
 									<td colspan="2" class="text-center">
 
 										<form action="{{ path('admin.task.delete', {id: task.id, source:'experience'}) }}" method="post">
 											<input type="hidden" name="_method" value="DELETE">
-											<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
+											<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center shadow-sm" style="width:100px; height: 38px;">Delete</button>
 										</form>
-
 
 									</td>
 								</tr>
@@ -82,10 +80,10 @@
 								</td>
 							</tr>
 						{% endif %}
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
+					</tbody>
+				</table>
+			</div>
+		{% endfor %}
 	{% else %}
 		<p class="text-center">No experience added</p>
 	{% endif %}

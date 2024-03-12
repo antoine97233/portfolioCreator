@@ -77,6 +77,8 @@ class HomeController extends AbstractController
     ): Response {
         $user = $em->getRepository(User::class)->findUserWithMedia($id);
 
+
+
         if ($user->getSlug() !== $slug) {
             return $this->redirectToRoute('user', ['slug' => $user->getSlug(), 'id' => $user->getId()]);
         }

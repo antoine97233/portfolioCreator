@@ -83,6 +83,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(type: 'boolean')]
     private $isVerified = false;
 
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Regex(
+        pattern: '/^(0|\+33)[1-9]\d{8}$/',
+        message: 'The phone number must be a valid French phone number.'
+    )]
+    private ?string $tel = null;
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\URL]
+    private ?string $linkedin = null;
+
+
 
     #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $experiences;
@@ -453,6 +465,30 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         }
 
         $this->media = $media;
+
+        return $this;
+    }
+
+    public function getTel(): ?string
+    {
+        return $this->tel;
+    }
+
+    public function setTel(?string $tel): static
+    {
+        $this->tel = $tel;
+
+        return $this;
+    }
+
+    public function getLinkedin(): ?string
+    {
+        return $this->linkedin;
+    }
+
+    public function setLinkedin(?string $linkedin): static
+    {
+        $this->linkedin = $linkedin;
 
         return $this;
     }

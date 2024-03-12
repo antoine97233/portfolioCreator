@@ -8,30 +8,30 @@
 	{% include 'partials/flash.html.twig' %}
 
 	<div class="m-5 text-center col-12 col-sm-8 col-md-4 col-lg-4 col-xl-2 mx-auto">
-		<a href="{{ path('admin.skill.add') }}" class="btn btn-outline-success btn-block text-primary">Add new Skill</a>
+		<a href="{{ path('admin.skill.add') }}" class="btn btn-outline-success btn-block text-primary shadow-sm">Add new Skill</a>
 	</div>
 
 	{% if scoresSkills is not empty %}
-		<div class="table-responsive">
+		<div class="table-responsive border rounded shadow-sm">
 			<table class="table table-light">
 				<thead>
 					<tr>
-						<th scope="col">Title</th>
-						<th scope="col">Level</th>
-						<th scope="col">Actions</th>
+						<th class="col-4">Title</th>
+						<th class="col-4">Level</th>
+						<th class="col-4">Actions</th>
 					</tr>
 				</thead>
 				<tbody>
 					{% for scoreSkill in scoresSkills %}
 						<tr class="table">
-							<td>{{ scoreSkill.skill.title }}</td>
-							<td>{{ scoreSkill.score }}
+							<td class="col-4">{{ scoreSkill.skill.title }}</td>
+							<td class="col-4">{{ scoreSkill.score }}
 								/ 5</td>
-							<td class="text-center d-flex gap-1">
-								<a href="{{ path('admin.skill.edit', {id: scoreSkill.id}) }}" class="btn btn-outline-warning btn-block text-primary" style="width:100px">Edit</a>
-								<form action="{{ path('admin.skill.delete', {id: scoreSkill.id}) }}" method="post" style="display: inline;">
+							<td class="text-center col-4">
+								<a href="{{ path('admin.skill.edit', {id: scoreSkill.id}) }}" class="btn btn-outline-warning text-primary mb-2 shadow-sm" style="width:100px; height: 38px;">Edit</a>
+								<form action="{{ path('admin.skill.delete', {id: scoreSkill.id}) }}" method="post">
 									<input type="hidden" name="_method" value="DELETE">
-									<button type="submit" class="btn btn-outline-danger text-primary" style="width:100px; height: 38px;">Delete</button>
+									<button type="submit" class="btn btn-outline-danger text-primary shadow-sm" style="width:100px; height: 38px;">Delete</button>
 								</form>
 
 							</td>

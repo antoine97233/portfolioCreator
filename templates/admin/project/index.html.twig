@@ -8,51 +8,48 @@
 	{% include 'partials/flash.html.twig' %}
 
 	<div class="m-5 text-center col-12 col-sm-8 col-md-4 col-lg-4 col-xl-2 mx-auto">
-		<a href="{{ path('admin.project.add') }}" class="btn btn-outline-success btn-block text-primary">Add new Project</a>
+		<a href="{{ path('admin.project.add') }}" class="btn btn-outline-success btn-block text-primary shadow-sm">Add new Project</a>
 	</div>
 
 	{% if projects is not empty %}
-		<div class="table-responsive">
-			<table class="table table-light">
-				<thead>
-					<tr>
-						<th class="col-" class="bg-light" colspan="1"></th>
-						<th class="col-4">Title</th>
-						<th class="col-3">Image</th>
-						<th class="col-4">Actions</th>
-
-					</tr>
-				</thead>
-				<tbody>
-					{% for project in projects %}
+		{% for project in projects %}
+			<div class="table-responsive border mb-5 rounded shadow-sm">
+				<table class="table table-light table-borderless">
+					<thead>
+						<tr>
+							<th class="col-1"></th>
+							<th class="col-4">Title</th>
+							<th class="col-3">Image</th>
+							<th class="col-4">Actions</th>
+						</tr>
+					</thead>
+					<tbody>
 						<tr class="table">
-							<td class="col-1" class="bg-light" colspan="1"></td>
+							<td class="col-1"></td>
 
 							<td class="col-4">{{ project.title }}</td>
 							<td class="col-3">
 								<div class="position-relative">
-									{% if project.media is  empty %}
+									{% if project.media is empty %}
 										<a href="{{ path('admin.media.add', {id: project.id, source:'project'}) }}" class="btn btn-warning position-absolute top-0 start-50 translate-middle shadow-sm" style="width:40px;">
 											<i class="fa-solid fa-pen-to-square"></i>
 										</a>
-										<img src="/images/users/project.png" class="card-img-top" style="height:100px;width:auto">
-
+										<div class="placeholder border rounded" style="width: 100px; height:100px; background-color: #6c757d;"></div>
 									{% else %}
 										<form action="{{ path('admin.media.delete', {id: project.media.id, source:'project'}) }}" method="post">
 											<input type="hidden" name="_method" value="DELETE">
 											<button type="submit" class="btn btn-outline-danger d-flex align-items-center justify-content-center position-absolute top-0 start-50 translate-middle shadow-sm" style="width:40px; height: 40px;">
 												<i class="fa-solid fa-xmark text-primary"></i>
-
 											</button>
 										</form>
-										<img src="/images/users/project.png" class="card-img-top" style="height:100px;width:auto">
-
+										<div class="overflow-hidden" style="width: 100px; height: 100px;">
+											<img src="/images/users/{{ project.media.thumbnail }}" class="card-img-top" alt="{{ project.title }}">
+										</div>
 									{% endif %}
 								</div>
 							</td>
 
 							<td class="text-center col-4">
-
 								<a href="{{ path('admin.task.add', {id: project.id, source:'project'}) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center m-1 shadow-sm" style="width:100px; height: 38px;">Add Task</a>
 								<a href="{{ path('admin.project.edit', {id: project.id}) }}" class="btn btn-outline-warning btn-sm text-primary d-flex align-items-center justify-content-center m-1 shadow-sm" style="width:100px; height: 38px;">Edit</a>
 								<form action="{{ path('admin.project.delete', {id: project.id}) }}" method="post">
@@ -64,16 +61,16 @@
 
 						{% if project.task is not empty %}
 							{% for task in project.task %}
-								<tr class="table">
-									<td>
+								<tr>
+									<td class="col-1">
 										<strong>Task
 											{{ loop.index }}</strong>
 									</td>
-									<td colspan="5">
+									<td class="4">
 										<p>{{ task.Description }}</p>
 									</td>
-
-									<td colspan="2" class="text-center">
+									<td class="3"></td>
+									<td colspan="4" class="text-center">
 										<form action="{{ path('admin.task.delete', {id: task.id, source:'project'}) }}" method="post">
 											<input type="hidden" name="_method" value="DELETE">
 											<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
@@ -82,17 +79,17 @@
 								</tr>
 							{% endfor %}
 						{% else %}
-							<tr class="table-light">
+							<tr>
 								<td></td>
 								<td colspan="6" class="text-left">
 									No tasks for this project
 								</td>
 							</tr>
 						{% endif %}
-					{% endfor %}
-				</tbody>
-			</table>
-		</div>
+					</tbody>
+				</table>
+			</div>
+		{% endfor %}
 	{% else %}
 		<p class="text-center">No projects added</p>
 	{% endif %}

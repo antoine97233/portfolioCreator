@@ -51,6 +51,14 @@ class UserType extends AbstractType
                     'rows' => 8
                 ]
             ])
+            ->add('tel', TextType::class, [
+                'label' => "Phone number",
+                'required' => false
+            ])
+            ->add('Linkedin', TextType::class, [
+                'label' => "Linkedin URL",
+                'required' => false
+            ])
             ->add('isOpenToWork', CheckboxType::class, [
                 'label' => "Are you open to work ?",
                 'required' => false

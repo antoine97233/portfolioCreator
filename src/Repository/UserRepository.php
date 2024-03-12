@@ -126,13 +126,20 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     public function findUserWithMedia(int $userId): ?User
     {
         return $this->createQueryBuilder('u')
-            ->select('u', 'm')
+            ->select('u', 'm', 'e', 't', 'ss', 's', 'p', 'mp')
             ->leftJoin('u.media', 'm')
+            ->leftJoin('u.experiences', 'e')
+            ->leftJoin('e.task', 't')
+            ->leftJoin('u.projects', 'p')
+            ->leftJoin('p.media', 'mp')
+            ->leftJoin('u.scoreSkills', 'ss')
+            ->leftJoin('ss.skill', 's')
             ->where('u.id = :userId')
             ->setParameter('userId', $userId)
             ->getQuery()
             ->getOneOrNullResult();
     }
+
 
 
 
