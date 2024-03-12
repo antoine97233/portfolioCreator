@@ -28,19 +28,21 @@
 					</a>
 					<h2 class="display-5 pb-2">{{ user.title }}</h2>
 					<p class="fs-4 text-success">{{ user.subtitle }}</p>
-					<p class="fs-6">
-						<span class="text-success">Phone</span>
-						:
-						{{ user.tel }}
-					</p>
-					<p class="fs-6">
-						<span class="text-success">Linkedin link</span>
-						:
-						{{ user.linkedin }}
-					</p>
-					<p class="fs-5 text-justify">
-						{{ user.shortDescription }}
-					</p>
+					{% if user.tel is defined and user.tel is not empty %}
+						<p class="fs-6">
+							<span class="text-success">Phone</span>
+							:
+							{{ user.tel }}
+						</p>
+					{% endif %}
+
+					{% if user.linkedin is defined and user.linkedin is not empty %}
+						<p class="fs-6">
+							<span class="text-success">Linkedin link</span>
+							:
+							{{ user.linkedin }}
+						</p>
+					{% endif %}
 
 
 					<div class="mt-4" id="collapseProfile">

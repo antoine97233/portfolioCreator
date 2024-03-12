@@ -59,17 +59,17 @@ class HomeController extends AbstractController
             if ($request->query->has('selectedSkills')) {
                 $selectedSkills = $request->query->all()['selectedSkills'];
                 if ($isOpenToWork) {
-                    $users = $userRepository->findUserBySkillsAndOpenToWork($selectedSkills, true);
+                    $users = $userRepository->findUserBySkillsAndOpenToWork($selectedSkills, true, true);
                 } else {
-                    $users = $userRepository->findUserBySkills($selectedSkills);
+                    $users = $userRepository->findUserBySkills($selectedSkills, true);
                 }
             } elseif ($request->query->has('removeFilter')) {
                 return $this->redirectToRoute('users');
             } else {
                 if ($isOpenToWork) {
-                    $users = $userRepository->findBy(['isOpenToWork' => true]);
+                    $users = $userRepository->findUserByOpentoWorkandVisible(true, true);
                 } else {
-                    $users = $userRepository->findAll();
+                    $users = $userRepository->findUserVisible(true);
                 }
             }
         }

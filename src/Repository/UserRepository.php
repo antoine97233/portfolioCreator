@@ -44,50 +44,57 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
     }
 
 
+
     /**
-     * Récupère les utilisateurs à partir d'une skill
-     * 
+     * Récupère les utilisateurs à partir d'une skill.
+     *
      * @param array $skillIds
+     * @param bool $isVisible
+     *
      * @return User[]
      */
-    public function findUserBySkills(array $skillIds): array
+    public function findUserBySkills(array $skillIds, bool $isVisible): array
     {
         return $this->createQueryBuilder('u')
             ->join('u.scoreSkills', 'ss')
             ->join('ss.skill', 'sk')
-            ->where('sk.id IN (:skillIds)')
+            ->where('u.isVisible = :isVisible')
+            ->andWhere('sk.id IN (:skillIds)')
+            ->setParameter('isVisible', $isVisible)
             ->setParameter('skillIds', $skillIds)
             ->getQuery()
             ->getResult();
     }
 
-
     /**
-     * Récupère les utilisateurs avec les skills qui ont le statut openToWork
+     * Récupère les utilisateurs avec les skills qui ont le statut openToWork.
      *
-     * @param  mixed $skillIds
-     * @param  mixed $isOpenToWork
+     * @param array $skillIds
+     * @param bool $isOpenToWork
+     * @param bool $isVisible
+     *
      * @return array
      */
-    public function findUserBySkillsAndOpenToWork(array $skillIds, bool $isOpenToWork): array
+    public function findUserBySkillsAndOpenToWork(array $skillIds, bool $isOpenToWork, bool $isVisible): array
     {
         return $this->createQueryBuilder('u')
             ->join('u.scoreSkills', 'ss')
             ->join('ss.skill', 'sk')
-            ->where('sk.id IN (:skillIds)')
+            ->where('u.isVisible = :isVisible')
+            ->andWhere('sk.id IN (:skillIds)')
             ->andWhere('u.isOpenToWork = :isOpenToWork')
+            ->setParameter('isVisible', $isVisible)
             ->setParameter('skillIds', $skillIds)
             ->setParameter('isOpenToWork', $isOpenToWork)
             ->getQuery()
             ->getResult();
     }
 
-
-
     /**
-     * Récupère les utilisateurs qui ont choisi d'être visible
+     * Récupère les utilisateurs qui ont choisi d'être visible.
      *
-     * @param  mixed $isVisible
+     * @param bool $isVisible
+     *
      * @return array
      */
     public function findUserVisible(bool $isVisible): array
@@ -95,7 +102,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
         return $this->createQueryBuilder('u')
             ->select('u', 'm')
             ->leftJoin('u.media', 'm')
-            ->where('u.isVisible = :isVisible')
+            ->andWhere('u.isVisible = :isVisible')
             ->setParameter('isVisible', $isVisible)
             ->setMaxResults(2)
             ->setFirstResult(0)
@@ -103,12 +110,35 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getResult();
     }
 
+    /**
+     * Récupère les utilisateurs qui ont choisi d'être visible.
+     *
+     * @param bool $isVisible
+     * @param bool $isOpenToWork
+     *
+     * @return array
+     */
+    public function findUserByOpentoWorkandVisible(bool $isVisible, bool $isOpenToWork): array
+    {
+        return $this->createQueryBuilder('u')
+            ->select('u', 'm')
+            ->leftJoin('u.media', 'm')
+            ->andWhere('u.isVisible = :isVisible')
+            ->andWhere('u.isOpenToWork = :isOpenToWork')
+            ->setParameter('isVisible', $isVisible)
+            ->setParameter('isOpenToWork', $isOpenToWork)
+            ->setMaxResults(2)
+            ->setFirstResult(0)
+            ->getQuery()
+            ->getResult();
+    }
 
     /**
-     * Récupère un utilisateur avec toutes les données qui lui appartiennent
+     * Récupère un utilisateur avec toutes les données qui lui appartiennent.
      *
-     * @param  mixed $userId
-     * @return User
+     * @param int $userId
+     *
+     * @return User|null
      */
     public function findUserWithAll(int $userId): ?User
     {
@@ -126,6 +156,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getQuery()
             ->getOneOrNullResult();
     }
+
 
 
 

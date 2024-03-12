@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
@@ -21,10 +22,12 @@ use SymfonyCasts\Bundle\VerifyEmail\Exception\VerifyEmailExceptionInterface;
 class RegistrationController extends AbstractController
 {
     private EmailVerifier $emailVerifier;
+    private TokenStorageInterface $tokenStorage;
 
-    public function __construct(EmailVerifier $emailVerifier)
+    public function __construct(EmailVerifier $emailVerifier, TokenStorageInterface $tokenStorage)
     {
         $this->emailVerifier = $emailVerifier;
+        $this->tokenStorage = $tokenStorage;
     }
 
     #[Route('/register', name: 'register')]
@@ -68,7 +71,8 @@ class RegistrationController extends AbstractController
                 $authenticator,
                 $request
             );
-            return $this->redirectToRoute('email_verification_prompt', ['email' => $user->getEmail()]);
+
+            return $this->redirectToRoute('email.verification.prompt', ['email' => $user->getEmail()]);
         }
 
         return $this->render('registration/register.html.twig', [
@@ -76,9 +80,11 @@ class RegistrationController extends AbstractController
         ]);
     }
 
-    #[Route('/verify/email/prompt', name: 'email_verification_prompt')]
+    #[Route('/verify/email/prompt', name: 'email.verification.prompt')]
     public function emailVerificationPrompt(): Response
     {
+        $this->tokenStorage->setToken(null);
+
         return $this->render('registration/email_verification_prompt.html.twig');
     }
 
