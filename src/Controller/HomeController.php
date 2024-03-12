@@ -37,21 +37,29 @@ class HomeController extends AbstractController
         Request $request
     ): Response {
         $skills = $skillRepository->findAllWithCount();
-        $usersTotal = $userRepository->findAllWithCount();
         $selectedSkills = [];
         $isOpenToWork = $request->query->get('filterAvailability', false);
 
         if ($request->isMethod('GET')) {
             if ($request->query->has('selectedSkills')) {
                 $selectedSkills = $request->query->all()['selectedSkills'];
-                $users = $userRepository->findBySkillsAndOpenToWork($selectedSkills, $isOpenToWork);
-                $usersTotal = count($users);
+                if ($isOpenToWork) {
+                    $users = $userRepository->findBySkillsAndOpenToWork($selectedSkills, true);
+                } else {
+                    $users = $userRepository->findBySkills($selectedSkills);
+                }
             } elseif ($request->query->has('removeFilter')) {
                 return $this->redirectToRoute('users');
             } else {
-                $users = $userRepository->findByOpenToWork($isOpenToWork);
+                if ($isOpenToWork) {
+                    $users = $userRepository->findBy(['isOpenToWork' => true]);
+                } else {
+                    $users = $userRepository->findAll();
+                }
             }
         }
+
+        $usersTotal = count($users);
 
         return $this->render('public/userList.html.twig', [
             'users' => $users,
@@ -61,6 +69,9 @@ class HomeController extends AbstractController
             'isOpenToWork' => $isOpenToWork,
         ]);
     }
+
+
+
 
 
 
