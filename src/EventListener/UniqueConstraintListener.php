@@ -4,7 +4,7 @@
 namespace App\EventListener;
 
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\ExceptionEvent;
 
 class UniqueConstraintListener
@@ -18,9 +18,7 @@ class UniqueConstraintListener
         if ($exception instanceof UniqueConstraintViolationException) {
             $this->errorMessage = 'Duplicate data';
 
-            $response = new JsonResponse([
-                'error' => $this->errorMessage,
-            ], 400);
+            $response = new Response($this->errorMessage, 400);
 
             $event->setResponse($response);
         }
