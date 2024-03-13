@@ -5,7 +5,6 @@ namespace App\Entity;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
-use App\Validator\UniqueSkill;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Serializer\Annotation\Groups;
@@ -99,8 +98,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $experiences;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $apiToken = null;
 
     #[ORM\OneToMany(targetEntity: ScoreSkill::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $scoreSkills;
@@ -375,17 +372,6 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         return $this;
     }
 
-    public function getApiToken(): ?string
-    {
-        return $this->apiToken;
-    }
-
-    public function setApiToken(?string $apiToken): static
-    {
-        $this->apiToken = $apiToken;
-
-        return $this;
-    }
 
     /**
      * @return Collection<int, ScoreSkill>

@@ -6,7 +6,6 @@ use App\Entity\Skill;
 use Doctrine\Bundle\FixturesBundle\Fixture;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
-use Faker\Factory;
 
 class SkillFixtures extends Fixture implements DependentFixtureInterface
 {
@@ -21,18 +20,25 @@ class SkillFixtures extends Fixture implements DependentFixtureInterface
 
     public function loadSkills(ObjectManager $manager): void
     {
-        $faker = Factory::create();
 
-        $skills = ['Bootstrap', 'HTML', 'Symfony', 'NestJS'];
+        $skills = [
+            'HTML',
+            'CSS',
+            'JavaScript',
+            'Python',
+            'Java',
+            'PHP',
+            'Ruby',
+            'Swift',
+            'TypeScript',
+            'C++',
+            'Vue.js'
+        ];
 
         foreach ($skills as $skillTitle) {
             $skill = new Skill();
             $skill->setTitle($skillTitle);
             $manager->persist($skill);
-
-            for ($i = 1; $i <= 20; $i++) {
-                $this->getReference('USER' . $i)->addSkill($skill);
-            }
         }
 
         $manager->flush();

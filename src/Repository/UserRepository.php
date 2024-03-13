@@ -104,7 +104,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->leftJoin('u.media', 'm')
             ->andWhere('u.isVisible = :isVisible')
             ->setParameter('isVisible', $isVisible)
-            ->setMaxResults(2)
+            ->setMaxResults(10)
             ->setFirstResult(0)
             ->getQuery()
             ->getResult();
@@ -127,7 +127,7 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->andWhere('u.isOpenToWork = :isOpenToWork')
             ->setParameter('isVisible', $isVisible)
             ->setParameter('isOpenToWork', $isOpenToWork)
-            ->setMaxResults(2)
+            ->setMaxResults(10)
             ->setFirstResult(0)
             ->getQuery()
             ->getResult();

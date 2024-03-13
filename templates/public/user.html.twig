@@ -57,6 +57,9 @@
 				<div class="col-md-4 col-12 text-center p-4 overflow-hidden">
 					{% if user.media is not null %}
 						<img src="/images/users/{{ user.media.thumbnail }}" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
+					{% else %}
+						<img src="/images/users/user.png" class="card-img-top rounded-circle" alt="{{ user.fullname }}">
+
 					{% endif %}
 
 				</div>
