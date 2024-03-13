@@ -5,15 +5,24 @@ namespace App\Controller;
 use App\Entity\User;
 use App\Repository\SkillRepository;
 use App\Repository\UserRepository;
+use App\Service\UserSearchService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Requirement\Requirement;
+use Knp\Component\Pager\PaginatorInterface;
 
 class HomeController extends AbstractController
 {
+
+    private PaginatorInterface $paginator;
+
+    public function __construct(PaginatorInterface $paginator)
+    {
+        $this->paginator = $paginator;
+    }
 
     /**
      * Affiche la page d'accueil avec le composant de recherche d'utilisateur
@@ -28,7 +37,7 @@ class HomeController extends AbstractController
         Request $request
     ): Response {
 
-        $users = $userRepository->findUserVisible(true);
+        $users = $userRepository->findUserVisible(true, true);
 
         return $this->render('public/index.html.twig', [
             'users' => $users,
@@ -45,34 +54,36 @@ class HomeController extends AbstractController
      * @param Request $request
      * @return Response
      */
-    #[Route('/users', name: 'users', methods: ['GET', 'POST'])]
+    #[Route('/users', name: 'users', methods: ['GET'])]
     public function showUsers(
         UserRepository $userRepository,
         SkillRepository $skillRepository,
         Request $request
     ): Response {
-        $skills = $skillRepository->findSkillsWithCount();
         $selectedSkills = [];
-        $isOpenToWork = $request->query->get('filterAvailability', false);
+        $isVisible = true;
 
         if ($request->isMethod('GET')) {
+            $isOpenToWork = $request->query->get('isUserAvalaible');
+            $skills = $skillRepository->findSkillsWithCount($isOpenToWork);
+
             if ($request->query->has('selectedSkills')) {
-                $selectedSkills = $request->query->all()['selectedSkills'];
-                if ($isOpenToWork) {
-                    $users = $userRepository->findUserBySkillsAndOpenToWork($selectedSkills, true, true);
-                } else {
-                    $users = $userRepository->findUserBySkills($selectedSkills, true);
-                }
+                $selectedSkills = array_map('intval', $request->query->all()['selectedSkills']);
+                $users = $userRepository->findUserBySkills($selectedSkills, $isVisible, $isOpenToWork);
             } elseif ($request->query->has('removeFilter')) {
                 return $this->redirectToRoute('users');
             } else {
-                if ($isOpenToWork) {
-                    $users = $userRepository->findUserByOpentoWorkandVisible(true, true);
-                } else {
-                    $users = $userRepository->findUserVisible(true);
-                }
+                $selectedSkills = [];
+                $users = $userRepository->findUserBySkills($selectedSkills, $isVisible, $isOpenToWork);
             }
         }
+
+        $users = $this->paginator->paginate(
+            $users, /* query NOT result */
+            $request->query->getInt('page', 1), /*page number*/
+            10 /*limit per page*/
+        );
+
 
         $usersTotal = count($users);
 

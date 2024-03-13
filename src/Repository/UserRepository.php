@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\ORM\Query;
 use Doctrine\Persistence\ManagerRegistry;
 use Knp\Component\Pager\Pagination\PaginationInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -46,25 +47,44 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
 
 
     /**
-     * Récupère les utilisateurs à partir d'une skill.
+     * Récupère les utilisateurs possédant toutes les compétences spécifiées.
      *
      * @param array $skillIds
      * @param bool $isVisible
      *
-     * @return User[]
+     * @return Query
      */
-    public function findUserBySkills(array $skillIds, bool $isVisible): array
+    // ...
+
+    public function findUserBySkills(array $skillIds, bool $isVisible, ?bool $isOpenToWork): Query
     {
-        return $this->createQueryBuilder('u')
-            ->join('u.scoreSkills', 'ss')
-            ->join('ss.skill', 'sk')
-            ->where('u.isVisible = :isVisible')
-            ->andWhere('sk.id IN (:skillIds)')
-            ->setParameter('isVisible', $isVisible)
-            ->setParameter('skillIds', $skillIds)
-            ->getQuery()
-            ->getResult();
+        $queryBuilder = $this->createQueryBuilder('u');
+
+        foreach ($skillIds as $key => $skillId) {
+            $alias = 'sk' . $key;
+            $queryBuilder
+                ->join('u.scoreSkills', $alias)
+                ->andWhere($alias . '.skill = :skillId' . $key)
+                ->andWhere($alias . '.score IS NOT NULL') // Ajout pour s'assurer que l'utilisateur a un score pour cette compétence
+                ->setParameter('skillId' . $key, $skillId);
+        }
+
+        $queryBuilder
+            ->andWhere('u.isVisible = :isVisible')
+            ->setParameter('isVisible', $isVisible);
+
+        if ($isOpenToWork !== null) {
+            $queryBuilder
+                ->andWhere('u.isOpenToWork = :isOpenToWork')
+                ->setParameter('isOpenToWork', $isOpenToWork);
+        }
+
+        return $queryBuilder->getQuery();
     }
+
+
+
+    // ...
 
     /**
      * Récupère les utilisateurs avec les skills qui ont le statut openToWork.
@@ -94,20 +114,22 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      * Récupère les utilisateurs qui ont choisi d'être visible.
      *
      * @param bool $isVisible
-     *
-     * @return array
+     * @param bool $isOpenToWork
+     * 
+     * @return Query
      */
-    public function findUserVisible(bool $isVisible): array
+    public function findUserVisible(bool $isVisible, bool $isOpenToWork): Query
     {
         return $this->createQueryBuilder('u')
             ->select('u', 'm')
             ->leftJoin('u.media', 'm')
             ->andWhere('u.isVisible = :isVisible')
             ->setParameter('isVisible', $isVisible)
-            ->setMaxResults(10)
+            ->andWhere('u.isOpenToWork = :isOpenToWork')
+            ->setParameter('isOpenToWork', $isOpenToWork)
+            ->setMaxResults(4)
             ->setFirstResult(0)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
 
     /**
@@ -116,9 +138,9 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
      * @param bool $isVisible
      * @param bool $isOpenToWork
      *
-     * @return array
+     * @return Query
      */
-    public function findUserByOpentoWorkandVisible(bool $isVisible, bool $isOpenToWork): array
+    public function findUserByOpentoWorkandVisible(bool $isVisible, bool $isOpenToWork): Query
     {
         return $this->createQueryBuilder('u')
             ->select('u', 'm')
@@ -127,11 +149,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->andWhere('u.isOpenToWork = :isOpenToWork')
             ->setParameter('isVisible', $isVisible)
             ->setParameter('isOpenToWork', $isOpenToWork)
-            ->setMaxResults(10)
+            ->setMaxResults(5)
             ->setFirstResult(0)
-            ->getQuery()
-            ->getResult();
+            ->getQuery();
     }
+
+
 
     /**
      * Récupère un utilisateur avec toutes les données qui lui appartiennent.

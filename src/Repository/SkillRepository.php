@@ -20,23 +20,33 @@ class SkillRepository extends ServiceEntityRepository
     {
         parent::__construct($registry, Skill::class);
     }
+    // ...
+
 
     /**
-     * Récupère les skills avec le nb d'associations par utilisateur
-     * 
+     * Récupère les skills avec le nb d'associations par utilisateur, en prenant en compte le filtre isOpenToWork.
+     *
+     * @param bool $isOpenToWork
      * @return SkillWithCountDTO[]
      */
-    public function findSkillsWithCount(): array
+    public function findSkillsWithCount(?bool $isOpenToWork): array
     {
-        return $this->createQueryBuilder('s')
+        $queryBuilder = $this->createQueryBuilder('s')
             ->select('NEW App\\DTO\\SkillWithCountDTO(s.id, s.title, COUNT(DISTINCT ss.user))')
-            ->leftJoin('s.scoreSkills', 'ss')
+            ->leftJoin('s.scoreSkills', 'ss');
+
+        if ($isOpenToWork) {
+            $queryBuilder->join('ss.user', 'u')
+                ->andWhere('u.isOpenToWork = :isOpenToWork')
+                ->setParameter('isOpenToWork', $isOpenToWork);
+        }
+
+        return $queryBuilder
             ->groupBy('s.id, s.title')
             ->orderBy('COUNT(DISTINCT ss.user)', 'DESC')
             ->getQuery()
             ->getResult();
     }
-
 
 
     //    /**
