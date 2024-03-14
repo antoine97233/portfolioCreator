@@ -21,17 +21,11 @@ final class Version20240305082709 extends AbstractMigration
     {
         // this up() migration is auto-generated, please modify it to your needs
         // $this->addSql('CREATE UNIQUE INDEX unique_user_skill ON score_skill (user_id, skill_id)');
-
-        // Drop the existing index if it exists
-        $this->addSql('DROP INDEX IF EXISTS unique_user_skill ON score_skill');
-
-        // Create the new unique index
-        $this->addSql('CREATE UNIQUE INDEX unique_user_skill ON score_skill (user_id, skill_id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('DROP INDEX unique_user_skill ON score_skill');
+        // $this->addSql('DROP INDEX unique_user_skill ON score_skill');
     }
 }
