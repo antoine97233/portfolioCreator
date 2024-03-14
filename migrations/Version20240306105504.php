@@ -20,7 +20,7 @@ final class Version20240306105504 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE media ADD user_id INT DEFAULT NULL');
+        // $this->addSql('ALTER TABLE media ADD user_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE media ADD CONSTRAINT FK_6A2CA10CA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('CREATE INDEX IDX_6A2CA10CA76ED395 ON media (user_id)');
         $this->addSql('ALTER TABLE user DROP FOREIGN KEY FK_8D93D649EA9FDD75');
