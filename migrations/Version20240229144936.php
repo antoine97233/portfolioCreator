@@ -20,7 +20,7 @@ final class Version20240229144936 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE task DROP FOREIGN KEY FK_527EDB2546E90E27');
+        // $this->addSql('ALTER TABLE task DROP FOREIGN KEY FK_527EDB2546E90E27');
         // $this->addSql('DROP INDEX IDX_527EDB2546E90E27 ON task');
         $this->addSql('ALTER TABLE task DROP experience_id');
     }
