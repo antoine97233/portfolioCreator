@@ -24,6 +24,7 @@ final class Version20240306105504 extends AbstractMigration
         // $this->addSql('ALTER TABLE media ADD CONSTRAINT FK_6A2CA10CA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
         $this->addSql('ALTER TABLE media ADD CONSTRAINT fk_media_user FOREIGN KEY (user_id) REFERENCES user (id)');
         // $this->addSql('CREATE INDEX IDX_6A2CA10CA76ED395 ON media (user_id)');
+        $this->addSql('DROP INDEX IDX_6A2CA10CA76ED395 ON media');
         $this->addSql('CREATE INDEX idx_media_user_id ON media (user_id)');
 
         $this->addSql('ALTER TABLE user DROP FOREIGN KEY FK_8D93D649EA9FDD75');
