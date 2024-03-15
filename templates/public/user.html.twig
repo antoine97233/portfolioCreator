@@ -8,7 +8,7 @@
 	{% include 'partials/flash.html.twig' %}
 
 
-	<div class="card  mb-4 mt-4 border shadow-sm">
+	<div class="card  mb-4 border shadow-sm">
 		<h1 class="h4 card-header d-flex justify-content-between">{{user.fullname}}
 
 			{% if user.isOpenToWork %}
@@ -70,7 +70,7 @@
 	</div>
 
 	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-		<h3 class="display-5">Experiences</h2>
+		<h3 class="display-5 p-2">Experiences</h2>
 		<div class="container-fluid py-5">
 			{% for experience in user.experiences %}
 				{% if not experience.isFormation %}
@@ -102,7 +102,7 @@
 	</div>
 
 	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-		<h3 class="display-5">School</h2>
+		<h3 class="display-5 p-2">School</h2>
 		<div class="container-fluid py-5">
 			{% for experience in user.experiences %}
 				{% if  experience.isFormation %}
@@ -134,7 +134,7 @@
 	</div>
 
 	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-		<h3 class="display-5">Skills</h2>
+		<h3 class="display-5 p-2">Skills</h2>
 		<div class="container-fluid py-5">
 			{% for scoreSkill in user.scoreSkills %}
 				<div class="d-flex flex-wrap">
@@ -157,7 +157,7 @@
 	</div>
 
 	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-		<h3 class="display-5">Projects</h3>
+		<h3 class="display-5 p-2">Projects</h3>
 		<div class="container-fluid py-5">
 			<div class="d-flex flex-wrap justify-content-start gap-5">
 				{% for project in user.projects %}
@@ -214,7 +214,7 @@
 
 	{% if user.tel or user.linkedin  %}
 		<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-			<h3 class="display-5">Contact</h2>
+			<h3 class="display-5 p-2">Contact</h2>
 
 			<div class="container-fluid py-5">
 				<ul class="list-unstyled d-flex justify-content-start flex-wrap">

@@ -13,3 +13,26 @@ body{
 .form-check-input:checked {
     background-color: #18bc9c; /* Vert Bootstrap */
 }
+
+#navbar {
+  transition: top 0.3s;
+}
+
+#footer {
+    transition: bottom 0.3s;
+  }
+
+
+#myBtn {
+    display: none; /* Hidden by default */
+    position: fixed; /* Fixed/sticky position */
+    bottom: 30px; /* Place the button at the bottom of the page */
+    right: 30px; /* Place the button 30px from the right */
+    z-index: 1040;
+  }
+
+#myBtn i{
+    color:white;    
+  }
+  
+  

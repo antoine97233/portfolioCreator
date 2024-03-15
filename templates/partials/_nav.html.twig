@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary shadow-sm">
+<nav id="navbar" class="navbar navbar-expand-lg fixed-top navbar-dark bg-primary shadow-sm">
 	<div class="container-fluid container">
 		<a class="navbar-brand" href="{{ path('home')}}">
 			<i class="fa-solid fa-briefcase mr-2"></i>
@@ -14,6 +14,10 @@
 		</button>
 		<div class="collapse navbar-collapse" id="navbarColor03">
 			<ul class="navbar-nav ms-auto">
+
+				<li class="nav-item">
+					<a class="nav-link " href="{{path('users')}}">Users</a>
+				</li>
 
 				{% if app.user %}
 					<li class="nav-item">
@@ -55,7 +59,6 @@
 						<a class="nav-link " href="{{path('register')}}">Sign up</a>
 					</li>
 				{% endif %}
-
 
 			</ul>
 		</div>

@@ -5,42 +5,45 @@
 
 {% block body %}
 
-	<div class="mt-4 pt-5">
-		<h1 class="text-center">Welcome to PortFolio
-			<span class="text-success">Creator</span>
-		</h1>
-		<h2 class="mb-4 text-center">
-			<small class="text-secondary-emphasis">Sign up to begin or login to continue</small>
-		</h2>
-		<p class="lead text-center">
-			<small class="text-secondary-emphasis">Hi 👋 ! I am Antoine Jolivet, the developer of this application. You can find my own portfolio by following this
-				<strong>
-					<a href="#">link</a>
-				</strong>, or find me in the search input below !
-			</small>
-		</p>
-	</div>
-
-	<div class="d-flex justify-content-center pt-4">
-		<div class="text-center mt-52 p-2">
-			<a href="{{path('users')}}" type="button" class="btn btn-success  shadow-sm" style="width:150px">
-				<i class="fa-solid fa-user mr-2"></i>
-				See all users</a>
+	<div class="position-absolute top-50 start-50 translate-middle mt-4 mt-md-0 pt-4 pt-md-0">
+		<div class="mt-4">
+			<h1 class="text-center">Welcome to PortFolio
+				<span class="text-success">Creator</span>
+			</h1>
+			<h2 class="h4 mb-4 text-center">
+				<small class="text-secondary-emphasis">Sign up to begin or login to continue</small>
+			</h2>
+			<p class="lead text-center">
+				<small class="text-secondary-emphasis">Hi 👋 ! I am Antoine Jolivet, the developer of this application. You can find my own portfolio by following this
+					<strong>
+						<a href="https://portfoliocreator.antoine-jolivet.fr/antoinej/1">link</a>
+					</strong>, or find me in the search input below !
+				</small>
+			</p>
 		</div>
-		<div class="text-center mt-52 p-2">
-			<a href="{{path('api_users_get')}}" type="button" class="btn btn-primary shadow-sm" style="width:150px">
-				<i class="fa-solid fa-rss mr-2"></i>API</a>
+
+		<div class="d-flex justify-content-center pt-4">
+			<div class="text-center mt-52 p-2">
+				<a href="{{path('users')}}" type="button" class="btn btn-success  shadow-sm" style="width:150px">
+					<i class="fa-solid fa-user mr-2"></i>
+					See all users</a>
+			</div>
+			<div class="text-center mt-52 p-2">
+				<a href="{{path('api_users_get')}}" type="button" class="btn btn-primary shadow-sm" style="width:150px">
+					<i class="fa-solid fa-rss mr-2"></i>API</a>
+			</div>
 		</div>
-	</div>
 
 
-	<div class="container pt-5">
-		<h3 class="h5 text-center pb-2 text-secondary">
-			<i class="fa-solid fa-magnifying-glass"></i>
-			Search an user here</h2>
-		{{ component('user_search', {
+		<div class="container pt-5">
+			<h3 class="h5 text-center pb-2 text-secondary">
+				<i class="fa-solid fa-magnifying-glass"></i>
+				Search an user here</h2>
+			{{ component('user_search', {
         query: query
     }) }}
+		</div>
+
 	</div>
 
 
