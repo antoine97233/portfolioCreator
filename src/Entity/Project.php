@@ -24,7 +24,7 @@ class Project
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank()]
-    #[Assert\Length(min: 1, max: 500)]
+    #[Assert\Length(min: 1, max: 1000)]
     private ?string $description = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]

@@ -29,20 +29,6 @@ if (mybutton) {
   mybutton.addEventListener("click", scrollToTop);
 }
 
-// Code pour masquer la barre de navigation lors du défilement
-let prevScrollpos = window.scrollY
-let nav = document.getElementById('navbar');
-if (nav) {
-  window.onscroll = function() {
-    let currentScrollPos = window.scrollY;
-    if (prevScrollpos > currentScrollPos || currentScrollPos === 0) {
-      nav.style.top = "0";
-    } else {
-      nav.style.top = "-100px";
-    }
-    prevScrollpos = currentScrollPos;
-  }
-}
 
 // Écouteur d'événement pour déclencher la fonction du bouton de retour en haut de la page
 window.addEventListener("scroll", toggleTopButton);
