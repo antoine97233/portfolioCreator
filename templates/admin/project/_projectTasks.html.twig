@@ -1,0 +1,14 @@
+<td class="col-1">
+	<strong>Task
+		{{ loop.index }}</strong>
+</td>
+<td class="4">
+	<p>{{ task.Description }}</p>
+</td>
+<td class="3"></td>
+<td colspan="4" class="text-center">
+	<form action="{{ path('admin.task.delete', {id: task.id, source:'project'}) }}" method="post">
+		<input type="hidden" name="_method" value="DELETE">
+		<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
+	</form>
+</td>

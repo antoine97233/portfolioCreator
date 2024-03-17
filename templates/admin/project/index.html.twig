@@ -73,63 +73,21 @@
 							</td>
 						</tr>
 
-						<div class="modal fade" id="exampleModalToggle" aria-hidden="true" aria-labelledby="exampleModalToggleLabel" tabindex="-1">
-							<div class="modal-dialog modal-dialog-centered">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h1 class="modal-title fs-5" id="exampleModalToggleLabel">Short Description</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										{{ project.description }}
-									</div>
-									<div class="modal-footer">
-										<button class="btn btn-outline-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">Show long description</button>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
-							<div class="modal-dialog modal-dialog-centered">
-								<div class="modal-content">
-									<div class="modal-header">
-										<h1 class="modal-title fs-5" id="exampleModalToggleLabel2">Long description</h1>
-										<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-									</div>
-									<div class="modal-body">
-										{{ project.longDescription }}
-									</div>
-									<div class="modal-footer">
-										<button class="btn btn-outline-primary" data-bs-target="#exampleModalToggle" data-bs-toggle="modal">Back to short description</button>
-									</div>
-								</div>
-							</div>
-						</div>
+						{{ include('admin/project/_projectModal.html.twig') }}
+
 
 						{% if project.task is not empty %}
 							{% for task in project.task %}
 								<tr>
-									<td class="col-1">
-										<strong>Task
-											{{ loop.index }}</strong>
-									</td>
-									<td class="4">
-										<p>{{ task.Description }}</p>
-									</td>
-									<td class="3"></td>
-									<td colspan="4" class="text-center">
-										<form action="{{ path('admin.task.delete', {id: task.id, source:'project'}) }}" method="post">
-											<input type="hidden" name="_method" value="DELETE">
-											<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center" style="width:100px; height: 38px;">Delete</button>
-										</form>
-									</td>
+									{{ include('admin/project/_projectTasks.html.twig') }}
+
 								</tr>
 							{% endfor %}
 						{% else %}
 							<tr>
 								<td></td>
 								<td colspan="6" class="text-left">
-									No tasks for this project
+									No task for this project
 								</td>
 							</tr>
 						{% endif %}
