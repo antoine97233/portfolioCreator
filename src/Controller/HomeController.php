@@ -87,7 +87,7 @@ class HomeController extends AbstractController
 
         $usersTotal = count($users);
 
-        return $this->render('public/userList.html.twig', [
+        return $this->render('public/userList/index.html.twig', [
             'users' => $users,
             'usersTotal' => $usersTotal,
             'skills' => $skills,
@@ -117,7 +117,7 @@ class HomeController extends AbstractController
             return $this->redirectToRoute('user', ['slug' => $user->getSlug(), 'id' => $user->getId()]);
         }
 
-        return $this->render('public/user.html.twig', [
+        return $this->render('public/user/userProfile.html.twig', [
             'user' => $user
         ]);
     }

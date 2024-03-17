@@ -1,0 +1,24 @@
+<div class="d-flex flex-wrap">
+	<div class="col-md-7 col-12 p-2">
+		<h5 class="text-success">
+			<i class="fa-solid fa-suitcase fa-sm mr-2"></i>
+			{{ experience.title }}
+		</h5>
+		<span class="ml-2">{{ experience.location }}</span>
+		<span class="ml-3">
+			({{ experience.startDate|date("d/m/Y") }}
+			-
+			{{ experience.endDate|date("d/m/Y") }})
+		</span>
+	</div>
+</div>
+
+<div class="mb-5">
+	<ul>
+		{% if experience.task is not null %}
+			{% for task in experience.task %}
+				<li>{{ task.description }}</li>
+			{% endfor %}
+		{% endif %}
+	</ul>
+</div>

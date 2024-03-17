@@ -20,13 +20,20 @@ class Experience
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank()]
-    #[Assert\Length(min: 2, max: 100)]
+    #[Assert\Length(min: 2, max: 255)]
     #[BanWord()]
     private string $title = '';
 
+
+    #[ORM\Column(type: Types::TEXT, length: 500)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 2, max: 500)]
+    private ?string $description = '';
+
+
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank()]
-    #[Assert\Length(min: 1, max: 100)]
+    #[Assert\Length(min: 1, max: 255)]
     #[BanWord()]
     private string $location = '';
 
@@ -68,6 +75,18 @@ class Experience
     public function setTitle(string $title): static
     {
         $this->title = $title;
+
+        return $this;
+    }
+
+    public function getDescription(): ?string
+    {
+        return $this->description;
+    }
+
+    public function setDescription(?string $description): static
+    {
+        $this->description = $description;
 
         return $this;
     }

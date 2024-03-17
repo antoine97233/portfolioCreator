@@ -19,7 +19,7 @@ class Project
 
     #[ORM\Column(type: Types::STRING, length: 255)]
     #[Assert\NotBlank()]
-    #[Assert\Length(min: 1, max: 100)]
+    #[Assert\Length(min: 1, max: 255)]
     private ?string $title = '';
 
     #[ORM\Column(type: Types::STRING, length: 500)]

@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}PortFolioCreator - All users
+{% endblock %}
+
+{% block body %}
+
+
+	<div class="row">
+
+		{{ include('public/userList/_userFilter.html.twig') }}
+
+
+		<div class="col-12 col-lg-9">
+			<div class="flex row ">
+				{% if users is not empty %}
+
+					{% for user in users %}
+						{{ include('public/userList/_userCard.html.twig') }}
+
+					{% endfor %}
+				{% endif %}
+			</div>
+
+			<div class="pagination d-flex justify-content-center mt-4 mb-4">
+				{{ knp_pagination_render(users) }}
+			</div>
+
+
+		</div>
+
+
+	{% endblock %}

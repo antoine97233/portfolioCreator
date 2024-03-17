@@ -17,44 +17,48 @@
 				<table class="table table-light table-borderless">
 					<thead>
 						<tr>
-							<th scope="col"></th>
-							<th scope="col">Title</th>
-							<th scope="col">Type</th>
-							<th scope="col">Location</th>
-							<th scope="col">Start Date</th>
-							<th scope="col">End Date</th>
-							<th scope="col">Actions</th>
+							<th class="col-1"></th>
+							<th class="col-3">Title</th>
+							<th class="col-2">Type</th>
+							<th class="col-2">Location</th>
+							<th class="col-1">Start Date</th>
+							<th class="col-1">End Date</th>
+							<th class="col-2">Actions</th>
 						</tr>
 					</thead>
 					<tbody>
 						<tr class="table">
-							<td scope="col"></td>
+							<td class="col-1"></td>
 
-							<td>{{ experience.title }}</td>
-							<td>
+							<td class="col-3">{{ experience.title }}</td>
+							<td class="col-2">
 								{% if experience.isFormation %}
 									Academic
 								{% else %}
 									Professional
 								{% endif %}
 							</td>
-							<td>{{ experience.location }}</td>
-							<td>{{ experience.startDate|date("d/m/Y") }}</td>
-							<td>{{ experience.endDate ? experience.endDate|date("d/m/Y") : 'Present' }}</td>
-							<td class="text-center d-flex gap-1">
-								<a href="{{ path('admin.task.add', {id: experience.id, source:'experience'}) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center shadow-sm" style="width:100px; height: 38px;">Add Task</a>
-								<a href="{{ path('admin.experience.edit', {id: experience.id}) }}" class="btn btn-outline-warning btn-sm text-primary d-flex align-items-center justify-content-center shadow-sm" style="width:100px; height: 38px;">Edit</a>
+							<td class="col-2">{{ experience.location }}</td>
+							<td class="col-1">{{ experience.startDate|date("d/m/Y") }}</td>
+							<td class="col-1">{{ experience.endDate ? experience.endDate|date("d/m/Y") : 'Present' }}</td>
+							<td class="text-center col-2">
+								<button class="btn btn-outline-success d-flex align-items-center justify-content-center m-1 shadow-sm" data-bs-target="#exampleModalToggle" data-bs-toggle="modal" style="width:100px; height: 38px;">Details</button>
+								<a href="{{ path('admin.task.add', {id: experience.id, source:'experience'}) }}" class="btn btn-outline-primary btn-sm d-flex align-items-center justify-content-center m-1 shadow-sm" style="width:100px; height: 38px;">Add Task</a>
+								<a href="{{ path('admin.experience.edit', {id: experience.id}) }}" class="btn btn-outline-warning btn-sm text-primary d-flex align-items-center justify-content-center m-1 shadow-sm" style="width:100px; height: 38px;">Edit</a>
 								<form action="{{ path('admin.experience.delete', {id: experience.id}) }}" method="post">
 									<input type="hidden" name="_method" value="DELETE">
-									<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center shadow-sm" style="width:100px; height: 38px;">Delete</button>
+									<button type="submit" class="btn btn-outline-danger btn-sm text-primary d-flex align-items-center justify-content-center m-1 shadow-sm" style="width:100px; height: 38px;">Delete</button>
 								</form>
 							</td>
 						</tr>
 
+						{{ include('admin/experience/_experienceModal.html.twig') }}
+
+
 						{% if experience.task is not empty %}
 							{% for task in experience.task %}
 								<tr class="table">
-									<td>
+									<td class>
 										<strong>Task
 											{{ loop.index }}</strong>
 									</td>

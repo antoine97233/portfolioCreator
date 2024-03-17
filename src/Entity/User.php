@@ -25,7 +25,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Groups('users.index')]
     private ?int $id = null;
 
-    #[ORM\Column(length: 180, unique: true)]
+    #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Groups('users.index')]
     private ?string $username = null;
 
@@ -93,11 +93,8 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[Assert\URL]
     private ?string $linkedin = null;
 
-
-
     #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $experiences;
-
 
     #[ORM\OneToMany(targetEntity: ScoreSkill::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $scoreSkills;

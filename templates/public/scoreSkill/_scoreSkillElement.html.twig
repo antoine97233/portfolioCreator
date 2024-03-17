@@ -1,0 +1,15 @@
+<div class="d-flex flex-wrap">
+	<div class="col-12 p-2">
+		<h5 class="">
+			<i class="fa-solid fa-code fa-sm mr-2"></i>
+			{{ scoreSkill.skill.title }}
+		</h5>
+
+		<div class="col-12 col-md-4 col-lg-4">
+			<div class="progress">
+				<div class="progress-bar bg-success" role="progressbar" style="width: {{ (scoreSkill.score / 5) * 100 }}%;" aria-valuenow="{{ scoreSkill.score }}" aria-valuemin="0" aria-valuemax="5"></div>
+			</div>
+		</div>
+	</div>
+
+</div>

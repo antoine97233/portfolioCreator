@@ -22,7 +22,7 @@ class Skill
 
     #[ORM\Column(type: Types::STRING, length: 255, unique: true)]
     #[Assert\NotBlank()]
-    #[Assert\Length(min: 2, max: 100)]
+    #[Assert\Length(min: 2, max: 255)]
     #[Groups(['skills.index', 'skills.create'])]
     private ?string $title = null;
 

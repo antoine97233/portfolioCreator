@@ -15,9 +15,9 @@ class Task
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: Types::TEXT, length: 255)]
+    #[ORM\Column(type: Types::TEXT, length: 500)]
     #[Assert\NotBlank()]
-    #[Assert\Length(min: 2, max: 255)]
+    #[Assert\Length(min: 2, max: 500)]
     private ?string $description = '';
 
     #[ORM\ManyToOne(inversedBy: 'task')]

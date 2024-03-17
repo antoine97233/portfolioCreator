@@ -1,0 +1,26 @@
+<ul class="list-unstyled d-flex justify-content-start flex-wrap">
+	{% if user.tel %}
+		<li class="nav-item col-md-4 col-12 p-2 ">
+			<a class="h5 text-success" href="tel:{{ user.tel }}">
+				<i class="fa-solid fa-phone mr-2"></i>
+				Phone
+			</a>
+		</li>
+	{% endif %}
+	{% if user.linkedin %}
+		<li class="nav-item col-md-4 col-12 p-2">
+			<a class="h5 text-success" href="{{ user.linkedin }}">
+				<i class="fa-brands fa-linkedin fa-lg mr-2"></i>
+				Linkedin
+			</a>
+		</li>
+	{% endif %}
+	{% if user.email %}
+		<li class="nav-item col-md-4 col-12 p-2 ">
+			<a class="h5 text-success" href="mailto:{{ user.email }}">
+				<i class="fa-solid fa-envelope mr-2"></i>
+				Email
+			</a>
+		</li>
+	{% endif %}
+</ul>
