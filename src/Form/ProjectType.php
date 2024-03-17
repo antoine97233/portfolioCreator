@@ -60,6 +60,7 @@ class ProjectType extends AbstractType
                 'choice_label' => 'title',
                 'autocomplete' => true,
                 'multiple' => true,
+                'required' => false
 
             ])
             ->add('save', SubmitType::class);

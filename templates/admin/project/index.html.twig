@@ -32,7 +32,14 @@
 								<p>{{ project.title }}</p>
 							</td>
 							<td class="col-2">
-								<p></p>
+								{% if project.skill is not null %}
+									<ul>
+										{% for skill in project.skill %}
+											<li>{{ skill.title }}
+											</li>
+										{% endfor %}
+									</ul>
+								{% endif %}
 							</td>
 							<td class="col-3">
 								<div class="position-relative">
