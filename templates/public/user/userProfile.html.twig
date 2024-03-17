@@ -7,50 +7,58 @@
 
 	{% include 'partials/flash.html.twig' %}
 
-	{{ include('public/user/_userInformation.html.twig') }}
+	{% include 'public/user/_userInformation.html.twig' %}
 
-	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-		<h3 class="display-5 p-2">Experiences</h2>
-		<div class="container-fluid py-5">
-			{% for experience in user.experiences %}
-				{% if not experience.isFormation %}
-					{{ include('public/experience/_experienceElement.html.twig') }}
-				{% endif %}
-			{% endfor %}
-		</div>
-	</div>
-
-	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-		<h3 class="display-5 p-2">School</h2>
-		<div class="container-fluid py-5">
-			{% for experience in user.experiences %}
-				{% if  experience.isFormation %}
-					{{ include('public/experience/_experienceElement.html.twig') }}
-				{% endif %}
-			{% endfor %}
-		</div>
-	</div>
-
-	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-		<h3 class="display-5 p-2">Skills</h2>
-		<div class="container-fluid py-5">
-			{% for scoreSkill in user.scoreSkills %}
-				{{ include('public/scoreSkill/_scoreSkillElement.html.twig') }}
-			{% endfor %}
-		</div>
-	</div>
-
-	<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
-		<h3 class="display-5 p-2">Projects</h3>
-		<div class="container-fluid py-5">
-			<div class="d-flex flex-wrap justify-content-start gap-5">
-				{% for project in user.projects %}
-					{{ include('public/project/_projectCard.html.twig') }}
-					{{ include('public/project/_projectModal.html.twig') }}
+	{% if user.experiences is not empty %}
+		<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+			<h3 class="display-5 p-2">Experiences</h2>
+			<div class="container-fluid py-5">
+				{% for experience in user.experiences %}
+					{% if not experience.isFormation %}
+						{{ include('public/experience/_experienceElement.html.twig') }}
+					{% endif %}
 				{% endfor %}
 			</div>
 		</div>
-	</div>
+	{% endif %}
+
+	{% if user.experiences is not empty %}
+		<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+			<h3 class="display-5 p-2">School</h2>
+			<div class="container-fluid py-5">
+				{% for experience in user.experiences %}
+					{% if  experience.isFormation %}
+						{{ include('public/experience/_experienceElement.html.twig') }}
+					{% endif %}
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+
+	{% if user.scoreSkills is not empty %}
+		<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+			<h3 class="display-5 p-2">Skills</h2>
+			<div class="container-fluid py-5">
+				{% for scoreSkill in user.scoreSkills %}
+					{{ include('public/scoreSkill/_scoreSkillElement.html.twig') }}
+				{% endfor %}
+			</div>
+		</div>
+	{% endif %}
+
+	{% if user.projects is not empty %}
+		<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
+			<h3 class="display-5 p-2">Projects</h3>
+			<div class="container-fluid py-5">
+				<div class="d-flex flex-wrap justify-content-start gap-5">
+					{% for project in user.projects %}
+						{{ include('public/project/_projectCard.html.twig') }}
+						{{ include('public/project/_projectModal.html.twig') }}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
 
 
 	{% if user.tel or user.linkedin  %}

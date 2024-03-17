@@ -26,12 +26,18 @@
 			</div>
 			<div class="modal-footer d-flex">
 				<button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">More info</button>
-				<a href="{{project.link}}" type="button" class="btn btn-success shadow-sm">
-					<i class="fa-solid fa-link"></i>
-				</a>
-				<a href="{{project.githubLink}}" type="button" class="btn btn-success shadow-sm">
-					<i class="fa-brands fa-github"></i>
-				</a>
+				{% if project.link is not empty %}
+					<a href="{{project.link}}" type="button" class="btn btn-success shadow-sm">
+						<i class="fa-solid fa-link"></i>
+					</a>
+				{% endif %}
+
+				{% if project.githubLink is not empty %}
+
+					<a href="{{project.githubLink}}" type="button" class="btn btn-success shadow-sm">
+						<i class="fa-brands fa-github"></i>
+					</a>
+				{% endif %}
 
 			</div>
 		</div>

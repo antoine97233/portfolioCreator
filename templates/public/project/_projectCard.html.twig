@@ -8,33 +8,30 @@
 	{% endif %}
 	<div class="card-body">
 		<div class="d-flex mb-3 gap-1">
-			{% if project.skill is not null %}
+			{% if project.skill is not empty %}
 				{% for skill in project.skill %}
 					<span class="badge text-bg-secondary">
 						<i class="fa-solid fa-code mr-1"></i>
 						{{ skill.title }}</span>
 				{% endfor %}
 			{% endif %}
-
 		</div>
 		<h5 class="card-title">{{ project.title }}</h5>
 		<p class="card-text">{{ project.description }}</p>
 
 		<div class="d-flex gap-1">
 			<button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#projectModal{{ project.id }}">See details</button>
-			{% if project.link is not null %}
+			{% if project.link is not empty %}
 				<a href="{{project.link}}" type="button" class="btn btn-success shadow-sm">
 					<i class="fa-solid fa-link"></i>
 				</a>
 			{% endif %}
 
-			{% if project.githubLink is not null %}
+			{% if project.githubLink is not empty %}
 				<a href="{{project.githubLink}}" type="button" class="btn btn-success shadow-sm">
 					<i class="fa-brands fa-github"></i>
 				</a>
 			{% endif %}
-
-
 		</div>
 
 	</div>
