@@ -28,12 +28,13 @@ class ProjectRepository extends ServiceEntityRepository
      * @param  mixed $userId
      * @return array
      */
-    public function findProjectWithTasksByUser(int $userId): array
+    public function findProjectWithTasksAndSkillsByUser(int $userId): array
     {
-
         return $this->createQueryBuilder('p')
-            ->andWhere('p.user = :user')
-            ->leftJoin('p.task', 't')
+            ->select('p', 't', 's') // Sélectionne les projets, les tâches et les compétences
+            ->leftJoin('p.task', 't') // Jointure avec les tâches
+            ->leftJoin('p.skill', 's') // Jointure avec les compétences
+            ->andWhere('p.user = :user') // Filtre par utilisateur
             ->setParameter('user', $userId)
             ->getQuery()
             ->getResult();

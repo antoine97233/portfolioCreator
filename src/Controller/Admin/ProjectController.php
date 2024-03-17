@@ -33,7 +33,7 @@ class ProjectController extends AbstractController
         ProjectRepository $projectRepository
     ): Response {
 
-        $projects = $projectRepository->findProjectWithTasksByUser($user->getId());
+        $projects = $projectRepository->findProjectWithTasksAndSkillsByUser($user->getId());
 
         return $this->render('admin/project/index.html.twig', [
             'projects' => $projects,

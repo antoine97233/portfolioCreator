@@ -22,14 +22,24 @@ class Project
     #[Assert\Length(min: 1, max: 100)]
     private ?string $title = '';
 
-    #[ORM\Column(type: Types::STRING, length: 1000)]
+    #[ORM\Column(type: Types::STRING, length: 500)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 1, max: 500)]
+    private ?string $description = '';
+
+    #[ORM\Column(type: Types::TEXT, length: 1000)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 1, max: 1000)]
-    private ?string $description = '';
+    private ?string $longDescription = '';
+
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Assert\Url()]
     private ?string $link = '';
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\Url()]
+    private ?string $githubLink = '';
 
     #[ORM\ManyToOne(inversedBy: 'projects')]
     private ?User $user = null;
@@ -40,10 +50,15 @@ class Project
     #[ORM\OneToOne(mappedBy: 'project', cascade: ['persist', 'remove'])]
     private ?Media $media = null;
 
+    #[ORM\ManyToMany(targetEntity: Skill::class, inversedBy: 'projects')]
+    private Collection $skill;
+
+
 
     public function __construct()
     {
         $this->task = new ArrayCollection();
+        $this->skill = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -75,6 +90,18 @@ class Project
         return $this;
     }
 
+    public function getLongDescription(): ?string
+    {
+        return $this->longDescription;
+    }
+
+    public function setLongDescription(string $longDescription): static
+    {
+        $this->longDescription = $longDescription;
+
+        return $this;
+    }
+
     public function getLink(): ?string
     {
         return $this->link;
@@ -86,6 +113,21 @@ class Project
 
         return $this;
     }
+
+
+    public function getGithubLink(): ?string
+    {
+        return $this->githubLink;
+    }
+
+    public function setGithubLink(?string $githubLink): static
+    {
+        $this->githubLink = $githubLink;
+
+        return $this;
+    }
+
+
 
     public function getUser(): ?User
     {
@@ -147,6 +189,30 @@ class Project
         }
 
         $this->media = $media;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Skill>
+     */
+    public function getSkill(): Collection
+    {
+        return $this->skill;
+    }
+
+    public function addSkill(Skill $skill): static
+    {
+        if (!$this->skill->contains($skill)) {
+            $this->skill->add($skill);
+        }
+
+        return $this;
+    }
+
+    public function removeSkill(Skill $skill): static
+    {
+        $this->skill->removeElement($skill);
 
         return $this;
     }

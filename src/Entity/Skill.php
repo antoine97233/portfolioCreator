@@ -29,9 +29,14 @@ class Skill
     #[ORM\OneToMany(targetEntity: ScoreSkill::class, mappedBy: 'skill', cascade: ['persist', 'remove'])]
     private Collection $scoreSkills;
 
+    #[ORM\ManyToMany(targetEntity: Project::class, mappedBy: 'skill')]
+    private Collection $projects;
+
+
     public function __construct()
     {
         $this->scoreSkills = new ArrayCollection();
+        $this->projects = new ArrayCollection();
     }
 
 
@@ -79,6 +84,33 @@ class Skill
             if ($scoreSkill->getSkill() === $this) {
                 $scoreSkill->setSkill(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Project>
+     */
+    public function getProjects(): Collection
+    {
+        return $this->projects;
+    }
+
+    public function addProject(Project $project): static
+    {
+        if (!$this->projects->contains($project)) {
+            $this->projects->add($project);
+            $project->addSkill($this);
+        }
+
+        return $this;
+    }
+
+    public function removeProject(Project $project): static
+    {
+        if ($this->projects->removeElement($project)) {
+            $project->removeSkill($this);
         }
 
         return $this;

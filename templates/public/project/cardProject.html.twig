@@ -1,0 +1,29 @@
+<div class="card col-md-5 col-12 shadow-sm p-4">
+	{% if project.media is not null and project.media.thumbnail is not null %}
+		<div class="overflow-hidden" style="width: 100%; height: 200px;">
+			<img src="/images/users/{{ project.media.thumbnail }}" class="card-img-top" alt="{{ project.title }}">
+		</div>
+	{% else %}
+		<div class="placeholder" style="width: 100%; height: 200px; background-color: #6c757d;"></div>
+	{% endif %}
+	<div class="card-body">
+		<h5 class="card-title">{{ project.title }}</h5>
+		<p class="card-text">{{ project.description }}</p>
+		<div class="d-flex gap-1">
+			<button class="btn btn-primary shadow-sm" data-bs-toggle="modal" data-bs-target="#projectModal{{ project.id }}">See details</button>
+			{% if project.link is not null %}
+				<a href="{{project.link}}" type="button" class="btn btn-success shadow-sm">
+					<i class="fa-solid fa-link"></i>
+				</a>
+			{% endif %}
+
+			{% if project.githubLink is not null %}
+				<a href="{{project.githubLink}}" type="button" class="btn btn-success shadow-sm">
+					<i class="fa-brands fa-github"></i>
+				</a>
+			{% endif %}
+
+		</div>
+
+	</div>
+</div>
