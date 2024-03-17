@@ -43,10 +43,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
 
     #[ORM\Column(type: Types::STRING, length: 180, unique: true)]
     #[Assert\Email]
+    #[Groups('users.show')]
     private ?string $email = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    #[Groups('users.index')]
+    #[Groups('users.index', 'users.show')]
     private ?string $fullname = '';
 
     #[ORM\Column(type: Types::STRING, length: 255)]
@@ -54,15 +55,15 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $slug = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    #[Groups('users.index')]
+    #[Groups('users.index', 'users.show')]
     private ?string $title = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
-    #[Groups('users.index')]
+    #[Groups('users.index', 'users.show')]
     private ?string $subtitle = '';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
-    #[Groups('users.index')]
+    #[Groups('users.index', 'users.show')]
     private ?string $shortDescription = '';
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
@@ -70,6 +71,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     private ?string $longDescription = '';
 
     #[ORM\Column(type: Types::BOOLEAN, nullable: true)]
+    #[Groups('users.show')]
     private ?bool $isOpenToWork = null;
 
     #[ORM\Column]
@@ -87,10 +89,12 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         pattern: '/^(0|\+33)[1-9]\d{8}$/',
         message: 'The phone number must be a valid French phone number.'
     )]
+    #[Groups('users.show')]
     private ?string $tel = null;
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Assert\URL]
+    #[Groups('users.show')]
     private ?string $linkedin = null;
 
     #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', cascade: ['remove'])]
