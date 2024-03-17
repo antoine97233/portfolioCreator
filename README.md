@@ -17,19 +17,19 @@ Suivez ces étapes pour configurer PortfolioCreator sur votre machine locale :
 
 4. **Configurer la Base de Données :**
 
-   # Mettez à jour le fichier .env en fonction de votre configuration locale
+   - Mettez à jour le fichier .env en fonction de votre configuration locale
 
    DATABASE_URL=mysql://votre_utilisateur:votre_mot_de_passe@127.0.0.1:3306/nom_de_votre_base
 
-   # Créer la base de données
+   - Créer la base de données
 
    php bin/console doctrine:database:create
 
-   # Exécuter les migrations
+   - Exécuter les migrations
 
    php bin/console doctrine:migrations:migrate
 
-   # Charger les fixtures
+   - Charger les fixtures
 
    php bin/console doctrine:fixtures:load
 
