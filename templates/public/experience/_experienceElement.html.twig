@@ -4,13 +4,16 @@
 			<i class="fa-solid fa-suitcase fa-sm mr-2"></i>
 			{{ experience.title }}
 		</h5>
-		<p>{{ experience.description }}</p>
-		<span class="ml-2">{{ experience.location }}</span>
-		<span class="ml-3">
+		<span>
+			<strong>{{ experience.location }}</strong>
+		</span>
+		<span>
 			({{ experience.startDate|date("d/m/Y") }}
 			-
 			{{ experience.endDate|date("d/m/Y") }})
 		</span>
+		<p class="ml-2 mt-2 font-italic">{{ experience.description }}</p>
+
 	</div>
 </div>
 
