@@ -64,7 +64,9 @@
 	{% if user.tel or user.linkedin  %}
 		<div class="p-md-5 p-2 mb-4 mt-4 border shadow-sm">
 			<h3 class="display-5 p-2">Contact</h2>
-			{{ include('public/contact/_contactElement.html.twig') }}
+			<div class="container-fluid py-5">
+				{{ include('public/contact/_contactElement.html.twig') }}
+			</div>
 			<div class="container-fluid py-5"></div>
 		</div>
 	{% endif %}
