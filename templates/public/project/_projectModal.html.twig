@@ -52,7 +52,7 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				<p>{{project.longDescription}}</p>
+				<p>{{project.longDescription | nl2br }}</p>
 			</div>
 			<div class="modal-footer">
 				<button class="btn btn-primary shadow-sm" data-bs-target="#projectModal{{ project.id }}" data-bs-toggle="modal">Back to tasks</button>
