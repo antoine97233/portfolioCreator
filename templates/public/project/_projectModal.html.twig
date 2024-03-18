@@ -6,12 +6,6 @@
 				<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 			</div>
 			<div class="modal-body">
-				{% if project.media is not null and project.media.thumbnail is not null %}
-					<div class="overflow-hidden" style="width: 100%; height: 300px;">
-						<img src="/images/users/{{ project.media.thumbnail }}" class="card-img-top" alt="{{ project.title }}">
-					</div>
-				{% endif %}
-
 				{% if project.task is not empty %}
 					<ul>
 						{% for task in project.task %}
@@ -25,7 +19,7 @@
 
 			</div>
 			<div class="modal-footer d-flex">
-				<button class="btn btn-primary" data-bs-target="#exampleModalToggle2" data-bs-toggle="modal">More info</button>
+				<button class="btn btn-primary" data-bs-target="#projectModalToggle{{project.id}}" data-bs-toggle="modal">More info</button>
 				{% if project.link is not empty %}
 					<a href="{{project.link}}" type="button" class="btn btn-success shadow-sm">
 						<i class="fa-solid fa-link"></i>
@@ -44,7 +38,7 @@
 	</div>
 </div>
 
-<div class="modal fade" id="exampleModalToggle2" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
+<div class="modal fade" id="projectModalToggle{{project.id}}" aria-hidden="true" aria-labelledby="exampleModalToggleLabel2" tabindex="-1">
 	<div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 			<div class="modal-header">
