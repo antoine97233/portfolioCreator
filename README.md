@@ -1,10 +1,10 @@
-# PortfolioCreator
+# PortFolioMaker
 
-PortfolioCreator est une application web simple construite avec Symfony pour vous aider à créer et gérer votre portfolio facilement.
+PortFolioMaker est une application web simple construite avec Symfony pour vous aider à créer et gérer votre portfolio facilement.
 
 ## Installation
 
-Suivez ces étapes pour configurer PortfolioCreator sur votre machine locale :
+Suivez ces étapes pour configurer PortFolioMaker sur votre machine locale :
 
 1. **Cloner le Dépôt :**
    git clone https://github.com/antoine97233/portfolioCreator.git
@@ -41,7 +41,7 @@ Suivez ces étapes pour configurer PortfolioCreator sur votre machine locale :
 
 7. **Configurer le Serveur SMTP (Pour la Validation du Compte) :**
 
-   - PortfolioCreator utilise la fonctionnalité de validation du compte par e-mail. Pour tester cette fonctionnalité en local, vous devez configurer un serveur SMTP.
+   - PortFolioMaker utilise la fonctionnalité de validation du compte par e-mail. Pour tester cette fonctionnalité en local, vous devez configurer un serveur SMTP.
 
    - Si vous n'avez pas de serveur SMTP local, vous pouvez utiliser des services tiers tels que [Mailtrap](https://mailtrap.io/) pour créer un compte et obtenir les informations de configuration SMTP.
 
