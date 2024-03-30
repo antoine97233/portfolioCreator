@@ -24,6 +24,44 @@ class UserApiService
             return ['error' => 'User not found'];
         }
 
+
+        $scoreSkills = [];
+        foreach ($user->getScoreSkills() as $scoreSkill) {
+            $skillTitle = $scoreSkill->getSkill()->getTitle();
+
+            $scoreSkills[] = [
+                'id' => $scoreSkill->getId(),
+                'skillTitle' => $skillTitle,
+            ];
+        }
+
+        $thumbnail = $user->getMedia() ? $this->getFullImagePath($user->getMedia()->getThumbnail()) : null;
+
+        return [
+            'id' => $user->getId(),
+            'fullName' => $user->getFullName(),
+            'title' => $user->getTitle(),
+            'subtitle' => $user->getSubtitle(),
+            'shortDescription' => $user->getShortDescription(),
+            'longDescription' => $user->getLongDescription(),
+            'email' => $user->getEmail(),
+            'tel' => $user->getTel(),
+            'linkedin' => $user->getLinkedin(),
+            'github' => $user->getGithub(),
+            'thumbnail' => $thumbnail,
+            'scoreSkills' => $scoreSkills,
+        ];
+    }
+
+    public function getUserProjectsData(int $userId, string $baseURL): array
+    {
+        $this->baseURL = $baseURL;
+        $user = $this->entityManager->getRepository(User::class)->findUserforApi($userId);
+
+        if (!$user) {
+            return ['error' => 'User not found'];
+        }
+
         $projects = [];
         foreach ($user->getProjects() as $project) {
             $thumbnail = $project->getMedia() ? $this->getFullImagePath($project->getMedia()->getThumbnail()) : null;
@@ -49,33 +87,7 @@ class UserApiService
             ];
         }
 
-        $scoreSkills = [];
-        foreach ($user->getScoreSkills() as $scoreSkill) {
-            $skillTitle = $scoreSkill->getSkill()->getTitle();
-
-            $scoreSkills[] = [
-                'id' => $scoreSkill->getId(),
-                'skillTitle' => $skillTitle,
-            ];
-        }
-
-        $thumbnail = $user->getMedia() ? $this->getFullImagePath($user->getMedia()->getThumbnail()) : null;
-
-        return [
-            'id' => $user->getId(),
-            'username' => $user->getFullName(),
-            'title' => $user->getTitle(),
-            'subtitle' => $user->getSubtitle(),
-            'shortDescription' => $user->getShortDescription(),
-            'longDescription' => $user->getLongDescription(),
-            'email' => $user->getEmail(),
-            'tel' => $user->getTel(),
-            'linkedin' => $user->getLinkedin(),
-            'github' => $user->getGithub(),
-            'thumbnail' => $thumbnail,
-            'projects' => $projects,
-            'scoreSkills' => $scoreSkills,
-        ];
+        return $projects;
     }
 
     private function getFullImagePath(?string $imageName): ?string

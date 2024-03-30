@@ -47,6 +47,20 @@ class UsersController extends AbstractController
     }
 
 
+    #[Route('/api/users/{id}/projects', name: 'api_user_project', requirements: ['id' => Requirement::DIGITS], methods: ['GET'])]
+    public function showUserProjetsApi(int $id, UserApiService $userApiService): JsonResponse
+    {
+        $baseURL = 'https://portfolio.antoine-jolivet.fr';
+        $userData = $userApiService->getUserProjectsData($id, $baseURL);
+
+        if (isset($userData['error'])) {
+            return new JsonResponse($userData, JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($userData);
+    }
+
+
 
 
     #[Route("/api/me/")]
