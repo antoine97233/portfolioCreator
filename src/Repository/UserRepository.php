@@ -180,20 +180,12 @@ class UserRepository extends ServiceEntityRepository implements PasswordUpgrader
             ->getOneOrNullResult();
     }
 
-    /**
-     * Récupère un utilisateur avec toutes les données qui lui appartiennent.
-     *
-     * @param int $userId
-     *
-     * @return User|null
-     */
-    public function findUserforApi(int $userId): ?User
+
+    public function findUserWithSkills(int $userId): ?User
     {
         return $this->createQueryBuilder('u')
-            ->select('u', 'm', 'ss', 's', 'p', 'mp')
+            ->select('u', 'm', 'ss', 's')
             ->leftJoin('u.media', 'm')
-            ->leftJoin('u.projects', 'p')
-            ->leftJoin('p.media', 'mp')
             ->leftJoin('u.scoreSkills', 'ss')
             ->leftJoin('ss.skill', 's')
             ->where('u.id = :userId')

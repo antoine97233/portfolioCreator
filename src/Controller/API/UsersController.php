@@ -4,6 +4,7 @@ namespace App\Controller\API;
 
 use App\DTO\PaginationDTO;
 use App\Entity\User;
+use App\Repository\ProjectRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
@@ -28,8 +29,6 @@ class UsersController extends AbstractController
             'groups' => ['users.index']
         ]);
     }
-
-
 
 
 
@@ -60,24 +59,18 @@ class UsersController extends AbstractController
         return new JsonResponse($userData);
     }
 
-
     #[Route('/api/users/{id}/projects/{projectId}', name: 'api_user_project', requirements: ['id' => Requirement::DIGITS], methods: ['GET'])]
-    public function showProjectById(
-        int $id,
-        UserApiService $userApiService,
-        int $projectId
-    ): JsonResponse {
+    public function showProjectById(int $id, int $projectId, UserApiService $userApiService): JsonResponse
+    {
         $baseURL = 'https://portfolio.antoine-jolivet.fr';
-        $userData = $userApiService->getProjectData($id, $projectId, $baseURL);
+        $projectData = $userApiService->getProjectData($id, $projectId, $baseURL);
 
-        if (isset($userData['error'])) {
-            return new JsonResponse($userData, JsonResponse::HTTP_NOT_FOUND);
+        if (isset($projectData['error'])) {
+            return new JsonResponse($projectData, JsonResponse::HTTP_NOT_FOUND);
         }
 
-        return new JsonResponse($userData);
+        return new JsonResponse($projectData);
     }
-
-
 
 
     #[Route("/api/me/")]

@@ -21,6 +21,28 @@ class ProjectRepository extends ServiceEntityRepository
         parent::__construct($registry, Project::class);
     }
 
+    public function findProjectsByUser(int $userId): array
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p', 's')
+            ->leftJoin('p.skill', 's')
+            ->where('p.user = :user')
+            ->setParameter('user', $userId)
+            ->getQuery()
+            ->getResult();
+    }
+
+    public function findProjectWithSkills(int $projectId): ?Project
+    {
+        return $this->createQueryBuilder('p')
+            ->select('p', 's')
+            ->leftJoin('p.skill', 's')
+            ->andWhere('p.id = :projectId')
+            ->setParameter('projectId', $projectId)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
 
     /**
      * Récupère les projets appartenant à un utilisateur avec les tâches associées
@@ -31,10 +53,10 @@ class ProjectRepository extends ServiceEntityRepository
     public function findProjectWithTasksAndSkillsByUser(int $userId): array
     {
         return $this->createQueryBuilder('p')
-            ->select('p', 't', 's') // Sélectionne les projets, les tâches et les compétences
-            ->leftJoin('p.task', 't') // Jointure avec les tâches
-            ->leftJoin('p.skill', 's') // Jointure avec les compétences
-            ->andWhere('p.user = :user') // Filtre par utilisateur
+            ->select('p', 't', 's')
+            ->leftJoin('p.task', 't')
+            ->leftJoin('p.skill', 's')
+            ->andWhere('p.user = :user')
             ->setParameter('user', $userId)
             ->getQuery()
             ->getResult();

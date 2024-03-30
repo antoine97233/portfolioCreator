@@ -8,7 +8,7 @@ use Doctrine\ORM\EntityManagerInterface;
 
 class UserApiService
 {
-    private string $baseURL;
+    private string $baseURL = '';
     private EntityManagerInterface $entityManager;
 
     public function __construct(EntityManagerInterface $entityManager)
@@ -19,12 +19,11 @@ class UserApiService
     public function getUserData(int $userId, string $baseURL): array
     {
         $this->baseURL = $baseURL;
-        $user = $this->entityManager->getRepository(User::class)->findUserforApi($userId);
+        $user = $this->entityManager->getRepository(User::class)->findUserWithSkills($userId);
 
         if (!$user) {
             return ['error' => 'User not found'];
         }
-
 
         $scoreSkills = [];
         foreach ($user->getScoreSkills() as $scoreSkill) {
@@ -57,54 +56,42 @@ class UserApiService
     public function getUserProjectsData(int $userId, string $baseURL): array
     {
         $this->baseURL = $baseURL;
-        $user = $this->entityManager->getRepository(User::class)->findUserforApi($userId);
+        $projects = $this->entityManager->getRepository(Project::class)->findProjectsByUser($userId);
 
-        if (!$user) {
-            return ['error' => 'User not found'];
+        if (empty($projects)) {
+            return ['error' => 'No projects found for this user'];
         }
 
-        $projects = [];
-        foreach ($user->getProjects() as $project) {
-            $thumbnail = $project->getMedia() ? $this->getFullImagePath($project->getMedia()->getThumbnail()) : null;
-
-            $skills = [];
-            foreach ($project->getSkill() as $skill) {
-                $skills[] = [
-                    'id' => $skill->getId(),
-                    'title' => $skill->getTitle(),
-                ];
-            }
-
-            $projects[] = [
-                'id' => $project->getId(),
-                'title' => $project->getTitle(),
-                'subtitle' => $project->getSubtitle(),
-                'description' => $project->getDescription(),
-                'longDescription' => $project->getLongDescription(),
-                'link' => $project->getLink(),
-                'github' => $project->getGithubLink(),
-                'thumbnail' => $thumbnail,
-                'skills' => $skills,
-            ];
+        $projectData = [];
+        foreach ($projects as $project) {
+            $projectData[] = $this->getProjectData($userId, $project->getId(), $baseURL);
         }
 
-        return $projects;
+        return $projectData;
     }
+
 
     public function getProjectData(int $userId, int $projectId, string $baseURL): array
     {
         $this->baseURL = $baseURL;
 
-        $project = $this->entityManager->getRepository(Project::class)->findOneBy(['id' => $projectId]);
+        $project = $this->entityManager->getRepository(Project::class)->findProjectWithSkills($projectId);
 
         if (!$project) {
             return ['error' => 'Project not found'];
         }
 
-
         $thumbnail = $project->getMedia() ? $this->getFullImagePath($project->getMedia()->getThumbnail()) : null;
 
-        $projectData = [
+        $skills = [];
+        foreach ($project->getSkill() as $skill) {
+            $skills[] = [
+                'id' => $skill->getId(),
+                'title' => $skill->getTitle(),
+            ];
+        }
+
+        return [
             'id' => $project->getId(),
             'title' => $project->getTitle(),
             'subtitle' => $project->getSubtitle(),
@@ -113,10 +100,11 @@ class UserApiService
             'link' => $project->getLink(),
             'github' => $project->getGithubLink(),
             'thumbnail' => $thumbnail,
+            'skills' => $skills,
         ];
-
-        return $projectData;
     }
+
+
 
     private function getFullImagePath(?string $imageName): ?string
     {
