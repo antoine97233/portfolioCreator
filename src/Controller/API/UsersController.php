@@ -5,6 +5,7 @@ namespace App\Controller\API;
 use App\DTO\PaginationDTO;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
@@ -28,12 +29,21 @@ class UsersController extends AbstractController
 
 
     #[Route("/api/users/{id}", requirements: ['id' => Requirement::DIGITS])]
-    public function show(User $user)
-    {
+    public function show(
+        User $user,
+        EntityManagerInterface $em,
+        int $id
 
-        return $this->json($user, 200, [], [
-            'groups' => ['users.index', 'users.show']
-        ]);
+    ) {
+
+        $user = $em->getRepository(User::class)->findUserforApi($id);
+
+
+        if (!$user) {
+            return $this->json(['message' => 'User not found'], 404);
+        }
+
+        return $this->json($user, 200, []);
     }
 
 
