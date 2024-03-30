@@ -36,7 +36,7 @@ class UsersController extends AbstractController
     #[Route('/api/users/{id}', name: 'api_user', requirements: ['id' => Requirement::DIGITS], methods: ['GET'])]
     public function showUserApi(int $id, UserApiService $userApiService): JsonResponse
     {
-        $baseURL = 'https://portfoliomaker.antoine-jolivet.fr';
+        $baseURL = 'https://portfolio.antoine-jolivet.fr';
         $userData = $userApiService->getUserData($id, $baseURL);
 
         if (isset($userData['error'])) {
