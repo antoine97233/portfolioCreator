@@ -22,6 +22,12 @@ class ProjectType extends AbstractType
                 TextType::class,
                 ['empty_data' => '']
             )->add(
+                'subtitle',
+                TextType::class,
+                ['empty_data' => '']
+            )
+
+            ->add(
                 'description',
                 TextareaType::class,
                 [

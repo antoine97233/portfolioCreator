@@ -22,6 +22,11 @@ class Project
     #[Assert\Length(min: 1, max: 255)]
     private ?string $title = '';
 
+    #[ORM\Column(type: Types::STRING, length: 255)]
+    #[Assert\NotBlank()]
+    #[Assert\Length(min: 1, max: 255)]
+    private ?string $subtitle = null;
+
     #[ORM\Column(type: Types::STRING, length: 500)]
     #[Assert\NotBlank()]
     #[Assert\Length(min: 1, max: 500)]
@@ -213,6 +218,18 @@ class Project
     public function removeSkill(Skill $skill): static
     {
         $this->skill->removeElement($skill);
+
+        return $this;
+    }
+
+    public function getSubtitle(): ?string
+    {
+        return $this->subtitle;
+    }
+
+    public function setSubtitle(string $subtitle): static
+    {
+        $this->subtitle = $subtitle;
 
         return $this;
     }

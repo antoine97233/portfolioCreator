@@ -90,12 +90,16 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         message: 'The phone number must be a valid French phone number.'
     )]
     #[Groups('users.show')]
-    private ?string $tel = null;
+    private ?string $tel = '';
 
     #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
     #[Assert\URL]
     #[Groups('users.show')]
-    private ?string $linkedin = null;
+    private ?string $linkedin = '';
+
+    #[ORM\Column(type: Types::STRING, length: 255, nullable: true)]
+    #[Assert\URL]
+    private ?string $github = '';
 
     #[ORM\OneToMany(targetEntity: Experience::class, mappedBy: 'user', cascade: ['remove'])]
     private Collection $experiences;
@@ -476,6 +480,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setLinkedin(?string $linkedin): static
     {
         $this->linkedin = $linkedin;
+
+        return $this;
+    }
+
+    public function getGithub(): ?string
+    {
+        return $this->github;
+    }
+
+    public function setGithub(?string $github): static
+    {
+        $this->github = $github;
 
         return $this;
     }

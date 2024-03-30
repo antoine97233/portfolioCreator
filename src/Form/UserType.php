@@ -52,11 +52,18 @@ class UserType extends AbstractType
                 ]
             ])
             ->add('tel', TextType::class, [
+                'empty_data' => '',
                 'label' => "Phone number",
                 'required' => false
             ])
             ->add('Linkedin', TextType::class, [
+                'empty_data' => '',
                 'label' => "Linkedin URL",
+                'required' => false
+            ])
+            ->add('github', TextType::class, [
+                'empty_data' => '',
+                'label' => "Github URL",
                 'required' => false
             ])
             ->add('isOpenToWork', CheckboxType::class, [

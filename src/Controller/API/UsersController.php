@@ -8,9 +8,11 @@ use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpKernel\Attribute\MapQueryString;
 use Symfony\Component\Routing\Requirement\Requirement;
 use Symfony\Component\Security\Http\Attribute\IsGranted;
+use App\Service\UserApiService;
 
 class UsersController extends AbstractController
 {
@@ -28,21 +30,23 @@ class UsersController extends AbstractController
     }
 
 
-    #[Route("/api/users/{id}", requirements: ['id' => Requirement::DIGITS])]
-    public function show(
-        User $user,
-        EntityManagerInterface $em,
-        int $id
-
-    ) {
-
-        $user = $em->getRepository(User::class)->findUserforApi($id);
 
 
-        return $this->json($user, 200, [], [
-            'groups' => ['users.index', 'users.show']
-        ]);
+
+    #[Route('/api/users/{id}', name: 'api_user', requirements: ['id' => Requirement::DIGITS], methods: ['GET'])]
+    public function showUserApi(int $id, UserApiService $userApiService): JsonResponse
+    {
+        $baseURL = 'https://portfoliomaker.antoine-jolivet.fr';
+        $userData = $userApiService->getUserData($id, $baseURL);
+
+        if (isset($userData['error'])) {
+            return new JsonResponse($userData, JsonResponse::HTTP_NOT_FOUND);
+        }
+
+        return new JsonResponse($userData);
     }
+
+
 
 
     #[Route("/api/me/")]
