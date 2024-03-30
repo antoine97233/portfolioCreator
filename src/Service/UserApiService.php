@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Entity\Project;
 use App\Entity\User;
 use Doctrine\ORM\EntityManagerInterface;
 
@@ -88,6 +89,33 @@ class UserApiService
         }
 
         return $projects;
+    }
+
+    public function getProjectData(int $userId, int $projectId, string $baseURL): array
+    {
+        $this->baseURL = $baseURL;
+
+        $project = $this->entityManager->getRepository(Project::class)->findOneBy(['id' => $projectId]);
+
+        if (!$project) {
+            return ['error' => 'Project not found'];
+        }
+
+
+        $thumbnail = $project->getMedia() ? $this->getFullImagePath($project->getMedia()->getThumbnail()) : null;
+
+        $projectData = [
+            'id' => $project->getId(),
+            'title' => $project->getTitle(),
+            'subtitle' => $project->getSubtitle(),
+            'description' => $project->getDescription(),
+            'longDescription' => $project->getLongDescription(),
+            'link' => $project->getLink(),
+            'github' => $project->getGithubLink(),
+            'thumbnail' => $thumbnail,
+        ];
+
+        return $projectData;
     }
 
     private function getFullImagePath(?string $imageName): ?string
