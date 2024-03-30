@@ -39,11 +39,9 @@ class UsersController extends AbstractController
         $user = $em->getRepository(User::class)->findUserforApi($id);
 
 
-        if (!$user) {
-            return $this->json(['message' => 'User not found'], 404);
-        }
-
-        return $this->json($user, 200, []);
+        return $this->json($user, 200, [], [
+            'groups' => ['users.index', 'users.show']
+        ]);
     }
 
 
