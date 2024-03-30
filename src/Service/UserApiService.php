@@ -84,6 +84,6 @@ class UserApiService
             return null;
         }
 
-        return $this->baseURL . '/images/' . $imageName;
+        return $this->baseURL . '/images/users/' . $imageName;
     }
 }
