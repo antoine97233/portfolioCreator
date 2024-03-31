@@ -87,7 +87,7 @@ class UserApiService
         foreach ($project->getSkill() as $skill) {
             $skills[] = [
                 'id' => $skill->getId(),
-                'title' => $skill->getTitle(),
+                'skillTitle' => $skill->getTitle(),
             ];
         }
 
@@ -95,7 +95,7 @@ class UserApiService
             'id' => $project->getId(),
             'title' => $project->getTitle(),
             'subtitle' => $project->getSubtitle(),
-            'description' => $project->getDescription(),
+            'shortDescription' => $project->getDescription(),
             'longDescription' => $project->getLongDescription(),
             'link' => $project->getLink(),
             'github' => $project->getGithubLink(),
