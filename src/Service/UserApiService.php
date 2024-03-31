@@ -49,7 +49,7 @@ class UserApiService
             'linkedin' => $user->getLinkedin(),
             'github' => $user->getGithub(),
             'thumbnail' => $thumbnail,
-            'scoreSkills' => $scoreSkills,
+            'skills' => $scoreSkills,
         ];
     }
 
